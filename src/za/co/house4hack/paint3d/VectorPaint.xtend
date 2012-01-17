@@ -100,7 +100,15 @@ class VectorPaint extends View {
          handled = true             
       }
       
-      return handled || super.onTouchEvent(event)
+    handled || super.onTouchEvent(event)
    }
+ 
+   def clear() {
+      polygon.clear
+      drag = null
+   }  
    
+   def preview() {
+      // preview the drawing by converting polygon to 3D and then save as STL file
+   }
 }

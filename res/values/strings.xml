@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="hello">Hello World, Main!</string>
     <string name="app_name">Paint3d</string>
-
+    <string name="menu_preview">Preview</string>
+    <string name="menu_discard">Discard</string>
+    
 </resources>

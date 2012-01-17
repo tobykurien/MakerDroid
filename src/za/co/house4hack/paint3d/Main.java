@@ -1,12 +1,14 @@
 package za.co.house4hack.paint3d;
 
 import android.app.Activity;
-import android.opengl.GLSurfaceView;
 import android.os.Bundle;
-import android.view.SurfaceView;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
 public class Main extends Activity {
-
+   VectorPaint vp;
+   
    @Override
    protected void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
@@ -16,8 +18,28 @@ public class Main extends Activity {
 //      view.setRenderer(new ExtrudeRenderer());
 //      setContentView(view);
 
-      VectorPaint vp = new VectorPaint(this);
+      vp = new VectorPaint(this);
       setContentView(vp);
+   }
+   
+   @Override
+   public boolean onCreateOptionsMenu(Menu menu) {
+      MenuInflater inflater = getMenuInflater();
+      inflater.inflate(R.menu.vectorpaint, menu);
+      return super.onCreateOptionsMenu(menu);
+   }
+
+   @Override
+   public boolean onOptionsItemSelected(MenuItem item) {
+      switch (item.getItemId()) {
+         case R.id.menu_discard:
+            vp.clear();
+            return true;
+         case R.id.menu_preview:
+            vp.preview();
+            return true;
+      }
+      return false;
    }
    
 }
