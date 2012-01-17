@@ -10,6 +10,7 @@ import java.util.List
 import java.util.ArrayList
 import android.util.Log
 import android.view.View
+import java.math.BigDecimal
 
 class VectorPaint extends View {
    List<Point> polygon
@@ -21,31 +22,50 @@ class VectorPaint extends View {
    }
    
    override protected onDraw(Canvas canvas) {
-      if (polygon.empty) return;
+      if (polygon.empty) {
+         var pText = new Paint()
+         pText.setARGB(255, 0, 0, 255)
+         pText.setTextSize(20)
+         canvas.drawText("Tap to start drawing", 20, 20, pText)
+         return;         
+      }
       
       // draw points where canvas was touched
-      var paint = new Paint()
-      paint.setARGB(255, 255, 0, 0)
-      paint.setStrokeWidth(2)
+      var pCirc = new Paint()
+      pCirc.setARGB(255, 255, 0, 0)
+      pCirc.setStrokeWidth(1)
+
+      var pLine = new Paint()
+      pLine.setARGB(255, 0, 255, 0)
+      pCirc.setStrokeWidth(5)
       
       var Point pp = null
       for (Point p : polygon) {
-         if (pp != null) canvas.drawLine(pp.x, pp.y, p.x, p.y, paint)
-         canvas.drawCircle(p.x, p.y, 2, paint)
+         if (pp != null) canvas.drawLine(pp.x, pp.y, p.x, p.y, pLine)
+         canvas.drawCircle(p.x, p.y, 20, pCirc)
          pp = p;
       }
+
+      // complete the polygon      
+      var p = polygon.get(0)
+      canvas.drawLine(pp.x, pp.y, p.x, p.y, pLine)      
          
       super.onDraw(canvas)
    }
    
    override onTouchEvent(MotionEvent event) {
+      var handled = false;
+      
       if (event.action == MotionEvent::ACTION_DOWN) {
+         drag = null;
+         
          // surface was clicked
-         Log::d("vectorpaint",  "screen touched")
          // check if the click was on top of an existing point
          for (Point p : polygon) {
-            // TODO - add a bounding box so click doesn't need to be exact
-            if (p.x == event.x && p.y == event.y) {
+            // check if circle was tapped (using bounding box around point)
+            var dx = new BigDecimal(p.x) - new BigDecimal(event.x)
+            var dy = new BigDecimal(p.y) - new BigDecimal(event.y)
+            if (Math::abs(dx.intValue) < 20 && Math::abs(dy.intValue) < 20) {
               // clicked existing point, allow dragging it 
               drag = p
               // TODO - break here
@@ -55,25 +75,32 @@ class VectorPaint extends View {
          if (drag == null) {
             // add a point here
             polygon.add(new Point(event.x, event.y))
-            invalidate
-         }                  
-         Log::d("vectorpaint",  "polygon size " + polygon.size)
-      } else if (event.action == MotionEvent::ACTION_MOVE) {
-         if (drag != null) {
-            drag.x = event.x
-            drag.y = event.y
-         }
-      } else if (event.action == MotionEvent::ACTION_UP) {
-         if (drag != null) {
-            drag = null // the point is up to date
-            drag.x = event.x
-            drag.y = event.y
-         }
+         }    
+         invalidate 
+         handled = true             
       }
-
       
+      if (event.action == MotionEvent::ACTION_MOVE) {
+         if (drag != null) {
+            drag.x = event.x
+            drag.y = event.y
+         }
+         invalidate              
+         handled = true             
+      }
       
-      super.onTouchEvent(event)
+      if (event.action == MotionEvent::ACTION_UP) {
+         if (drag != null) {
+               Log::d("vectorpaint",  "drag complete")
+            drag.x = event.x
+            drag.y = event.y
+            drag = null // the point is up to date
+         }
+         invalidate              
+         handled = true             
+      }
+      
+      return handled || super.onTouchEvent(event)
    }
    
 }
