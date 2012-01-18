@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 
 public class Main extends Activity {
    VectorPaint vp;
@@ -18,8 +19,8 @@ public class Main extends Activity {
 //      view.setRenderer(new ExtrudeRenderer());
 //      setContentView(view);
 
-      vp = new VectorPaint(this);
-      setContentView(vp);
+      setContentView(R.layout.main);
+      vp = (VectorPaint) findViewById(R.id.vector_paint);
    }
    
    @Override
@@ -42,4 +43,11 @@ public class Main extends Activity {
       return false;
    }
    
+   public void onUndo(View v) {
+      vp.undo();
+   }
+   
+   public void onEtch(View v) {
+      vp.etch();
+   }
 }

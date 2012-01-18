@@ -11,6 +11,7 @@ import java.util.ArrayList
 import android.util.Log
 import android.view.View
 import java.math.BigDecimal
+import android.util.AttributeSet
 
 class VectorPaint extends View {
    List<Point> polygon
@@ -20,6 +21,20 @@ class VectorPaint extends View {
       
    new(Context context) {
       super(context)
+      init
+   }
+   
+   new(Context arg0, AttributeSet arg1) {
+      super(arg0, arg1)
+      init
+   }
+   
+   new(Context arg0, AttributeSet arg1, int arg2) {
+      super(arg0, arg1, arg2)
+      init
+   }
+   
+   def init() {
       polygon = new ArrayList();
       
       pCirc = new Paint()
@@ -27,7 +42,7 @@ class VectorPaint extends View {
 
       pLine = new Paint()
       pLine.setARGB(255, 0, 255, 0)
-      pLine.setStrokeWidth(10)
+      pLine.setStrokeWidth(10)      
    }
    
    override protected onDraw(Canvas canvas) {
@@ -110,13 +125,26 @@ class VectorPaint extends View {
     handled || super.onTouchEvent(event)
    }
  
+   // clear the canvas and start a new drawing
    def clear() {
       polygon.clear
       drag = null
       invalidate
    }  
    
+   // save the shape and preview in 3D using STL viewer
    def preview() {
       // preview the drawing by converting polygon to 3D and then save as STL file
+   }
+   
+   // undo last point
+   def undo() {
+      polygon.remove(polygon.size - 1)
+      invalidate
+   }
+   
+   // change brush colour and create the etching polygon
+   def etch() {
+      
    }
 }
