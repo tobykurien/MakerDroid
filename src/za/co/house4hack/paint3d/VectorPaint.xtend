@@ -134,7 +134,7 @@ class VectorPaint extends View {
    
    // save the shape and preview in 3D using STL viewer
    def preview() {
-      // preview the drawing by converting polygon to 3D and then save as STL file
+      
    }
    
    // undo last point

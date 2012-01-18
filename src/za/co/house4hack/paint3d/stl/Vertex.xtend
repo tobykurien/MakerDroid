@@ -1,4 +1,4 @@
-package za.co.house4hack.paint3d
+package za.co.house4hack.paint3d.stl
 
 class Vertex {
 	float x
