@@ -15,40 +15,47 @@ import java.math.BigDecimal
 class VectorPaint extends View {
    List<Point> polygon
    Point drag
+   Paint pCirc
+   Paint pLine
       
    new(Context context) {
       super(context)
       polygon = new ArrayList();
+      
+      pCirc = new Paint()
+      pCirc.setARGB(255, 255, 0, 0)
+
+      pLine = new Paint()
+      pLine.setARGB(255, 0, 255, 0)
+      pLine.setStrokeWidth(10)
    }
    
    override protected onDraw(Canvas canvas) {
       if (polygon.empty) {
          var pText = new Paint()
-         pText.setARGB(255, 0, 0, 255)
-         pText.setTextSize(20)
-         canvas.drawText("Tap to start drawing", 20, 20, pText)
+         pText.setARGB(255, 255, 255, 255)
+         pText.setTextSize(40)
+         canvas.drawText("Tap to start drawing", 20, 40, pText)
          return;         
       }
       
       // draw points where canvas was touched
-      var pCirc = new Paint()
-      pCirc.setARGB(255, 255, 0, 0)
-      pCirc.setStrokeWidth(1)
-
-      var pLine = new Paint()
-      pLine.setARGB(255, 0, 255, 0)
-      pCirc.setStrokeWidth(5)
-      
       var Point pp = null
       for (Point p : polygon) {
-         if (pp != null) canvas.drawLine(pp.x, pp.y, p.x, p.y, pLine)
-         canvas.drawCircle(p.x, p.y, 20, pCirc)
+         if (pp != null) {
+            canvas.drawLine(pp.x, pp.y, p.x, p.y, pLine)
+         }
          pp = p;
       }
 
       // complete the polygon      
       var p = polygon.get(0)
       canvas.drawLine(pp.x, pp.y, p.x, p.y, pLine)      
+
+      // draw the circles afterwards to place over the line
+      for (Point p2 : polygon) {
+         canvas.drawCircle(p2.x, p2.y, 20, pCirc)
+      }
          
       super.onDraw(canvas)
    }
@@ -65,7 +72,7 @@ class VectorPaint extends View {
             // check if circle was tapped (using bounding box around point)
             var dx = new BigDecimal(p.x) - new BigDecimal(event.x)
             var dy = new BigDecimal(p.y) - new BigDecimal(event.y)
-            if (Math::abs(dx.intValue) < 20 && Math::abs(dy.intValue) < 20) {
+            if (Math::abs(dx.intValue) < 30 && Math::abs(dy.intValue) < 30) {
               // clicked existing point, allow dragging it 
               drag = p
               // TODO - break here
@@ -106,6 +113,7 @@ class VectorPaint extends View {
    def clear() {
       polygon.clear
       drag = null
+      invalidate
    }  
    
    def preview() {
