@@ -1,9 +1,9 @@
 package za.co.house4hack.paint3d.stl
 
 class Vertex {
-	float x
-	float y
-	float z
+	public float x
+	public float y
+	public float z
 	
 	new(float x, float y, float z) {
 	   this.x = x
