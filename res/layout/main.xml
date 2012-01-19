@@ -14,28 +14,32 @@
             android:layout_height="fill_parent"
             android:layout_weight="1"
             android:onClick="onSave"
-            android:src="@android:drawable/ic_menu_save"/>
+            android:src="@android:drawable/ic_menu_save"
+            android:contentDescription="@string/btn_save"/>
 
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
             android:layout_weight="1"
             android:onClick="onUndo"
-            android:src="@android:drawable/ic_menu_revert"/>
+            android:src="@android:drawable/ic_menu_revert"
+            android:contentDescription="@string/btn_undo"/>
 
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
             android:layout_weight="1"
             android:onClick="onEtch"
-            android:src="@android:drawable/ic_menu_edit"/>
+            android:src="@android:drawable/ic_menu_edit"
+            android:contentDescription="@string/btn_etch"/>
 
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
             android:layout_weight="1"
             android:onClick="onBackground"
-            android:src="@android:drawable/ic_menu_crop"/>
+            android:src="@android:drawable/ic_menu_crop"
+            android:contentDescription="@string/btn_background"/>
     </LinearLayout>
 
     <za.co.house4hack.paint3d.VectorPaint
