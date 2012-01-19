@@ -5,9 +5,6 @@
     <string name="menu_preview">Preview</string>
     <string name="menu_discard">Discard</string>
 
-    <string name="btn_save">Save</string>
-    <string name="btn_undo">Undo</string>
-    <string name="btn_etch">Etch</string>
-    <string name="btn_background">Background</string>
-    
+    <string name="vp_help_spen">Use the SPen to tap out the shape</string>    
+    <string name="vp_help_touch">Tap the screen to draw the shape</string>    
 </resources>

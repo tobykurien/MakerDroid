@@ -68,7 +68,7 @@ class VectorPaint extends View {
          var pText = new Paint()
          pText.setARGB(255, 255, 255, 255)
          pText.setTextSize(40)
-         canvas.drawText("Tap to start drawing", 20, 40, pText)
+         canvas.drawText(helpText, 20, 40, pText)
          return;         
       }
       
@@ -165,5 +165,17 @@ class VectorPaint extends View {
    // change brush colour and create the etching polygon
    def etch() {
       
+   }
+   
+   def getHelpText() {
+      if (isSPen) {
+         getString(R$string::vp_help_spen)
+      } else {
+         getString(R$string::vp_help_touch)
+      }
+   }
+   
+   def getString(int resId) {
+      context.resources.getString(resId)
    }
 }
