@@ -50,4 +50,12 @@ public class Main extends Activity {
    public void onEtch(View v) {
       vp.etch();
    }
+   
+   public void onSave(View v) {
+      
+   }
+   
+   public void onBackground(View v) {
+      
+   }
 }

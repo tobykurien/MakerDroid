@@ -4,5 +4,10 @@
     <string name="app_name">Paint3d</string>
     <string name="menu_preview">Preview</string>
     <string name="menu_discard">Discard</string>
+
+    <string name="btn_save">Save</string>
+    <string name="btn_undo">Undo</string>
+    <string name="btn_etch">Etch</string>
+    <string name="btn_background">Background</string>
     
 </resources>
