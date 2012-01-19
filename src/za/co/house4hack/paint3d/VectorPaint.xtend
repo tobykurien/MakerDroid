@@ -12,12 +12,21 @@ import android.util.Log
 import android.view.View
 import java.math.BigDecimal
 import android.util.AttributeSet
+import com.samsung.sdraw.SDrawLibrary
 
 class VectorPaint extends View {
+   int CIRCLE_SPEN = 5
+   int LINE_SPEN = 2
+   int CIRCLE_TOUCH = 20
+   int LINE_TOUCH = 10   
+   
    List<Point> polygon
    Point drag
    Paint pCirc
    Paint pLine
+   
+   boolean isSPen = false
+   int circRadius
       
    new(Context context) {
       super(context)
@@ -42,7 +51,16 @@ class VectorPaint extends View {
 
       pLine = new Paint()
       pLine.setARGB(255, 0, 255, 0)
-      pLine.setStrokeWidth(10)      
+      
+      isSPen = SDrawLibrary::supportedModel
+      if (isSPen) {
+         circRadius = CIRCLE_SPEN
+         pLine.setStrokeWidth(LINE_SPEN)
+      } else {
+         circRadius = CIRCLE_TOUCH
+         pLine.setStrokeWidth(LINE_TOUCH)
+      }
+            
    }
    
    override protected onDraw(Canvas canvas) {
@@ -69,7 +87,7 @@ class VectorPaint extends View {
 
       // draw the circles afterwards to place over the line
       for (Point p2 : polygon) {
-         canvas.drawCircle(p2.x, p2.y, 20, pCirc)
+         canvas.drawCircle(p2.x, p2.y, circRadius, pCirc)
       }
          
       super.onDraw(canvas)
@@ -87,7 +105,8 @@ class VectorPaint extends View {
             // check if circle was tapped (using bounding box around point)
             var dx = new BigDecimal(p.x) - new BigDecimal(event.x)
             var dy = new BigDecimal(p.y) - new BigDecimal(event.y)
-            if (Math::abs(dx.intValue) < 30 && Math::abs(dy.intValue) < 30) {
+            var bb = circRadius * 2 // Bounding box slightly bigger than the circle
+            if (Math::abs(dx.intValue) < bb && Math::abs(dy.intValue) < bb) {
               // clicked existing point, allow dragging it 
               drag = p
               // TODO - break here
