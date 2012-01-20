@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import org.jdelaunay.delaunay.error.DelaunayError;
 
+import za.co.house4hack.paint3d.Point;
 import za.co.house4hack.paint3d.stl.Vertex;
 
 public class ExtrudePoly {
@@ -41,6 +42,14 @@ public class ExtrudePoly {
 	   }
 	   
 	   return ptt;
+   }
+   
+   public TriMesh polyToTriMesh(Point[] pointlist, float height, float z) throws DelaunayError{
+	   Vertex[] vlist  = new Vertex[pointlist.length];
+	   for(int i=0; i<pointlist.length; i++){
+		   vlist[i] = new Vertex(pointlist[i].x, pointlist[i].y,z);
+	   }
+	   return polyToTriMesh(vlist, height);
    }
    
    
