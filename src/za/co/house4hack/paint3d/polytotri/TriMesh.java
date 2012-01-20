@@ -73,7 +73,8 @@ public class TriMesh {
 	        	   if(getNormal(d).equals(new DPoint(normal.x, normal.y, normal.z))){
 	        		   triList.add(d);
 	        	   } else {
-	        		   triList.add(new DTriangle(d.getPoint(0), d.getPoint(2), d.getPoint(1)));
+	        		   DTriangle newD = new DTriangle(d.getPoint(0), d.getPoint(2), d.getPoint(1));
+	        		   triList.add(newD);
 	        	   }
 	        	   
 	           }
@@ -134,7 +135,7 @@ public class TriMesh {
    
    private String triToSTL(DTriangle tri) throws DelaunayError{
 	   StringBuilder sb = new StringBuilder();
-	   DPoint n = tri.getNormalVector();
+	   DPoint n = getNormal(tri);
 	   sb.append("facet normal  "+n.getX()+" "+n.getY()+" "+n.getZ()+"\n");
 	   sb.append("outer loop\n");	
 	   for(DPoint p : tri.getPoints()){
