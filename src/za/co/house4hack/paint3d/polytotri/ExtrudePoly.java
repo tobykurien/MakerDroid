@@ -4,6 +4,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.jdelaunay.delaunay.error.DelaunayError;
 
@@ -48,6 +49,14 @@ public class ExtrudePoly {
 	   Vertex[] vlist  = new Vertex[pointlist.length];
 	   for(int i=0; i<pointlist.length; i++){
 		   vlist[i] = new Vertex(pointlist[i].x, pointlist[i].y,z);
+	   }
+	   return polyToTriMesh(vlist, height);
+   }
+
+   public TriMesh polyToTriMesh(List<Point> pointlist, float height, float z) throws DelaunayError{
+	   Vertex[] vlist  = new Vertex[pointlist.size()];
+	   for(int i=0; i<pointlist.size(); i++){
+		   vlist[i] = new Vertex(pointlist.get(i).x, pointlist.get(i).y,z);
 	   }
 	   return polyToTriMesh(vlist, height);
    }
