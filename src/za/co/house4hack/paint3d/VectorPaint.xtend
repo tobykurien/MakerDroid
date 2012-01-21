@@ -157,10 +157,10 @@ class VectorPaint extends View {
    def preview() {
       if (ExtrudePoly::saveToSTL(polygon, "/sdcard/paint3d.stl")) {
          var f = new File("/sdcard/paint3d.stl");
-         var i = new Intent();
-         i.setAction(Intent::ACTION_VIEW);
-         i.setData(Uri::fromFile(f));
-         context.startActivity(i);
+//         var i = new Intent();
+//         i.setAction(Intent::ACTION_VIEW);
+//         i.setData(Uri::fromFile(f));
+//         context.startActivity(i);
       }
    }
    

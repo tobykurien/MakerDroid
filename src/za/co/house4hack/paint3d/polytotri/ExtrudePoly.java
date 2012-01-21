@@ -87,7 +87,7 @@ public class ExtrudePoly {
          // add first point again to close polygon
          pointlist.add(new Vertex(polygon.get(0).x, polygon.get(0).y, 0.0f));
          
-         TriMesh ptt = pto3d.polyToTriMesh(pointlist.toArray(new Vertex[0]), 1f);
+         TriMesh ptt = pto3d.polyToTriMesh(pointlist.toArray(new Vertex[0]), 10f);
 
          out.write(ptt.toSTL()); 
          out.close();

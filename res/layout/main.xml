@@ -13,46 +13,58 @@
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
             android:layout_weight="1"
+            android:contentDescription="@string/btn_save"
             android:onClick="onSave"
-            android:src="@android:drawable/ic_menu_save"
-            android:contentDescription="@string/btn_save"/>
+            android:src="@android:drawable/ic_menu_save" />
 
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
             android:layout_weight="1"
+            android:contentDescription="@string/btn_undo"
             android:onClick="onUndo"
-            android:src="@android:drawable/ic_menu_revert"
-            android:contentDescription="@string/btn_undo"/>
+            android:src="@android:drawable/ic_menu_revert" />
 
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
             android:layout_weight="1"
+            android:contentDescription="@string/btn_save"
             android:onClick="onMoveEditToggle"
-            android:src="@android:drawable/ic_menu_edit"
-            android:contentDescription="@string/btn_save"/>        
-        
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:layout_weight="1"
-            android:onClick="onEtch"
-            android:src="@android:drawable/ic_menu_sort_by_size"
-            android:contentDescription="@string/btn_etch"/>
+            android:src="@android:drawable/ic_menu_edit" />
 
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
             android:layout_weight="1"
+            android:contentDescription="@string/btn_etch"
+            android:onClick="onEtch"
+            android:src="@android:drawable/ic_menu_sort_by_size" />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:contentDescription="@string/btn_background"
             android:onClick="onBackground"
-            android:src="@android:drawable/ic_menu_crop"
-            android:contentDescription="@string/btn_background"/>
+            android:src="@android:drawable/ic_menu_crop" />
     </LinearLayout>
 
-    <za.co.house4hack.paint3d.VectorPaint
-        android:id="@+id/vector_paint"
+    <FrameLayout
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent" />
+        android:layout_height="fill_parent" >
+
+        <ImageView
+            android:id="@+id/vp_bg_image"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:scaleType="centerInside" />
+
+        <za.co.house4hack.paint3d.VectorPaint
+            android:id="@+id/vector_paint"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:background="#A0ffffff" />
+    </FrameLayout>
 
 </LinearLayout>
