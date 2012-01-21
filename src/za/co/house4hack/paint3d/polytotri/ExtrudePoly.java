@@ -68,7 +68,8 @@ public class ExtrudePoly {
     * Extrude the polygon and save to an STL file
     * @param polygon
     */
-   public static boolean saveToSTL(List<Point> polygon, String filePath) {
+   public static boolean saveToSTL(List<Point> rawPoly, String filePath) {
+      List<Point> polygon = normalize(rawPoly, 5);
       try {
          File f = new File(filePath);
          f.mkdirs();
@@ -87,7 +88,7 @@ public class ExtrudePoly {
          // add first point again to close polygon
          pointlist.add(new Vertex(polygon.get(0).x, polygon.get(0).y, 0.0f));
          
-         TriMesh ptt = pto3d.polyToTriMesh(pointlist.toArray(new Vertex[0]), 10f);
+         TriMesh ptt = pto3d.polyToTriMesh(pointlist.toArray(new Vertex[0]), 0.5f);
 
          out.write(ptt.toSTL()); 
          out.close();
@@ -102,6 +103,35 @@ public class ExtrudePoly {
       return false;
    }
    
+   /**
+    * Translate and scale the object for printing. 
+    * @param rawPoly
+    * @param max - the maximum size (i.e. max width or height, whichever is greater)
+    * @return
+    */
+   private static List<Point> normalize(List<Point> rawPoly, float max) {
+      List<Point> ret = new ArrayList<Point>();
+      
+      float maxX = 0;
+      float maxY = 0;
+      float minX = Float.MAX_VALUE;
+      float minY = Float.MAX_VALUE;
+      for (Point p: rawPoly) {
+         if (minX > p.x) minX = p.x;
+         if (minY > p.y) minY = p.y;
+         if (maxX < p.x) maxX = p.x;
+         if (maxY < p.y) maxY = p.y;
+      }
+      
+      float scaleMax = (maxX > maxY ? maxX : maxY);
+      float scale = max/scaleMax;
+      for (Point p: rawPoly) {
+         Point np = new Point((p.x - minX)*scale, (p.y - minY)*scale);
+         ret.add(np);
+      }
+      
+      return ret;
+   }
    public static void main(String[] args) throws DelaunayError {
 	   
 	 		try {
