@@ -1,6 +1,8 @@
 package za.co.house4hack.paint3d;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -57,12 +59,31 @@ public class Main extends Activity {
 
       if (resultCode == RESULT_OK) {
          Uri targetUri = data.getData();
-         //String path = getMediaPath(targetUri);
+         // String path = getMediaPath(targetUri);
          ImageView iv = (ImageView) findViewById(R.id.vp_bg_image);
          if (iv != null) iv.setImageURI(targetUri);
-         //vp.setBackgroundDrawable(iv.getDrawable());
+         // vp.setBackgroundDrawable(iv.getDrawable());
       }
    }
+
+   @Override
+   public void onBackPressed() {
+      new AlertDialog.Builder(this).setTitle("Exit").setMessage("Are you sure you want to exit?")
+               .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                  @Override
+                  public void onClick(DialogInterface dialog, int which) {
+                     finish();
+                  }
+               })
+               .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                  @Override
+                  public void onClick(DialogInterface dialog, int which) {
+                     
+                  }
+               })
+               .create().show();
+
+   };
 
    public String getMediaPath(Uri uri) {
       String[] projection = { MediaStore.Images.Media.DATA };

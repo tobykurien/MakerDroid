@@ -26,7 +26,10 @@ class VectorPaint extends View {
    List<Point> polygon
    Point drag
    Paint pCirc
+   Paint pCircDrag
    Paint pLine
+   Paint pLineCurrent
+   Paint pLineSelected
    
    boolean isSPen = false
    int circRadius
@@ -52,18 +55,32 @@ class VectorPaint extends View {
       pCirc = new Paint()
       pCirc.setARGB(255, 255, 0, 0)
 
+      pCircDrag = new Paint()
+      pCircDrag.setARGB(255, 0, 0, 255)
+
+
       pLine = new Paint()
       pLine.setARGB(255, 0, 255, 0)
+
+      pLineCurrent = new Paint()
+      pLineCurrent.setARGB(255, 0, 255, 255)
+
+      pLineSelected = new Paint()
+      pLineSelected.setARGB(255, 255, 255, 0)
+
       
       isSPen = SDrawLibrary::supportedModel
       if (isSPen) {
          circRadius = CIRCLE_SPEN
          pLine.setStrokeWidth(LINE_SPEN)
+         pLineCurrent.setStrokeWidth(LINE_SPEN)
+         pLineSelected.setStrokeWidth(LINE_SPEN)
       } else {
          circRadius = CIRCLE_TOUCH
          pLine.setStrokeWidth(LINE_TOUCH)
-      }
-            
+         pLineCurrent.setStrokeWidth(LINE_TOUCH)
+         pLineSelected.setStrokeWidth(LINE_TOUCH)
+      }            
    }
    
    override protected onDraw(Canvas canvas) {
@@ -86,11 +103,13 @@ class VectorPaint extends View {
 
       // complete the polygon      
       var p = polygon.get(0)
-      canvas.drawLine(pp.x, pp.y, p.x, p.y, pLine)      
+      canvas.drawLine(pp.x, pp.y, p.x, p.y, pLineCurrent)      
 
       // draw the circles afterwards to place over the line
       for (Point p2 : polygon) {
-         canvas.drawCircle(p2.x, p2.y, circRadius, pCirc)
+         var paint = pCirc
+         if (p2 == drag) paint = pCircDrag
+         canvas.drawCircle(p2.x, p2.y, circRadius, paint)
       }
          
       super.onDraw(canvas)
@@ -101,34 +120,25 @@ class VectorPaint extends View {
       
       if (event.action == MotionEvent::ACTION_DOWN) {
          drag = null;
-         
-         // surface was clicked
-         // check if the click was on top of an existing point
-         for (Point p : polygon) {
-            // check if circle was tapped (using bounding box around point)
-            var dx = new BigDecimal(p.x) - new BigDecimal(event.x)
-            var dy = new BigDecimal(p.y) - new BigDecimal(event.y)
-            var bb = (circRadius * 2) + 5 // Bounding box slightly bigger than the circle
-            if (Math::abs(dx.intValue) < bb && Math::abs(dy.intValue) < bb) {
-              // clicked existing point, allow dragging it 
-              drag = p
-              // TODO - break here
-            }
-         }
 
-         if (drag == null) {
-            // add a point here
-            polygon.add(new Point(event.x, event.y))
-         }    
-         invalidate 
-         handled = true             
+         
+         handled = true
       }
       
       if (event.action == MotionEvent::ACTION_MOVE) {
          if (drag != null) {
             drag.x = event.x
             drag.y = event.y
+         } else {
+            // find the nearest point to drag
+            var Point candidate = getClosestPoint(event.x, event.y)            
+            if (candidate != null) {
+               drag = candidate
+               drag.x = event.x
+               drag.y = event.y
+            }
          }
+         
          invalidate              
          handled = true             
       }
@@ -139,12 +149,44 @@ class VectorPaint extends View {
             drag.x = event.x
             drag.y = event.y
             drag = null // the point is up to date
+         } else {
+            // add a point here
+            polygon.add(new Point(event.x, event.y))
          }
+         
          invalidate              
          handled = true             
       }
       
     handled || super.onTouchEvent(event)
+   }
+   
+   /**
+    * Find closest point in polygon
+    */
+   def getClosestPoint(double x, double y) {
+      var Point ret = null;
+      
+      var double dist = Double::MAX_VALUE;
+      for (Point p : polygon) {
+         var d = distance(x, y, p.x, p.y)
+         if (d < 50 && dist > d) {
+            dist = d
+            ret = p
+         }
+      }      
+      
+      ret
+   }
+ 
+   /**
+    * Distance between points
+    */
+   def double distance(double x1, double y1, double x2, double y2) {
+      var x = Math::pow(x2 - x1, 2)
+      var y = Math::pow(y2 - y1, 2)
+      
+      Math::sqrt(x+y)
    }
  
    // clear the canvas and start a new drawing

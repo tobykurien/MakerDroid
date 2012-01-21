@@ -30,7 +30,7 @@
             android:layout_height="fill_parent"
             android:layout_weight="1"
             android:contentDescription="@string/btn_save"
-            android:onClick="onMoveEditToggle"
+            android:onClick="onNewPoly"
             android:src="@android:drawable/ic_menu_edit" />
 
         <ImageButton
@@ -58,7 +58,7 @@
             android:id="@+id/vp_bg_image"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:scaleType="centerInside" />
+            android:scaleType="fitCenter" />
 
         <za.co.house4hack.paint3d.VectorPaint
             android:id="@+id/vector_paint"
