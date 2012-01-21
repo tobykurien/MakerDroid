@@ -69,7 +69,7 @@ public class ExtrudePoly {
     * @param polygon
     */
    public static boolean saveToSTL(List<Point> rawPoly, String filePath) {
-      List<Point> polygon = normalize(rawPoly, 5);
+      List<Point> polygon = normalize(rawPoly, 50); // 50 = 5cm
       try {
          File f = new File(filePath);
          f.mkdirs();
@@ -88,7 +88,7 @@ public class ExtrudePoly {
          // add first point again to close polygon
          pointlist.add(new Vertex(polygon.get(0).x, polygon.get(0).y, 0.0f));
          
-         TriMesh ptt = pto3d.polyToTriMesh(pointlist.toArray(new Vertex[0]), 0.5f);
+         TriMesh ptt = pto3d.polyToTriMesh(pointlist.toArray(new Vertex[0]), 5f);
 
          out.write(ptt.toSTL()); 
          out.close();
