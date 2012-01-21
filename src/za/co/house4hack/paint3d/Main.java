@@ -8,6 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 public class Main extends Activity {
+   public static final String LOG_TAG = "Paint3d";
    VectorPaint vp;
    
    @Override

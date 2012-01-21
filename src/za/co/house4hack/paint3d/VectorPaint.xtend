@@ -3,16 +3,16 @@ package za.co.house4hack.paint3d
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
-import android.view.MotionEvent
-import android.view.SurfaceHolder
-import android.view.SurfaceView
-import java.util.List
-import java.util.ArrayList
-import android.util.Log
-import android.view.View
-import java.math.BigDecimal
 import android.util.AttributeSet
+import android.util.Log
+import android.view.MotionEvent
+import android.view.View
 import com.samsung.sdraw.SDrawLibrary
+import java.math.BigDecimal
+import java.util.ArrayList
+import java.util.List
+import za.co.house4hack.paint3d.polytotri.ExtrudePoly
+import android.content.Intent
 
 class VectorPaint extends View {
    int CIRCLE_SPEN = 5
@@ -44,7 +44,7 @@ class VectorPaint extends View {
    }
    
    def init() {
-      polygon = new ArrayList();
+      polygon = new ArrayList<Point>();
       
       pCirc = new Paint()
       pCirc.setARGB(255, 255, 0, 0)
@@ -105,7 +105,7 @@ class VectorPaint extends View {
             // check if circle was tapped (using bounding box around point)
             var dx = new BigDecimal(p.x) - new BigDecimal(event.x)
             var dy = new BigDecimal(p.y) - new BigDecimal(event.y)
-            var bb = circRadius * 2 // Bounding box slightly bigger than the circle
+            var bb = (circRadius * 2) + 5 // Bounding box slightly bigger than the circle
             if (Math::abs(dx.intValue) < bb && Math::abs(dy.intValue) < bb) {
               // clicked existing point, allow dragging it 
               drag = p
@@ -153,7 +153,10 @@ class VectorPaint extends View {
    
    // save the shape and preview in 3D using STL viewer
    def preview() {
-      
+      if (ExtrudePoly::saveToSTL(polygon, "/sdcard/test.stl")) {
+         var i = new Intent("file:///sdcard/test.stl");
+         context.startActivity(i);
+      }
    }
    
    // undo last point

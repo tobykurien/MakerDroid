@@ -29,8 +29,16 @@
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
             android:layout_weight="1"
-            android:onClick="onEtch"
+            android:onClick="onMoveEditToggle"
             android:src="@android:drawable/ic_menu_edit"
+            android:contentDescription="@string/btn_save"/>        
+        
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:onClick="onEtch"
+            android:src="@android:drawable/ic_menu_sort_by_size"
             android:contentDescription="@string/btn_etch"/>
 
         <ImageButton

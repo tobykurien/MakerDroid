@@ -1,5 +1,6 @@
 package za.co.house4hack.paint3d.polytotri;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -8,8 +9,10 @@ import java.util.List;
 
 import org.jdelaunay.delaunay.error.DelaunayError;
 
+import za.co.house4hack.paint3d.Main;
 import za.co.house4hack.paint3d.Point;
 import za.co.house4hack.paint3d.stl.Vertex;
+import android.util.Log;
 
 public class ExtrudePoly {
    public ExtrudePoly() {
@@ -61,6 +64,40 @@ public class ExtrudePoly {
 	   return polyToTriMesh(vlist, height);
    }
    
+   /**
+    * Extrude the polygon and save to an STL file
+    * @param polygon
+    */
+   public static boolean saveToSTL(List<Point> polygon, String filePath) {
+      try {
+         File f = new File(filePath);
+         f.mkdirs();
+         if (f.exists()) f.delete();
+         
+         FileWriter outFile = new FileWriter(filePath);
+         PrintWriter out = new PrintWriter(outFile);
+         ArrayList<Vertex> pointlist = new ArrayList<Vertex>();
+         
+         ExtrudePoly pto3d = new ExtrudePoly();
+
+         for (Point p : polygon) {
+            pointlist.add(new Vertex(p.x, p.y, 0.0f));
+         }
+         
+         TriMesh ptt = pto3d.polyToTriMesh(pointlist.toArray(new Vertex[0]), 1f);
+
+         out.write(ptt.toSTL()); 
+         out.close();
+         
+         return true;
+      } catch (IOException e){
+         Log.e(Main.LOG_TAG, "error saving STL", e);
+      } catch (DelaunayError e) {
+         Log.e(Main.LOG_TAG, "error saving STL", e);
+      } 
+      
+      return false;
+   }
    
    public static void main(String[] args) throws DelaunayError {
 	   
