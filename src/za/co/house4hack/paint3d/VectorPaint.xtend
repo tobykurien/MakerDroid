@@ -13,6 +13,8 @@ import java.util.ArrayList
 import java.util.List
 import za.co.house4hack.paint3d.polytotri.ExtrudePoly
 import android.content.Intent
+import android.net.Uri
+import java.io.File
 
 class VectorPaint extends View {
    int CIRCLE_SPEN = 5
@@ -153,8 +155,11 @@ class VectorPaint extends View {
    
    // save the shape and preview in 3D using STL viewer
    def preview() {
-      if (ExtrudePoly::saveToSTL(polygon, "/sdcard/test.stl")) {
-         var i = new Intent("file:///sdcard/test.stl");
+      if (ExtrudePoly::saveToSTL(polygon, "/sdcard/paint3d.stl")) {
+         var f = new File("/sdcard/paint3d.stl");
+         var i = new Intent();
+         i.setAction(Intent::ACTION_VIEW);
+         i.setData(Uri::fromFile(f));
          context.startActivity(i);
       }
    }
