@@ -119,9 +119,16 @@ class VectorPaint extends View {
       var handled = false;
       
       if (event.action == MotionEvent::ACTION_DOWN) {
-         drag = null;
+         drag = null;  
 
-         
+         // find the nearest point to drag
+         var Point candidate = getClosestPoint(event.x, event.y, 50)            
+         if (candidate != null) {
+            drag = candidate
+            drag.x = event.x
+            drag.y = event.y
+         }         
+                
          handled = true
       }
       
@@ -129,18 +136,9 @@ class VectorPaint extends View {
          if (drag != null) {
             drag.x = event.x
             drag.y = event.y
-         } else {
-            // find the nearest point to drag
-            var Point candidate = getClosestPoint(event.x, event.y)            
-            if (candidate != null) {
-               drag = candidate
-               drag.x = event.x
-               drag.y = event.y
-            }
-         }
-         
-         invalidate              
-         handled = true             
+            invalidate              
+            handled = true             
+         }      
       }
       
       if (event.action == MotionEvent::ACTION_UP) {
@@ -164,13 +162,13 @@ class VectorPaint extends View {
    /**
     * Find closest point in polygon
     */
-   def getClosestPoint(double x, double y) {
+   def getClosestPoint(double x, double y, double radius) {
       var Point ret = null;
       
       var double dist = Double::MAX_VALUE;
       for (Point p : polygon) {
          var d = distance(x, y, p.x, p.y)
-         if (d < 50 && dist > d) {
+         if (d <= radius && dist > d) {
             dist = d
             ret = p
          }
