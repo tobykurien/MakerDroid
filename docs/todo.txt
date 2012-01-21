@@ -1,0 +1,15 @@
+Todo:
+=====
+
+- 3D Paint:
+ - implement saving and loading of drawing
+ - auto-rotate background image to fit screen properly
+ - detect when a line is clicked on and drop a point on the line to break it and allow user to move that point
+ - allow drawing of more polygons on first layer to make holes in it
+ - allow drawing of polygons on various layers either sunken in at various heights or sunken in
+
+- GCode
+ - implement skeinforge on Android to generate correct gcode from STL for our printer
+ - incorporate skeinforge + SL4A + Python into the app
+   - alternatively, make separate APK
+   
