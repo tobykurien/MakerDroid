@@ -33,6 +33,7 @@ class VectorPaint extends View {
    Paint pLine
    Paint pLineCurrent
    Paint pLineSelected
+   Point touchStart
    
    boolean isSPen = false
    int circRadius
@@ -125,18 +126,18 @@ class VectorPaint extends View {
          drag = null;  
 
          // find the nearest point to drag
-         var Point candidate = getClosestPoint(event.x, event.y, 50)            
+         var Point candidate = getClosestPoint(event.x, event.y, 20)            
          if (candidate != null) {
             drag = candidate
-            drag.x = event.x
-            drag.y = event.y
          }         
                 
+         touchStart = new Point(event.x, event.y)
          handled = true
       }
       
       if (event.action == MotionEvent::ACTION_MOVE) {
-         if (drag != null) {
+         var d = distance(event.x, event.y, touchStart.x, touchStart.y)
+         if (drag != null && d > 10) {
             drag.x = event.x
             drag.y = event.y
             invalidate              
@@ -145,16 +146,18 @@ class VectorPaint extends View {
       }
       
       if (event.action == MotionEvent::ACTION_UP) {
-         if (drag != null) {
+         if (drag != null && drag.x == event.x && drag.y == event.y) {
                Log::d("vectorpaint",  "drag complete")
             drag.x = event.x
             drag.y = event.y
             drag = null // the point is up to date
          } else {
             // add a point here
+            drag = null
             polygon.add(new Point(event.x, event.y))
          }
          
+         touchStart = null
          invalidate              
          handled = true             
       }
