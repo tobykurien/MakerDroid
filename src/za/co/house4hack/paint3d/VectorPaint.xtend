@@ -16,6 +16,9 @@ import android.content.Intent
 import android.net.Uri
 import java.io.File
 import android.os.Environment
+import java.io.BufferedOutputStream
+import java.io.FileOutputStream
+import java.io.FileInputStream
 
 class VectorPaint extends View {
    int CIRCLE_SPEN = 5
@@ -215,6 +218,64 @@ class VectorPaint extends View {
    // change brush colour and create the etching polygon
    def etch() {
       
+   }
+   
+   /**
+    * Save the polygon data into file. Format: 
+    * Each line is a polygon, with first line being the boundary polygon. Line format:
+    *  x1:y1,x2:y2,...,
+    * Note: line can terminate with a delimiter
+    */
+   def saveDrawing(String path) {
+      var f = new File(path)
+      var dir = new File(f.absolutePath)
+      dir.mkdirs
+      var fBak = new File(path + "~")
+      if (f.exists) {
+         if (fBak.exists) fBak.delete
+         f.renameTo(fBak)
+      }
+      
+      var bs = new FileOutputStream(f)
+      for (Point p : polygon) {
+         var s = String::valueOf(p.x) + ":" + String::valueOf(p.y) + ","
+         bs.write(s.bytes)
+      }
+      bs.close();
+   }
+
+   /**
+    * Load polygon data from file. See saveDrawing() javadoc for format
+    */
+   def loadDrawing(String path) {
+      var f = new File(path)
+      if (!f.exists) return false
+      
+      clear
+      var is = new FileInputStream(f)
+      var int c
+      while(c != -1) {
+         var s = new StringBuffer()
+         c = is.read
+         while (c != '\n' && c != -1) {
+            s.append(c as char)
+         }
+         
+         if (s.length > 0) {
+            var points = s.toString().split(",")
+            for (String xy : points) {
+               if (xy.length > 0 && xy.indexOf(":") > 0) {
+                  var axy = xy.split(":")
+                  var x = Integer::parseInt(axy.get(0))
+                  var y = Integer::parseInt(axy.get(1))
+                  polygon.add(new Point(x, y))
+               }
+            }          
+         }
+      }
+      
+      invalidate
+      true
    }
    
    def getHelpText() {

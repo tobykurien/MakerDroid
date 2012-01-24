@@ -11,6 +11,7 @@ Todo:
    - Take picture
    - From Gallery
    - Draw freehand -> presents a SPen CanvasView to allow free-hand drawing.
+ - flip model around so that it previews and prints correctly
 
 - 3D Preview
  - implement preview of STL instead of using external app?

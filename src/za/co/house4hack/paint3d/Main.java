@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -42,6 +43,9 @@ public class Main extends Activity {
    @Override
    public boolean onOptionsItemSelected(MenuItem item) {
       switch (item.getItemId()) {
+         case R.id.menu_load:
+            vp.loadDrawing(Environment.getExternalStorageDirectory() + "/Paint3d/" + "test.p3d");
+            return true;
          case R.id.menu_discard:
             vp.clear();
             return true;
@@ -102,7 +106,7 @@ public class Main extends Activity {
    }
 
    public void onSave(View v) {
-
+      vp.saveDrawing(Environment.getExternalStorageDirectory() + "/Paint3d/" + "test.p3d");
    }
 
    public void onBackground(View v) {

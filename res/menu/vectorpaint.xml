@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-   <item android:id="@+id/menu_preview"
+   <item android:id="@+id/menu_load"
+      android:title="@string/menu_load"
+      android:icon="@android:drawable/ic_menu_upload"/>
+       <item android:id="@+id/menu_preview"
       android:title="@string/menu_preview"
       android:icon="@android:drawable/ic_menu_view"/>
     <item android:id="@+id/menu_discard" 
