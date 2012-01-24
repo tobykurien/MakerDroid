@@ -23,6 +23,8 @@ import java.io.FileInputStream
 class VectorPaint extends View {
    int CIRCLE_SPEN = 5
    int LINE_SPEN = 2
+   int Y_CORRECT = 10
+   int X_CORRECT = -15
    int CIRCLE_TOUCH = 20
    int LINE_TOUCH = 10   
    
@@ -121,12 +123,11 @@ class VectorPaint extends View {
    
    override onTouchEvent(MotionEvent event) {
       var handled = false;
-      
       if (event.action == MotionEvent::ACTION_DOWN) {
          drag = null;  
 
          // find the nearest point to drag
-         var Point candidate = getClosestPoint(event.x, event.y, 20)            
+         var Point candidate = getClosestPoint(event.x, event.y, 50)            
          if (candidate != null) {
             drag = candidate
          }         
@@ -146,15 +147,18 @@ class VectorPaint extends View {
       }
       
       if (event.action == MotionEvent::ACTION_UP) {
+         var x = event.x // new BigDecimal(event.x).add(new BigDecimal(X_CORRECT)).floatValue
+         var y = event.y //new BigDecimal(event.y).add(new BigDecimal(Y_CORRECT)).floatValue
+      
          if (drag != null && drag.x == event.x && drag.y == event.y) {
                Log::d("vectorpaint",  "drag complete")
-            drag.x = event.x
-            drag.y = event.y
+            drag.x = x
+            drag.y = y
             drag = null // the point is up to date
          } else {
             // add a point here
             drag = null
-            polygon.add(new Point(event.x, event.y))
+            polygon.add(new Point(x, y))
          }
          
          touchStart = null
@@ -263,6 +267,7 @@ class VectorPaint extends View {
          while (c != '\n' && c != -1) {
             s.append(c as char)
          }
+         Log::d(Main::LOG_TAG, "")
          
          if (s.length > 0) {
             var points = s.toString().split(",")
