@@ -262,21 +262,23 @@ class VectorPaint extends View {
       var is = new FileInputStream(f)
       var int c
       while(c != -1) {
-         var s = new StringBuffer()
          c = is.read
+         var s = new StringBuffer()
          while (c != '\n' && c != -1) {
             s.append(c as char)
+            c = is.read
          }
-         Log::d(Main::LOG_TAG, "")
+         Log::d(Main::LOG_TAG, "Got line: " + s.toString)
          
          if (s.length > 0) {
             var points = s.toString().split(",")
             for (String xy : points) {
                if (xy.length > 0 && xy.indexOf(":") > 0) {
                   var axy = xy.split(":")
-                  var x = Integer::parseInt(axy.get(0))
-                  var y = Integer::parseInt(axy.get(1))
+                  var x = Float::parseFloat(axy.get(0))
+                  var y = Float::parseFloat(axy.get(1))
                   polygon.add(new Point(x, y))
+                  Log::d(Main::LOG_TAG, "Added point: " + x + "," + y.toString)
                }
             }          
          }
