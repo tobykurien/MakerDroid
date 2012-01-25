@@ -23,8 +23,6 @@ import java.io.FileInputStream
 class VectorPaint extends View {
    int CIRCLE_SPEN = 5
    int LINE_SPEN = 2
-   int Y_CORRECT = 10
-   int X_CORRECT = -15
    int CIRCLE_TOUCH = 20
    int LINE_TOUCH = 10   
    
@@ -268,7 +266,6 @@ class VectorPaint extends View {
             s.append(c as char)
             c = is.read
          }
-         Log::d(Main::LOG_TAG, "Got line: " + s.toString)
          
          if (s.length > 0) {
             var points = s.toString().split(",")
@@ -278,7 +275,6 @@ class VectorPaint extends View {
                   var x = Float::parseFloat(axy.get(0))
                   var y = Float::parseFloat(axy.get(1))
                   polygon.add(new Point(x, y))
-                  Log::d(Main::LOG_TAG, "Added point: " + x + "," + y.toString)
                }
             }          
          }
