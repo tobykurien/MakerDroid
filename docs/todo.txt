@@ -2,8 +2,7 @@ Todo:
 =====
 
 - 3D Paint:
- - when dragging, cant drag within 10px of original position (otherwise it sticks)
- - flip model around so that it previews and prints correctly
+ - use loader when generating preview
  - auto-rotate background image to fit screen properly
  - detect when a line is clicked on and drop a point on the line to break it and allow user to move that point
  - allow drawing of more polygons on first layer to make holes in it

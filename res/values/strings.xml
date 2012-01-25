@@ -14,4 +14,5 @@
     <string name="vp_help_spen">Use the SPen to tap out the shape</string>    
     <string name="vp_help_touch">Tap the screen to draw the shape</string>    
     
+    <string name="progress_preview">Generating 3D preview...</string>
 </resources>

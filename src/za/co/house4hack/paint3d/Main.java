@@ -5,10 +5,12 @@ import java.io.FilenameFilter;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -79,7 +81,29 @@ public class Main extends Activity {
             vp.clear();
             return true;
          case R.id.menu_preview:
-            vp.preview();
+            // show a progress dialog
+            final ProgressDialog pd = new ProgressDialog(this);   
+            pd.setMessage(getResources().getString(R.string.progress_preview));
+            AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>() {
+               @Override
+               protected void onPreExecute() {
+                  super.onPreExecute();
+                  pd.show();
+               }
+               
+               @Override
+               protected Void doInBackground(Void... params) {
+                  vp.preview();
+                  return null;
+               }
+               
+               @Override
+               protected void onPostExecute(Void result) {
+                  super.onPostExecute(result);
+                  pd.dismiss();
+               }
+            };
+            task.execute(new Void[0]);
             return true;
       }
       return false;
