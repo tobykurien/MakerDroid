@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 import za.co.house4hack.paint3d.stl.ExtrudePoly;
 import za.co.house4hack.paint3d.stl.Point;
@@ -38,11 +39,30 @@ class VectorPaint extends View {
    Paint pLineCurrent;
    Paint pLineSelected;
    Point touchStart;
+   
+   Stack<Undo> undoHistory;
 
    boolean isSPen = false;
    boolean isDragging = false;
    int circRadius;
 
+   /**
+    * Class to store undo operation
+    * @author tobykurien
+    *
+    */
+   public class Undo {
+      public boolean isMove = false;
+      public Point lastPoint;
+      public Point beforeMove;
+      
+      public Undo(boolean isMove, Point point, Point touchStart) {
+         this.isMove = isMove;
+         this.lastPoint = point;
+         this.beforeMove = touchStart;
+      }
+   }
+   
    public VectorPaint(Context context) {
       super(context);
       init();
@@ -88,6 +108,8 @@ class VectorPaint extends View {
          pLineCurrent.setStrokeWidth(LINE_TOUCH);
          pLineSelected.setStrokeWidth(LINE_TOUCH);
       }
+      
+      undoHistory = new Stack<Undo>();
    }
 
    protected void onDraw(Canvas canvas) {
@@ -125,6 +147,7 @@ class VectorPaint extends View {
    public boolean onTouchEvent(MotionEvent event) {
       boolean handled = false;
       if (event.getAction() == MotionEvent.ACTION_DOWN) {
+         touchStart = new Point(event.getX(), event.getY());
          drag = null;
          isDragging = false;
 
@@ -149,6 +172,7 @@ class VectorPaint extends View {
             // split line by adding a point and then drag it
             polygon.add(idx+1, drag);
             isDragging = true;
+            undoHistory.push(new Undo(false, drag, null));
          }
          
          if (!isDragging) {
@@ -159,7 +183,6 @@ class VectorPaint extends View {
             }
          }
 
-         touchStart = new Point(event.getX(), event.getY());
          handled = true;
       }
 
@@ -187,9 +210,12 @@ class VectorPaint extends View {
          if (drag != null && isDragging) {
             drag.x = x;
             drag.y = y;
+            undoHistory.push(new Undo(true, drag, touchStart));
          } else {
             // add a point here
-            polygon.add(new Point(x, y));
+            Point p = new Point(x, y);
+            polygon.add(p);
+            undoHistory.push(new Undo(false, p, null));
          }
 
          drag = null;
@@ -270,6 +296,7 @@ class VectorPaint extends View {
 
    // clear the canvas and start a new drawing
    public void clear() {
+      undoHistory.clear();
       polygon.clear();
       drag = null;
       invalidate();
@@ -288,8 +315,17 @@ class VectorPaint extends View {
    }
 
    // undo last point
-   public void undo() {
-      polygon.remove(polygon.size() - 1);
+   public void undo() {      
+      if (undoHistory.isEmpty()) return;
+      
+      Undo undo = undoHistory.pop();
+      if (undo.isMove) {
+         undo.lastPoint.x = undo.beforeMove.x;
+         undo.lastPoint.y = undo.beforeMove.y;         
+      } else {
+         polygon.remove(undo.lastPoint);
+      }
+      
       invalidate();
    }
 
