@@ -34,7 +34,6 @@
 	<natures>
 		<nature>com.android.ide.eclipse.adt.AndroidNature</nature>
 		<nature>org.eclipse.jdt.core.javanature</nature>
-      <nature>org.eclipse.xtend.shared.ui.xtendXPandNature</nature>
-      <nature>org.eclipse.xtext.ui.shared.xtextNature</nature>
+		<nature>org.eclipse.xtext.ui.shared.xtextNature</nature>
 	</natures>
 </projectDescription>

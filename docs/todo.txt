@@ -2,7 +2,6 @@ Todo:
 =====
 
 - 3D Paint:
- - implement saving and loading of drawing with filename dialog
  - when dragging, cant drag within 10px of original position (otherwise it sticks)
  - flip model around so that it previews and prints correctly
  - auto-rotate background image to fit screen properly

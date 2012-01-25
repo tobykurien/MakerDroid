@@ -3,6 +3,8 @@ package za.co.house4hack.paint3d;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
+import za.co.house4hack.paint3d.stl.Square;
+
 import android.opengl.GLSurfaceView.Renderer;
 import android.opengl.GLU;
 

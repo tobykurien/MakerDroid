@@ -10,7 +10,7 @@ import java.util.List;
 import org.jdelaunay.delaunay.error.DelaunayError;
 
 import za.co.house4hack.paint3d.Main;
-import za.co.house4hack.paint3d.Point;
+import za.co.house4hack.paint3d.stl.Point;
 import za.co.house4hack.paint3d.stl.Vertex;
 import android.util.Log;
 
