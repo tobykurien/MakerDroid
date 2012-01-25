@@ -4,7 +4,7 @@ Todo:
 - 3D Paint:
  - auto-rotate background image to fit screen properly
  - allow drawing of more polygons on first layer to make holes in it
- - allow drawing of polygons on various layers either sunken in at various heights or sunken in
+ - allow drawing of polygons on various layers which will extrude out
  - when selecting a background image, give these options:
    - Take picture
    - From Gallery

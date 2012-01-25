@@ -10,8 +10,15 @@
         android:icon="@android:drawable/ic_menu_view"
         android:title="@string/menu_preview"/>
     <item
+        android:id="@+id/menu_background"
+        android:icon="@android:drawable/ic_menu_crop"
+        android:title="@string/menu_background"/>
+    <item
         android:id="@+id/menu_discard"
         android:icon="@android:drawable/ic_menu_delete"
         android:title="@string/menu_discard"/>
-
+    <item
+        android:id="@+id/menu_print"
+        android:icon="@android:drawable/ic_menu_add"
+        android:title="@string/menu_print"/>    
 </menu>

@@ -105,6 +105,11 @@ public class Main extends Activity {
             };
             task.execute(new Void[0]);
             return true;
+         case R.id.menu_background:
+            // pick a background image
+            Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            startActivityForResult(intent, 0);
+            return true;
       }
       return false;
    }
@@ -118,6 +123,7 @@ public class Main extends Activity {
          Uri targetUri = data.getData();
          ImageView iv = (ImageView) findViewById(R.id.vp_bg_image);
          iv.setImageURI(targetUri);
+         iv.setVisibility(View.VISIBLE);
       }
    }
 
@@ -194,7 +200,12 @@ public class Main extends Activity {
    }
 
    public void onBackground(View v) {
-      Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-      startActivityForResult(intent, 0);
+      // toggle background
+      ImageView iv = (ImageView) findViewById(R.id.vp_bg_image);
+      if (iv.isShown()) {
+         iv.setVisibility(View.INVISIBLE);
+      } else {
+         iv.setVisibility(View.VISIBLE);
+      }
    }
 }
