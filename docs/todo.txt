@@ -2,7 +2,7 @@ Todo:
 =====
 
 - 3D Paint:
- - detect when a line is clicked on and drop a point on the line to break it and allow user to move that point
+ - fix undo - must undo move or last point added
  - auto-rotate background image to fit screen properly
  - allow drawing of more polygons on first layer to make holes in it
  - allow drawing of polygons on various layers either sunken in at various heights or sunken in
@@ -10,7 +10,6 @@ Todo:
    - Take picture
    - From Gallery
    - Draw freehand -> presents a SPen CanvasView to allow free-hand drawing.
- - allow undo of drag? (adds a lot of complexity)
 
 - 3D Preview
  - implement preview of STL instead of using external app?
