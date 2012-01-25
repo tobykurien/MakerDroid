@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import za.co.house4hack.paint3d.polytotri.ExtrudePoly;
+import za.co.house4hack.paint3d.stl.ExtrudePoly;
 import za.co.house4hack.paint3d.stl.Point;
 import android.content.Context;
 import android.content.Intent;

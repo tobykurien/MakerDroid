@@ -1,4 +1,4 @@
-package za.co.house4hack.paint3d.polytotri;
+package za.co.house4hack.paint3d.stl;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -12,7 +12,6 @@ import org.jdelaunay.delaunay.geometries.DEdge;
 import org.jdelaunay.delaunay.geometries.DPoint;
 import org.jdelaunay.delaunay.geometries.DTriangle;
 
-import za.co.house4hack.paint3d.stl.Vertex;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;

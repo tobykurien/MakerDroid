@@ -1,4 +1,4 @@
-package za.co.house4hack.paint3d.polytotri;
+package za.co.house4hack.paint3d.stl;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -10,8 +10,6 @@ import java.util.List;
 import org.jdelaunay.delaunay.error.DelaunayError;
 
 import za.co.house4hack.paint3d.Main;
-import za.co.house4hack.paint3d.stl.Point;
-import za.co.house4hack.paint3d.stl.Vertex;
 import android.util.Log;
 
 public class ExtrudePoly {
