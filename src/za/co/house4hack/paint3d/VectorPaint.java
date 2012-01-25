@@ -12,6 +12,7 @@ import za.co.house4hack.paint3d.stl.ExtrudePoly;
 import za.co.house4hack.paint3d.stl.Point;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources.Theme;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.net.Uri;
@@ -136,13 +137,11 @@ class VectorPaint extends View {
             Point p3 = new Point(event.getX(), event.getY());
             
             // add threshold from line endpoints
-            if (distance(p1, p3) > 40 && distance(p2, p3) > 40) {
-               double d = distanceToSegment(p1, p2, p3);
-               if (d < 50 && d < dist) {
-                  dist = d;
-                  idx = i;
-                  drag = p3;
-               }
+            double d = distanceToSegment(p1, p2, p3, 20);
+            if (d < 50 && d < dist) {
+               dist = d;
+               idx = i;
+               drag = p3;
             }
          }
          
@@ -243,7 +242,7 @@ class VectorPaint extends View {
     *           defined by p1,p2
     * @return The distance of p3 to the segment defined by p1,p2
     */
-   public static double distanceToSegment(Point p1, Point p2, Point p3) {
+   public static double distanceToSegment(Point p1, Point p2, Point p3, double threshold) {
 
       final double xDelta = p2.x - p1.x;
       final double yDelta = p2.y - p1.y;
@@ -259,6 +258,11 @@ class VectorPaint extends View {
          closestPoint = p2;
       } else {
          closestPoint = new Point(p1.x + u * xDelta, p1.y + u * yDelta);
+      }
+      
+      if (distance(closestPoint, p1) < threshold || distance(closestPoint, p2) < threshold) {
+         // disregard this as it's too close to the line endpoints
+         return Double.MAX_VALUE;
       }
       
       return distance(p3, closestPoint);
