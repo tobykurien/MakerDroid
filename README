@@ -1,0 +1,3 @@
+SH: 2012-01-31
+SH: Build the NDK manually, not done in Eclipse - maybe there is a plugin
+SH: Use ndk-build - currently build with NDK r7
