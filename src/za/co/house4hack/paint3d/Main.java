@@ -49,7 +49,7 @@ public class Main extends Activity {
       switch (item.getItemId()) {
          case R.id.menu_load:
             final String[] files = new File(Environment.getExternalStorageDirectory() + PAINT_DIR).list(new FilenameFilter() {
-               @Override
+               //@Override
                public boolean accept(File arg0, String arg1) {
                   if (arg1.endsWith(PAINT_EXT)) return true;
                   return false;
@@ -61,7 +61,7 @@ public class Main extends Activity {
 
             alert.setTitle("Load file");
             alert.setSingleChoiceItems(files, 0, new DialogInterface.OnClickListener() {
-               @Override
+               //@Override
                public void onClick(DialogInterface arg0, int arg1) {
                   filename = files[arg1];
                   vp.loadDrawing(Environment.getExternalStorageDirectory() + PAINT_DIR + filename);
@@ -132,12 +132,12 @@ public class Main extends Activity {
       // Avoid accidental exits with a dialog
       new AlertDialog.Builder(this).setTitle("Exit").setMessage("Are you sure you want to exit?")
                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                  @Override
+                  //@Override
                   public void onClick(DialogInterface dialog, int which) {
                      finish();
                   }
                }).setNegativeButton("No", new DialogInterface.OnClickListener() {
-                  @Override
+                  //@Override
                   public void onClick(DialogInterface dialog, int which) {
 
                   }
