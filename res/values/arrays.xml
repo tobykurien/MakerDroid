@@ -1,0 +1,9 @@
+<resources>
+
+    <string-array name="image_sources">
+        <item>Take Picture</item>
+        <item>Draw freehand</item>
+        <item>From Gallery</item>        
+    </string-array>
+
+</resources>

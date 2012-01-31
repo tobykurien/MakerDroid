@@ -11,6 +11,8 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -28,6 +30,10 @@ public class Main extends Activity {
    public static final String LOG_TAG = "Paint3d";
    public static final String PAINT_DIR = "/Paint3d/";
    public static final String PAINT_EXT = ".p3d";
+   
+   public static final int REQUEST_GALLERY = 3;
+   public static final int REQUEST_CAMERA = 1;
+   public static final int REQUEST_SPEN = 2;
    
    VectorPaint vp;
    String filename = null;
@@ -110,11 +116,11 @@ public class Main extends Activity {
          case R.id.menu_background:
             // pick a background image
             Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-            startActivityForResult(intent, 0);
+            startActivityForResult(intent, REQUEST_GALLERY);
             return true;
          case R.id.menu_print:
             Intent i = new Intent(this, SPenActivity.class);
-            startActivity(i);
+            startActivityForResult(i, REQUEST_SPEN);
             return true;
       }
       return false;
@@ -124,12 +130,17 @@ public class Main extends Activity {
    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
       super.onActivityResult(requestCode, resultCode, data);
 
-      if (resultCode == RESULT_OK) {
+      if (requestCode == REQUEST_GALLERY && resultCode == RESULT_OK) {
          // set the background image from user-selected image
          Uri targetUri = data.getData();
          ImageView iv = (ImageView) findViewById(R.id.vp_bg_image);
          iv.setImageURI(targetUri);
          iv.setVisibility(View.VISIBLE);
+      } else if (requestCode == REQUEST_SPEN && resultCode == RESULT_OK) {
+         byte[] bd = data.getByteArrayExtra(Intent.EXTRA_STREAM);
+         ImageView iv = (ImageView) findViewById(R.id.vp_bg_image);
+         Bitmap bm = new BitmapFactory().decodeByteArray(bd, 0, bd.length);
+         iv.setImageBitmap(bm);
       }
    }
 

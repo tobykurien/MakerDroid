@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-	<item android:id="@+id/options_save"
-		android:title="save" />
-	<item android:id="@+id/options_load"
-		android:title="load" />
+   <item android:id="@+id/menu_done"
+       android:icon="@android:drawable/ic_menu_save"
+       android:title="@string/menu_done"/>
+   <!-- 
+   <item android:id="@+id/options_save"
+      android:title="save" />
+   <item android:id="@+id/options_load"
+      android:title="load" />
+    -->
 </menu>
