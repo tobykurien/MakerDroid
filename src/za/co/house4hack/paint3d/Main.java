@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FilenameFilter;
 
 import za.co.house4hack.paint3d.spen.SPenActivity;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -115,12 +114,28 @@ public class Main extends Activity {
             return true;
          case R.id.menu_background:
             // pick a background image
-            Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-            startActivityForResult(intent, REQUEST_GALLERY);
+            new AlertDialog.Builder(this).setTitle(R.string.title_background_image)
+               .setSingleChoiceItems(R.array.image_sources, 0, new DialogInterface.OnClickListener() {
+                  @Override
+                  public void onClick(DialogInterface arg0, int arg1) {
+                     arg0.dismiss();
+                     switch (arg1) {
+                        case 0:
+                           break;
+                        case 1:
+                           Intent intent = new Intent(Main.this, SPenActivity.class);
+                           startActivityForResult(intent, REQUEST_SPEN);
+                           break;
+                        case 2:
+                           Intent intent2 = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                           startActivityForResult(intent2, REQUEST_GALLERY);
+                           break;
+                     }
+                  }
+               }).create().show();            
             return true;
          case R.id.menu_print:
-            Intent i = new Intent(this, SPenActivity.class);
-            startActivityForResult(i, REQUEST_SPEN);
+            // TODO - implement printing
             return true;
       }
       return false;

@@ -16,4 +16,5 @@
     <string name="vp_help_touch">Tap the screen to draw the shape</string>
     <string name="progress_preview">Generating 3D preview...</string>
 
+    <string name="title_background_image">Background Image</string>
 </resources>
