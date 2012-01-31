@@ -3,6 +3,8 @@ package za.co.house4hack.paint3d;
 import java.io.File;
 import java.io.FilenameFilter;
 
+import za.co.house4hack.paint3d.spen.SPenActivity;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -109,6 +111,10 @@ public class Main extends Activity {
             // pick a background image
             Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             startActivityForResult(intent, 0);
+            return true;
+         case R.id.menu_print:
+            Intent i = new Intent(this, SPenActivity.class);
+            startActivity(i);
             return true;
       }
       return false;

@@ -2,6 +2,8 @@ Todo:
 =====
 
 - 3D Paint:
+ - bug: Mr Shark not normalizing correctly
+ - bug?: line break takes preference to close dots being placed
  - auto-rotate background image to fit screen properly
  - allow drawing of more polygons on first layer to make holes in it
  - allow drawing of polygons on various layers which will extrude out

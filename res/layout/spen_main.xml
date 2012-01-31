@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	android:orientation="vertical"
+	android:background="#ffffffff">
+	
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal">
+		
+		<Button
+			android:id="@+id/settingBtn"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:text="pen"
+			android:layout_weight="1"/>
+
+		<Button
+		    android:id="@+id/eraseBtn"
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:text="erase"
+		    android:layout_weight="1"/>
+
+		<Button
+			android:id="@+id/undoBtn"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:text="undo"
+			android:layout_weight="1"/>
+		
+		<Button
+			android:id="@+id/redoBtn"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:text="redo"
+			android:layout_weight="1"/>
+	</LinearLayout>
+	
+	<FrameLayout 
+		android:id="@+id/canvas_container"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content">
+		
+		<com.samsung.sdraw.CanvasView 
+			android:id="@+id/canvas_view"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:background="@drawable/smemo_bg" />
+		
+		<com.samsung.sdraw.SettingView 
+			android:id="@+id/setting_view"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content" />		
+			
+	</FrameLayout>
+</LinearLayout>

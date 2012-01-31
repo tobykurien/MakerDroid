@@ -21,6 +21,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-    </application>
+        
+        <activity android:name=".spen.SPenActivity"></activity>
+        <activity android:name=".spen.ListActivity"></activity>
+        
+   </application>
 
 </manifest>
