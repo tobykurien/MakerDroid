@@ -3,6 +3,7 @@ package za.co.house4hack.paint3d;
 import java.io.File;
 import java.io.FilenameFilter;
 
+import za.co.house4hack.paint3d.VectorPaint.Undo;
 import za.co.house4hack.paint3d.spen.SPenActivity;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -84,9 +85,12 @@ public class Main extends Activity {
             alert.show();
             
             return true;
+            
          case R.id.menu_discard:
             vp.clear();
+            filename = null;
             return true;
+            
          case R.id.menu_preview:
             // show a progress dialog
             final ProgressDialog pd = new ProgressDialog(this);   
@@ -112,6 +116,7 @@ public class Main extends Activity {
             };
             task.execute(new Void[0]);
             return true;
+            
          case R.id.menu_background:
             // pick a background image
             new AlertDialog.Builder(this).setTitle(R.string.title_background_image)
@@ -134,6 +139,7 @@ public class Main extends Activity {
                   }
                }).create().show();            
             return true;
+            
          case R.id.menu_print:
             // TODO - implement printing
             return true;
