@@ -26,11 +26,18 @@ import android.widget.Toast;
 import com.samsung.sdraw.SDrawLibrary;
 
 class VectorPaint extends View {
+   // line and circle sizes
    int CIRCLE_SPEN = 5;
    int LINE_SPEN = 2;
    int CIRCLE_TOUCH = 20;
    int LINE_TOUCH = 10;
 
+   // thresholds
+   int LINE_BREAK = 10; // pixel distance to line to activate line-break 
+   int POINT_DRAG = 10; // pixel distance to point to activate it for dragging
+   int DRAG_ACTIVATE = 5; // pixels to drag before dragging is activated
+   
+   // data storage
    List<Point> polygon;
    Point drag;
    Paint pCirc;
@@ -42,6 +49,7 @@ class VectorPaint extends View {
    
    Stack<Undo> undoHistory;
 
+   // state flags
    boolean isSPen = false;
    boolean isDragging = false;
    int circRadius;
@@ -161,7 +169,7 @@ class VectorPaint extends View {
             
             // add threshold from line endpoints
             double d = distanceToSegment(p1, p2, p3, 20);
-            if (d < 50 && d < dist) {
+            if (d < LINE_BREAK && d < dist) {
                dist = d;
                idx = i;
                drag = p3;
@@ -177,7 +185,7 @@ class VectorPaint extends View {
          
          if (!isDragging) {
             // find the nearest point to drag
-            Point candidate = getClosestPoint(event.getX(), event.getY(), 20);
+            Point candidate = getClosestPoint(event.getX(), event.getY(), POINT_DRAG);
             if (candidate != null) {
                drag = candidate;
             }
@@ -190,7 +198,7 @@ class VectorPaint extends View {
          if (!isDragging && drag != null) {
             // add a threshold over which dragging is initiated
             double d = distance(new Point(event.getX(), event.getY()), touchStart);
-            if (d > 10) {
+            if (d > DRAG_ACTIVATE) {
                isDragging = true;
             }
          }
