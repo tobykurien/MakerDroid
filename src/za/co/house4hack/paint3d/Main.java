@@ -145,18 +145,26 @@ public class Main extends Activity {
    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
       super.onActivityResult(requestCode, resultCode, data);
 
+      ImageView iv = (ImageView) findViewById(R.id.vp_bg_image);
+      if (resultCode == RESULT_OK) {
+         iv.setVisibility(View.VISIBLE);
+      }
+      
       if (requestCode == REQUEST_GALLERY && resultCode == RESULT_OK) {
          // set the background image from user-selected image
          Uri targetUri = data.getData();
-         ImageView iv = (ImageView) findViewById(R.id.vp_bg_image);
          iv.setImageURI(targetUri);
          iv.setVisibility(View.VISIBLE);
       } else if (requestCode == REQUEST_SPEN && resultCode == RESULT_OK) {
+         // freehand background
          byte[] bd = data.getByteArrayExtra(Intent.EXTRA_STREAM);
-         ImageView iv = (ImageView) findViewById(R.id.vp_bg_image);
          Bitmap bm = new BitmapFactory().decodeByteArray(bd, 0, bd.length);
          iv.setImageBitmap(bm);
+         iv.setBackgroundColor(R.color.freehand_bg);
+      } else if (requestCode == REQUEST_CAMERA && resultCode == RESULT_OK) {
+         // pic from camera
       }
+      
    }
 
    @Override
