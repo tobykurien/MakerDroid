@@ -110,10 +110,39 @@ public class Main extends Activity {
             Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             startActivityForResult(intent, 0);
             return true;
+         case R.id.menu_print:
+            generateAndPrint();
+            return true;
       }
       return false;
    }
 
+   private void generateAndPrint() {
+   // show a progress dialog
+      final ProgressDialog pd = new ProgressDialog(this);   
+      pd.setMessage(getResources().getString(R.string.progress_print));
+      AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>() {
+         @Override
+         protected void onPreExecute() {
+            super.onPreExecute();
+            pd.show();
+         }
+         
+         @Override
+         protected Void doInBackground(Void... params) {
+            vp.print();
+            return null;
+         }
+         
+         @Override
+         protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+            pd.dismiss();
+         }
+      };
+      task.execute(new Void[0]);
+   }
+   
    @Override
    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
       super.onActivityResult(requestCode, resultCode, data);
