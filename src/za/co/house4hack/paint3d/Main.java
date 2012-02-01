@@ -128,8 +128,12 @@ public class Main extends Activity {
                         case 0:
                            break;
                         case 1:
-                           Intent intent = new Intent(Main.this, SPenActivity.class);
-                           startActivityForResult(intent, REQUEST_SPEN);
+                           if (vp.isSPen) {
+                              Intent intent = new Intent(Main.this, SPenActivity.class);
+                              startActivityForResult(intent, REQUEST_SPEN);
+                           } else {
+                              Toast.makeText(Main.this, R.string.err_no_spen, Toast.LENGTH_LONG).show();
+                           }
                            break;
                         case 2:
                            Intent intent2 = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);

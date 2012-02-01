@@ -8,13 +8,16 @@
     <string name="menu_background">Background</string>
     <string name="menu_print">3D Print</string>
     <string name="menu_done">Done</string>
+    
     <string name="btn_save">Save</string>
     <string name="btn_undo">Undo</string>
     <string name="btn_etch">Etch</string>
     <string name="btn_background">Background</string>
+    
     <string name="vp_help_spen">Use the SPen to tap out the shape</string>
     <string name="vp_help_touch">Tap the screen to draw the shape</string>
     <string name="progress_preview">Generating 3D preview...</string>
 
     <string name="title_background_image">Background Image</string>
+    <string name="err_no_spen">Device does not have SPen</string>
 </resources>
