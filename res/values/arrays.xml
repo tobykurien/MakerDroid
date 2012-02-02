@@ -4,6 +4,7 @@
         <item>Take Picture</item>
         <item>Draw freehand</item>
         <item>From Gallery</item>        
+        <item>Remove background</item>        
     </string-array>
 
 </resources>

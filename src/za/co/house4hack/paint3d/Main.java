@@ -126,8 +126,10 @@ public class Main extends Activity {
                      arg0.dismiss();
                      switch (arg1) {
                         case 0:
+                           // take pic
                            break;
                         case 1:
+                           // freehand drawing
                            if (vp.isSPen) {
                               Intent intent = new Intent(Main.this, SPenActivity.class);
                               startActivityForResult(intent, REQUEST_SPEN);
@@ -136,8 +138,14 @@ public class Main extends Activity {
                            }
                            break;
                         case 2:
+                           // gallery
                            Intent intent2 = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                            startActivityForResult(intent2, REQUEST_GALLERY);
+                           break;
+                        case 3:
+                           // remove background
+                           ImageView iv = (ImageView) findViewById(R.id.vp_bg_image);
+                           iv.setImageBitmap(null);
                            break;
                      }
                   }
