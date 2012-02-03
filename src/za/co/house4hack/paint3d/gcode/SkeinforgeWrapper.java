@@ -82,8 +82,8 @@ public class SkeinforgeWrapper {
       System.loadLibrary("python2.7");
       System.loadLibrary("application");
 
-      System.load(mContext.getFilesDir() + "/lib/python2.7/lib-dynload/_io.so");
-      System.load(mContext.getFilesDir() + "/lib/python2.7/lib-dynload/unicodedata.so");
+      //System.load(mContext.getFilesDir() + "/lib/python2.7/lib-dynload/_io.so");
+      //System.load(mContext.getFilesDir() + "/lib/python2.7/lib-dynload/unicodedata.so");
 
       nativeSetEnv("ANDROID_PRIVATE", mFilesDirectory);
       nativeSetEnv("ANDROID_ARGUMENT", mArgument);
