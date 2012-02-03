@@ -1,0 +1,11 @@
+File /home/schalk/Downloads/paint3d.stl is being chain exported.
+Carve procedure took 5 seconds.
+Preface procedure took 0 seconds.
+Widen procedure took 0 seconds.
+Inset procedure took 2 seconds.
+Fill procedure took 3 seconds.
+Speed procedure took 0 seconds.
+Raft procedure took 2 seconds.
+The total build time is 698 s.
+The volume extruded is 0.69 cc.
+It took 15 seconds to export the file.

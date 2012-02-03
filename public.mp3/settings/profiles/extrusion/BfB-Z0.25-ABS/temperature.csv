@@ -1,0 +1,16 @@
+Format is tab separated bfb temperature settings.
+Name                          	Value
+WindowPosition	600+0
+WindowVisibilities
+Open File for Temperature	
+Activate Temperature:	False
+Cooling Rate (Celcius/second):	10000.0
+Heating Rate (Celcius/second):	10000.0
+Chamber Temperature (Celcius):	25.0
+Base Temperature (Celcius):	100.0
+Interface Temperature (Celcius):	120.0
+Object First Layer Infill Temperature (Celcius):	130.0
+Object First Layer Perimeter Temperature (Celcius):	140.0
+Object Next Layers Temperature (Celcius):	150.0
+Support Layers Temperature (Celcius):	160.0
+Supported Layers Temperature (Celcius):	170.0

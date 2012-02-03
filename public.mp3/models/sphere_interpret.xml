@@ -1,0 +1,5 @@
+<?xml version='1.0' ?>
+<booleangeometry version="2010-03-17">
+	<sphere id="Sphere1" radiusx="15.0" radiusy="10.0" radiusz="5.0">
+	</sphere>
+</booleangeometry>

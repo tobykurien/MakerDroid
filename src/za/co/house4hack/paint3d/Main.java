@@ -25,6 +25,7 @@ import android.widget.Toast;
 public class Main extends Activity {
    public static final String LOG_TAG = "Paint3d";
    public static final String PAINT_DIR = "/Paint3d/";
+   public static final String SKEINFORGE_DIR = "/Paint3d/Skeinforge/";
    public static final String PAINT_EXT = ".p3d";
    
    VectorPaint vp;
