@@ -25,7 +25,7 @@
 
 
 extern C_LINKAGE void
-Java_za_co_house4hack_pyrun_Run_nativeInit ( JNIEnv*  env, jobject thiz )
+Java_za_co_house4hack_paint3d_gcode_SkeinforgeWrapper_nativeInit ( JNIEnv*  env, jobject thiz )
 {
     LOG("in nativeInit >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 	int argc = 0;
@@ -36,9 +36,9 @@ Java_za_co_house4hack_pyrun_Run_nativeInit ( JNIEnv*  env, jobject thiz )
 
 
 extern C_LINKAGE void
-Java_za_co_house4hack_pyrun_Run_nativeSetEnv ( JNIEnv*  env, jobject thiz, jstring j_name, jstring j_value )
+Java_za_co_house4hack_paint3d_gcode_SkeinforgeWrapper_nativeSetEnv ( JNIEnv*  env, jobject thiz, jstring j_name, jstring j_value )
 {
-     LOG("in native setenv >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+     LOG("in nativesetenv >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
     jboolean iscopy;
     const char *name = (*env)->GetStringUTFChars(env, j_name, &iscopy);
     const char *value = (*env)->GetStringUTFChars(env, j_value, &iscopy);
@@ -48,9 +48,9 @@ Java_za_co_house4hack_pyrun_Run_nativeSetEnv ( JNIEnv*  env, jobject thiz, jstri
 }
 
 extern C_LINKAGE void
-Java_za_co_house4hack_pyrun_Run_runPython ( JNIEnv*  env, jobject thiz, jstring j_script )
+Java_za_co_house4hack_paint3d_gcode_SkeinforgeWrapper_runPython ( JNIEnv*  env, jobject thiz, jstring j_script )
 {
-     LOG("in native runPython >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+     LOG("in  runPython >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
     jboolean iscopy;
     const char *script = (*env)->GetStringUTFChars(env, j_script, &iscopy);
     PyRun_SimpleString(script);
@@ -61,7 +61,7 @@ Java_za_co_house4hack_pyrun_Run_runPython ( JNIEnv*  env, jobject thiz, jstring 
 static int isSdcardUsed = 0;
 
 extern C_LINKAGE void
-Java_za_co_house4hack_pyrun_Run_nativeIsSdcardUsed ( JNIEnv*  env, jobject thiz, jint flag )
+Java_za_co_house4hack_paint3d_gcode_SkeinforgeWrapper_nativeIsSdcardUsed ( JNIEnv*  env, jobject thiz, jint flag )
 {
 	isSdcardUsed = flag;
 }
