@@ -11,7 +11,7 @@ public class SkeinforgeWrapper {
 
    private static final String TAG = "Skeinforge";
 
-  // The path to the directory contaning our external storage.
+  // The path to the directory containing our external storage.
    private File externalStorage;
 
    // The path to the directory containing the game.
