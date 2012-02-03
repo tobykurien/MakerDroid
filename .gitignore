@@ -3,3 +3,4 @@
 /xtend-gen
 /.settings
 /libs/armeabi/libapplication.so
+/obj
