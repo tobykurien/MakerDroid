@@ -318,7 +318,7 @@ class VectorPaint extends View {
    public void print() {
       String sdDir = Environment.getExternalStorageDirectory().getAbsolutePath();
       if (ExtrudePoly.saveToSTL(polygon, sdDir + "/paint3d.stl")) {
-         SkeinforgeWrapper sw = new SkeinforgeWrapper();
+         SkeinforgeWrapper sw = new SkeinforgeWrapper(this.getContext());
          sw.generateGcode(sdDir + "/paint3d.stl");
          //TODO: send to printer somehow
       }
