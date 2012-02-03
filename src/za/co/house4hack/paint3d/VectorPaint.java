@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
+import za.co.house4hack.paint3d.gcode.SkeinforgeWrapper;
 import za.co.house4hack.paint3d.stl.ExtrudePoly;
 import za.co.house4hack.paint3d.stl.Point;
 import android.content.Context;
@@ -322,6 +323,15 @@ class VectorPaint extends View {
       }
    }
 
+   public void print() {
+      String sdDir = Environment.getExternalStorageDirectory().getAbsolutePath() + Main.PAINT_DIR;
+      if (ExtrudePoly.saveToSTL(polygon, sdDir + "/paint3d.stl")) {
+         SkeinforgeWrapper sw = new SkeinforgeWrapper(this.getContext());
+         sw.generateGcode(sdDir +"/paint3d.stl");
+         //TODO: send to printer somehow
+      }
+   }
+   
    // undo last point
    public void undo() {      
       if (undoHistory.isEmpty()) return;
@@ -422,4 +432,5 @@ class VectorPaint extends View {
    public String getString(int resId) {
       return getContext().getResources().getString(resId);
    }
+
 }

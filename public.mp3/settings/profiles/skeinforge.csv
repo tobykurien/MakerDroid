@@ -1,0 +1,10 @@
+Format is tab separated bfb skeinforge settings.
+Name                          	Value
+WindowPosition	386+7
+WindowVisibilities
+Open File for Skeinforge	D:/models/TestInterface.STL
+analyze	False
+craft	True
+help	False
+meta	False
+profile	False

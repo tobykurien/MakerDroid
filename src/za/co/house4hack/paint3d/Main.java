@@ -29,6 +29,7 @@ import android.widget.Toast;
 public class Main extends Activity {
    public static final String LOG_TAG = "Paint3d";
    public static final String PAINT_DIR = "/Paint3d/";
+   public static final String SKEINFORGE_DIR = "/Paint3d/Skeinforge/";
    public static final String PAINT_EXT = ".p3d";
    
    public static final int REQUEST_GALLERY = 3;
@@ -57,7 +58,7 @@ public class Main extends Activity {
       switch (item.getItemId()) {
          case R.id.menu_load:
             final String[] files = new File(Environment.getExternalStorageDirectory() + PAINT_DIR).list(new FilenameFilter() {
-               @Override
+               //@Override
                public boolean accept(File arg0, String arg1) {
                   if (arg1.endsWith(PAINT_EXT)) return true;
                   return false;
@@ -69,7 +70,7 @@ public class Main extends Activity {
 
             alert.setTitle("Load file");
             alert.setSingleChoiceItems(files, 0, new DialogInterface.OnClickListener() {
-               @Override
+               //@Override
                public void onClick(DialogInterface arg0, int arg1) {
                   filename = files[arg1];
                   vp.loadDrawing(Environment.getExternalStorageDirectory() + PAINT_DIR + filename);
@@ -147,10 +148,39 @@ public class Main extends Activity {
          case R.id.menu_print:
             // TODO - implement printing
             return true;
+         case R.id.menu_print:
+            generateAndPrint();
+            return true;
       }
       return false;
    }
 
+   private void generateAndPrint() {
+   // show a progress dialog
+      final ProgressDialog pd = new ProgressDialog(this);   
+      pd.setMessage(getResources().getString(R.string.progress_print));
+      AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>() {
+         @Override
+         protected void onPreExecute() {
+            super.onPreExecute();
+            pd.show();
+         }
+         
+         @Override
+         protected Void doInBackground(Void... params) {
+            vp.print();
+            return null;
+         }
+         
+         @Override
+         protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+            pd.dismiss();
+         }
+      };
+      task.execute(new Void[0]);
+   }
+   
    @Override
    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
       super.onActivityResult(requestCode, resultCode, data);
@@ -182,12 +212,12 @@ public class Main extends Activity {
       // Avoid accidental exits with a dialog
       new AlertDialog.Builder(this).setTitle("Exit").setMessage("Are you sure you want to exit?")
                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                  @Override
+                  //@Override
                   public void onClick(DialogInterface dialog, int which) {
                      finish();
                   }
                }).setNegativeButton("No", new DialogInterface.OnClickListener() {
-                  @Override
+                  //@Override
                   public void onClick(DialogInterface dialog, int which) {
 
                   }

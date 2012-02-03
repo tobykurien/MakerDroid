@@ -1,0 +1,7 @@
+Format is tab separated bfb jitter settings.
+Name                          	Value
+WindowPosition	600+0
+WindowVisibilities
+Open File for Jitter	
+Activate Jitter	False
+Jitter Over Perimeter Width (ratio):	2.0

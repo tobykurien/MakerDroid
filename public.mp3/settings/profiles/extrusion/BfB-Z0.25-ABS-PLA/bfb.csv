@@ -1,0 +1,29 @@
+Format is tab separated bfb bfb settings.
+Name                          	Value
+WindowPosition	700+0
+WindowVisibilities
+Use Extruder 2 for Raft	True
+Use Extruder 2 for Support	True
+Work Temperature:	260
+Raft Temperature :	195
+Support Temperature :	195
+Standby Temperature Extruder 1:	175
+Standby Temperature Extruder 2:	130
+X:	-43.3
+Y:	0.0
+Activate M227	True
+1stPrintRev:	0.25
+1stPrintPrime:	0.25
+2ndPrintRev:	0.25
+2ndPrintPrime:	0.25
+1stRev:	3.0
+1stSpeed:	100
+2ndRev:	3.0
+2ndSpeed:	100
+1stPrimeRev:	40.0
+1stPrimeSpeed:	100
+2ndPrimeRev:	7.0
+2ndPrimeSpeed:	100
+UseFanEx1	False
+UseFanEx2	True
+First Layer Temperature :	245

@@ -1,0 +1,7 @@
+Format is tab separated bfb limit settings.
+Name                          	Value
+WindowPosition	700+0
+WindowVisibilities
+Open File for Limit	
+Activate Limit	False
+Maximum Initial Feed Rate (mm/s):	1.0
