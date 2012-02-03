@@ -1,0 +1,5 @@
+Format is tab separated bfb skeinforge profile settings.
+Name                          	Value
+WindowPosition	0+200
+WindowVisibilities
+extrusion	True

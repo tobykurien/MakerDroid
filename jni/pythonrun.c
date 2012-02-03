@@ -53,8 +53,7 @@ Java_za_co_house4hack_paint3d_gcode_SkeinforgeWrapper_runPython ( JNIEnv*  env, 
      LOG("in  runPython >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
     jboolean iscopy;
     const char *script = (*env)->GetStringUTFChars(env, j_script, &iscopy);
-    PyRun_SimpleString(script);
-
+    run(script);    
     (*env)->ReleaseStringUTFChars(env, j_script, script);
 }
 
@@ -198,5 +197,56 @@ LOG("wow it is set!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
     LOG("Python for android ended.");
     return ret;
 }
+
+int run(char *script) {
+    int ret = 0;
+    char *env_argument = NULL;
+
+
+    LOG("Initialize Python for Android in runPython");
+    env_argument = getenv("ANDROID_ARGUMENT");
+LOG("env argument is:>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+LOG(env_argument);
+    setenv("ANDROID_APP_PATH", env_argument, 1);
+LOG("wow it is set!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+
+	//setenv("PYTHONVERBOSE", "2", 1);
+    Py_SetProgramName("skeinforgeWrapper");
+    Py_Initialize();
+	int argc = 0;
+	char * argv[] = { };
+    PySys_SetArgv(argc, argv);
+
+    /* ensure threads will work.
+     */
+    PyEval_InitThreads();
+
+    /* our logging module for android
+     */
+    initandroidembed();
+
+    /* inject our bootstrap code to redirect python stdin/stdout
+     * replace sys.path with our path
+     */
+
+
+    ret = PyRun_SimpleString(script);
+
+    if (PyErr_Occurred() != NULL) {
+        ret = 1;
+        PyErr_Print(); /* This exits with the right code if SystemExit. */
+        if (Py_FlushLine())
+			PyErr_Clear();
+    }
+
+    /* close everything
+     */
+	Py_Finalize();
+
+    LOG("Python for android ended.");
+
+
+}
+
 
 #endif

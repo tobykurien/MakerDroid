@@ -1,0 +1,23 @@
+Format is tab separated bfb skeinview settings.
+Name                          	Value
+WindowPosition	0+0
+WindowVisibilities
+Open File for Skeinview	D:/models/TestInterface3_export.bfb
+Activate Skeinview	False
+Frame List
+Animation Line Quickening (ratio):	1.0
+Animation Slide Show Rate (layers/second):	2.0
+Draw Arrows	False
+Go Around Extruder Off Travel	False
+Layer (index):	1
+Layer Extra Span (integer):	0
+Line (index):	1
+Display Line	True
+View Move	False
+Numeric Pointer	True
+Scale (pixels per millimeter):	15.0
+Screen Horizontal Inset (pixels):	80
+Screen Vertical Inset (pixels):	200
+Width of Extrusion Thread (pixels):	2
+Width of Selection Thread (pixels):	6
+Width of Travel Thread (pixels):	1

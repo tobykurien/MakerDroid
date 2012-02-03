@@ -1,0 +1,6 @@
+<?xml version='1.0' ?>
+<booleangeometry version="2010-03-17">
+	<cylinder height="20.4" id="Cylinder 1" radiusx="5.4" radiusz="5.4" topoverbottom="1.0">
+		<matrix4x4 m14="0.6" m24="-1.3" />
+	</cylinder>
+</booleangeometry>

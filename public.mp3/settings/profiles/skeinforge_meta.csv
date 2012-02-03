@@ -1,0 +1,7 @@
+Format is tab separated bfb skeinforge meta settings.
+Name                          	Value
+WindowPosition	0+0
+WindowVisibilities
+description	False
+interpret	False
+polyfile	True
