@@ -2,10 +2,8 @@ package za.co.house4hack.paint3d.gcode;
 
 import java.io.File;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Environment;
-import android.util.Log;
 
 public class SkeinforgeWrapper {
 
