@@ -9,6 +9,7 @@ import java.io.InputStream;
 import za.co.house4hack.paint3d.Main;
 import android.content.Context;
 import android.os.Environment;
+import android.util.Log;
 
 public class SkeinforgeWrapper {
 
@@ -67,10 +68,8 @@ public class SkeinforgeWrapper {
       //TODO: parameter file is ignored
 //
        unpackData("private", mContext.getFilesDir());
-       Log.d(TAG,mContext.getFilesDir().getAbsolutePath());
        unpackData("public", externalStorage);
-       Log.d(TAG,externalStorage.getAbsolutePath());
-      /* try {
+       /* try {
     	  // copySkeinforge(mContext, externalStorage.getAbsolutePath());
        } catch (IOException e) {
     	   Log.e(Main.LOG_TAG, "Error copying skeinforge", e);
