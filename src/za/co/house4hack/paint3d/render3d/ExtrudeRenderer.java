@@ -1,4 +1,4 @@
-package za.co.house4hack.paint3d;
+package za.co.house4hack.paint3d.render3d;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;

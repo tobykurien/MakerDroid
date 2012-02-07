@@ -2,23 +2,25 @@ package za.co.house4hack.paint3d;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
 import za.co.house4hack.paint3d.gcode.SkeinforgeWrapper;
 import za.co.house4hack.paint3d.stl.ExtrudePoly;
+import za.co.house4hack.paint3d.stl.Layer;
 import za.co.house4hack.paint3d.stl.Point;
+import za.co.house4hack.paint3d.stl.Polygon;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources.Theme;
+import android.content.SharedPreferences;
 import android.graphics.Canvas;
+import android.graphics.EmbossMaskFilter;
 import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -34,12 +36,13 @@ class VectorPaint extends View {
    int LINE_TOUCH = 10;
 
    // thresholds
-   int LINE_BREAK = 10; // pixel distance to line to activate line-break 
-   int POINT_DRAG = 10; // pixel distance to point to activate it for dragging
+   int LINE_BREAK = 50; // pixel distance to line to activate line-break 
+   int POINT_DRAG = 50; // pixel distance to point to activate it for dragging
    int DRAG_ACTIVATE = 5; // pixels to drag before dragging is activated
    
    // data storage
-   List<Point> polygon;
+   Polygon polygon;
+   List<Layer> layers; // each layer has many polygons with many points 
    Point drag;
    Paint pCirc;
    Paint pCircDrag;
@@ -47,6 +50,8 @@ class VectorPaint extends View {
    Paint pLineCurrent;
    Paint pLineSelected;
    Point touchStart;
+   int layer = 0;
+   int poly = 0;
    
    Stack<Undo> undoHistory;
 
@@ -88,7 +93,11 @@ class VectorPaint extends View {
    }
 
    public void init() {
-      polygon = new ArrayList<Point>();
+      layer = 0;
+      poly = 0;
+      layers = new ArrayList();
+      layers.add(new Layer());
+      polygon = layers.get(layer).get(poly);
 
       pCirc = new Paint();
       pCirc.setARGB(255, 255, 0, 0);
@@ -98,6 +107,7 @@ class VectorPaint extends View {
 
       pLine = new Paint();
       pLine.setARGB(255, 0, 255, 0);
+      //pLine.setMaskFilter(new EmbossMaskFilter(new float[] { 1, 1, 1 }, 0.4f, 6, 3.5f));
 
       pLineCurrent = new Paint();
       pLineCurrent.setARGB(255, 0, 255, 255);
@@ -119,10 +129,18 @@ class VectorPaint extends View {
       }
       
       undoHistory = new Stack<Undo>();
+      
+      loadPrefs();
+   }
+
+   public void loadPrefs() {
+      SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getContext());
+      try { LINE_BREAK = Integer.parseInt(pref.getString("line_dist", ""+LINE_BREAK)); } catch (Exception e) {}
+      try { POINT_DRAG = Integer.parseInt(pref.getString("drag_radius", ""+POINT_DRAG)); } catch (Exception e) {}
    }
 
    protected void onDraw(Canvas canvas) {
-      if (polygon.isEmpty()) {
+      if (layers.isEmpty() || layers.get(0).isEmpty() || layers.get(0).get(0).isEmpty()) {
          Paint pText = new Paint();
          pText.setARGB(255, 255, 255, 255);
          pText.setTextSize(40);
@@ -130,10 +148,21 @@ class VectorPaint extends View {
          return;
       }
 
+      for (Layer l : layers) {
+         for (Polygon pol : l) {
+            if (!pol.isEmpty()) drawPoly(canvas, pol, polygon == pol, layers.indexOf(l));
+         }
+      }
+      super.onDraw(canvas);
+   }
+
+   private void drawPoly(Canvas canvas, List<Point> polygon, boolean isCurrent, int layer) {
       // draw points where canvas was touched
       Point pp = null;
       for (Point p : polygon) {
          if (pp != null) {
+            if (layer == 0) pLine.setARGB(255, 0, 255, 0);
+            if (layer == 1) pLine.setARGB(255, 255, 155, 155);
             canvas.drawLine(pp.x, pp.y, p.x, p.y, pLine);
          }
          pp = p;
@@ -141,16 +170,16 @@ class VectorPaint extends View {
 
       // complete the polygon
       Point p = polygon.get(0);
-      canvas.drawLine(pp.x, pp.y, p.x, p.y, pLineCurrent);
+      canvas.drawLine(pp.x, pp.y, p.x, p.y, (isCurrent ? pLineCurrent : pLine));
 
       // draw the circles afterwards to place over the line
-      for (Point p2 : polygon) {
-         Paint paint = pCirc;
-         if (p2 == drag) paint = pCircDrag;
-         canvas.drawCircle(p2.x, p2.y, circRadius, paint);
+      if (isCurrent) {
+         for (Point p2 : polygon) {
+            Paint paint = pCirc;
+            if (p2 == drag) paint = pCircDrag;
+            canvas.drawCircle(p2.x, p2.y, circRadius, paint);
+         }
       }
-
-      super.onDraw(canvas);
    }
 
    public boolean onTouchEvent(MotionEvent event) {
@@ -305,8 +334,8 @@ class VectorPaint extends View {
 
    // clear the canvas and start a new drawing
    public void clear() {
+      init();
       undoHistory.clear();
-      polygon.clear();
       drag = null;
       invalidate();
    }
@@ -347,17 +376,44 @@ class VectorPaint extends View {
       invalidate();
    }
 
-   // change brush colour and create the etching polygon
-   public void etch() {
-
+   // add a new polygon in this layer
+   public void newPoly() {
+      Layer curLayer = layers.get(layer);
+      poly++;
+      if (poly >= layers.get(layer).size()) {
+         curLayer.add(new Polygon());
+         poly = curLayer.size() - 1;
+      }
+      polygon = curLayer.get(poly);
+      undoHistory.clear();
+      invalidate();
+   }
+   
+   // switch between 2 layers
+   public void layer() {
+      if (layer == 0 && !layers.get(0).get(0).isEmpty()) {
+         layer = 1;
+         poly = 0;
+         if (layers.size() == 1) {
+            layers.add(new Layer());
+         }
+      } else {
+         layer = 0;
+         poly = 0;
+      }
+      polygon = layers.get(layer).get(poly);
+      undoHistory.clear();
+      invalidate();
    }
 
    /**
     * Save the polygon data into file. Format:
-    * Each line is a polygon, with first line being the boundary polygon. Line
+    * Each line in the file is a polygon, with first line being the boundary polygon. Line
     * format:
     * x1:y1,x2:y2,...,
     * Note: line can terminate with a delimiter
+    * When switching to a new layer, the layer count appears on it's own on a new line,
+    * followed by it's polygons as above
     */
    public void saveDrawing(String path) {
       File f = new File(path);
@@ -372,9 +428,22 @@ class VectorPaint extends View {
 
       try {
          FileOutputStream bs = new FileOutputStream(f);
-         for (Point p : polygon) {
-            String s = String.valueOf(p.x) + ":" + String.valueOf(p.y) + ",";
-            bs.write(s.getBytes());
+         int lcount = 0;
+         for (Layer l : layers) {
+            if (lcount > 0) {
+               // write the layer number into the file
+               bs.write(String.valueOf(lcount).getBytes());
+               bs.write('\n');
+            }
+            
+            for (Polygon pol : l) {
+               for (Point p : pol) {
+                  String s = String.valueOf(p.x) + ":" + String.valueOf(p.y) + ",";
+                  bs.write(s.getBytes());
+               }
+               bs.write('\n');
+            }
+            lcount++;
          }
          bs.close();
       } catch (Exception e) {
@@ -391,8 +460,10 @@ class VectorPaint extends View {
 
       try {
          clear();
+         layers.get(0).clear();
          FileInputStream is = new FileInputStream(f);
          int c = 0;
+         int pcount=0;
          while (c != -1) {
             c = is.read();
             StringBuffer s = new StringBuffer();
@@ -403,13 +474,25 @@ class VectorPaint extends View {
 
             if (s.length() > 0) {
                String[] points = s.toString().split(",");
-               for (String xy : points) {
-                  if (xy.length() > 0 && xy.indexOf(":") > 0) {
-                     String[] axy = xy.split(":");
-                     float x = Float.parseFloat(axy[0]);
-                     float y = Float.parseFloat(axy[1]);
-                     polygon.add(new Point(x, y));
+               
+               // check for a new layer
+               if (points.length == 1) {
+                  // we will ignore the layer number
+                  layers.add(new Layer());
+                  layers.get(layers.size() - 1).clear(); // remove the empty polygon
+                  pcount = 0;
+               } else {
+                  polygon = new Polygon();
+                  for (String xy : points) {
+                     if (xy.length() > 0 && xy.indexOf(":") > 0) {
+                        String[] axy = xy.split(":");
+                        float x = Float.parseFloat(axy[0]);
+                        float y = Float.parseFloat(axy[1]);
+                        polygon.add(new Point(x, y));
+                     }
                   }
+                  layers.get(layers.size() - 1).add(polygon);                  
+                  pcount++;
                }
             }
          }
@@ -417,6 +500,9 @@ class VectorPaint extends View {
          Toast.makeText(getContext(), "ERROR: " + e.getMessage(), Toast.LENGTH_LONG).show();
       }
 
+      layer = 0;
+      poly = 0;
+      polygon = layers.get(layer).get(poly);
       invalidate();
       return true;
    }

@@ -52,6 +52,12 @@ public class Main extends Activity {
       inflater.inflate(R.menu.vectorpaint, menu);
       return super.onCreateOptionsMenu(menu);
    }
+   
+   @Override
+   protected void onResume() {
+      super.onResume();
+      vp.loadPrefs();
+   }
 
    @Override
    public boolean onOptionsItemSelected(MenuItem item) {
@@ -127,8 +133,10 @@ public class Main extends Activity {
                      arg0.dismiss();
                      switch (arg1) {
                         case 0:
+                           // take pic
                            break;
                         case 1:
+                           // freehand drawing
                            if (vp.isSPen) {
                               Intent intent = new Intent(Main.this, SPenActivity.class);
                               startActivityForResult(intent, REQUEST_SPEN);
@@ -137,8 +145,14 @@ public class Main extends Activity {
                            }
                            break;
                         case 2:
+                           // gallery
                            Intent intent2 = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                            startActivityForResult(intent2, REQUEST_GALLERY);
+                           break;
+                        case 3:
+                           // remove background
+                           ImageView iv = (ImageView) findViewById(R.id.vp_bg_image);
+                           iv.setImageBitmap(null);
                            break;
                      }
                   }
@@ -146,10 +160,12 @@ public class Main extends Activity {
             return true;
             
          case R.id.menu_print:
-            // TODO - implement printing
-            return true;
-         case R.id.menu_print:
             generateAndPrint();
+            return true;
+            
+         case R.id.menu_settings:
+            Intent i = new Intent(this, Preferences.class);
+            startActivity(i);
             return true;
       }
       return false;
@@ -238,10 +254,14 @@ public class Main extends Activity {
       vp.undo();
    }
 
-   public void onEtch(View v) {
-      vp.etch();
+   public void onLayer(View v) {
+      vp.layer();
    }
 
+   public void onNewPoly(View v) {
+      vp.newPoly();
+   }   
+   
    public void onSave(View v) {
       if (filename == null) {
          // ask for filename

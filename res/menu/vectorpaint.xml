@@ -20,5 +20,11 @@
     <item
         android:id="@+id/menu_print"
         android:icon="@android:drawable/ic_menu_add"
-        android:title="@string/menu_print"/>    
+        android:title="@string/menu_print"/>
+    
+    <item
+        android:id="@+id/menu_settings"
+        android:icon="@android:drawable/ic_menu_preferences"
+        android:title="@string/menu_settings"/>    
+    
 </menu>

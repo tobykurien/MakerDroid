@@ -8,6 +8,7 @@
     <string name="menu_background">Background</string>
     <string name="menu_print">3D Print</string>
     <string name="menu_done">Done</string>
+    <string name="menu_settings">Settings</string>
     
     <string name="btn_save">Save</string>
     <string name="btn_undo">Undo</string>

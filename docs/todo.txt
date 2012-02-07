@@ -3,22 +3,19 @@ Todo:
 
 - 3D Paint:
  - bug: Mr Shark not normalizing correctly
- - bug?: line break takes preference to close dots being placed
  - auto-rotate background image to fit screen properly
  - allow drawing of more polygons on first layer to make holes in it
  - allow drawing of polygons on various layers which will extrude out
- - when selecting a background image, give these options:
-   - Take picture
-   - From Gallery
-   - Draw freehand -> presents a SPen CanvasView to allow free-hand drawing.
+ - implement camera image source
+ - save and load drawing background together with drawing (as separate bmp file)
 
 - 3D Preview
+ - name the STL file the same as the drawing file if defined
+ - prompt user to install STL Viewer if not already installed
  - implement preview of STL instead of using external app?
 
 - GCode
- - implement skeinforge on Android to generate correct gcode from STL for our printer
- - incorporate skeinforge + SL4A + Python into the app
-   - alternatively, make separate APK
- - show progress bar as GCode is generated
- - output GCode file to attached SD card if found (/mnt/usbStorage/sda/)
- - show instructions for printing from SD card   
+  - name the BFB file the same as the drawing file if available
+  - display output of report.txt in the progress loader
+  - detect external USB and ask user to save to it
+  - provide instructions on printing
