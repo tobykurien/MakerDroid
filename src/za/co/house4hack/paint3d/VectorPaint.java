@@ -36,8 +36,8 @@ class VectorPaint extends View {
    int LINE_TOUCH = 10;
 
    // thresholds
-   int LINE_BREAK = 10; // pixel distance to line to activate line-break 
-   int POINT_DRAG = 10; // pixel distance to point to activate it for dragging
+   int LINE_BREAK = 50; // pixel distance to line to activate line-break 
+   int POINT_DRAG = 50; // pixel distance to point to activate it for dragging
    int DRAG_ACTIVATE = 5; // pixels to drag before dragging is activated
    
    // data storage
@@ -122,9 +122,13 @@ class VectorPaint extends View {
       
       undoHistory = new Stack<Undo>();
       
+      loadPrefs();
+   }
+
+   public void loadPrefs() {
       SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getContext());
-      LINE_BREAK = pref.getInt("line_dist", LINE_BREAK);
-      POINT_DRAG = pref.getInt("drag_radius", POINT_DRAG);
+      try { LINE_BREAK = Integer.parseInt(pref.getString("line_dist", ""+LINE_BREAK)); } catch (Exception e) {}
+      try { POINT_DRAG = Integer.parseInt(pref.getString("drag_radius", ""+POINT_DRAG)); } catch (Exception e) {}
    }
 
    protected void onDraw(Canvas canvas) {

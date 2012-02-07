@@ -52,6 +52,12 @@ public class Main extends Activity {
       inflater.inflate(R.menu.vectorpaint, menu);
       return super.onCreateOptionsMenu(menu);
    }
+   
+   @Override
+   protected void onResume() {
+      super.onResume();
+      vp.loadPrefs();
+   }
 
    @Override
    public boolean onOptionsItemSelected(MenuItem item) {
@@ -155,6 +161,11 @@ public class Main extends Activity {
             
          case R.id.menu_print:
             generateAndPrint();
+            return true;
+            
+         case R.id.menu_settings:
+            Intent i = new Intent(this, Preferences.class);
+            startActivity(i);
             return true;
       }
       return false;
