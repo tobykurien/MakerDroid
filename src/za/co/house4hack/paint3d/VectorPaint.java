@@ -460,6 +460,7 @@ class VectorPaint extends View {
 
       try {
          clear();
+         layers.get(0).clear();
          FileInputStream is = new FileInputStream(f);
          int c = 0;
          int pcount=0;
@@ -476,7 +477,9 @@ class VectorPaint extends View {
                
                // check for a new layer
                if (points.length == 1) {
+                  // we will ignore the layer number
                   layers.add(new Layer());
+                  layers.get(layers.size() - 1).clear(); // remove the empty polygon
                   pcount = 0;
                } else {
                   polygon = new Polygon();
@@ -497,6 +500,9 @@ class VectorPaint extends View {
          Toast.makeText(getContext(), "ERROR: " + e.getMessage(), Toast.LENGTH_LONG).show();
       }
 
+      layer = 0;
+      poly = 0;
+      polygon = layers.get(layer).get(poly);
       invalidate();
       return true;
    }
