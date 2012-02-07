@@ -14,11 +14,13 @@ import za.co.house4hack.paint3d.stl.ExtrudePoly;
 import za.co.house4hack.paint3d.stl.Point;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources.Theme;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -119,6 +121,10 @@ class VectorPaint extends View {
       }
       
       undoHistory = new Stack<Undo>();
+      
+      SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getContext());
+      LINE_BREAK = pref.getInt("line_dist", LINE_BREAK);
+      POINT_DRAG = pref.getInt("drag_radius", POINT_DRAG);
    }
 
    protected void onDraw(Canvas canvas) {
