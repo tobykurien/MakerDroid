@@ -3,8 +3,20 @@
     <string-array name="image_sources">
         <item>Take Picture</item>
         <item>Draw freehand</item>
-        <item>From Gallery</item>        
-        <item>Remove background</item>        
+        <item>From Gallery</item>
+        <item>Remove background</item>
+    </string-array>
+    <string-array name="thresholds">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>10</item>
+        <item>15</item>
+        <item>20</item>
+        <item>25</item>
+        <item>50</item>
     </string-array>
 
 </resources>

@@ -154,9 +154,6 @@ public class Main extends Activity {
             return true;
             
          case R.id.menu_print:
-            // TODO - implement printing
-            return true;
-         case R.id.menu_print:
             generateAndPrint();
             return true;
       }

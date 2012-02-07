@@ -7,13 +7,13 @@
    <ListPreference
        android:title="Drag radius"
        android:summary="How far from a point you can initiate drag"
-       android:entries=""
-       android:entryValues=""/>
+       android:entries="@array/thresholds"
+       android:entryValues="@array/thresholds"/>
 
    <ListPreference
        android:title="Line break distance"
        android:summary="How far from a line you can tap to break it"
-       android:entries=""
-       android:entryValues=""/>
+       android:entries="@array/thresholds"
+       android:entryValues="@array/thresholds"/>
    
 </PreferenceScreen>

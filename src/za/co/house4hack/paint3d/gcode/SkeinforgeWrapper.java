@@ -9,6 +9,7 @@ import java.io.InputStream;
 import za.co.house4hack.paint3d.Main;
 import android.content.Context;
 import android.os.Environment;
+import android.util.Log;
 
 public class SkeinforgeWrapper {
 
