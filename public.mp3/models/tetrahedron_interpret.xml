@@ -1,0 +1,18 @@
+<?xml version='1.0' ?>
+<booleangeometry version="2010-03-17">
+	<trianglemesh id="tetrahedron">
+		<matrix4x4 m11="0.0" m13="1.0" m21="-1.0" m22="0.0" m32="-1.0" m33="0.0" />
+		<vertices>
+			<vector3 x="-5.0" y="0.0" z="2.89" />
+			<vector3 x="0.0" y="0.0" z="-5.77" />
+			<vector3 x="5.0" y="0.0" z="2.89" />
+			<vector3 x="0.0" y="8.66" z="0.0" />
+		</vertices>
+		<faces>
+			<face vertex0="3" vertex1="0" vertex2="1" />
+			<face vertex0="3" vertex1="1" vertex2="2" />
+			<face vertex0="3" vertex1="2" vertex2="0" />
+			<face vertex0="0" vertex1="2" vertex2="1" />
+		</faces>
+	</trianglemesh>
+</booleangeometry>

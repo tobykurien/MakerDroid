@@ -1,0 +1,8 @@
+Format is tab separated bfb comb settings.
+Name                          	Value
+WindowPosition	600+0
+WindowVisibilities
+Open File for Comb	
+Activate Comb	False
+Minimum Departure Distance over Perimeter Width (ratio):	30.0
+Running Jump Space over Perimeter Width (ratio):	30.0

@@ -1,0 +1,12 @@
+<?xml version='1.0' ?>
+<booleangeometry version="2010-03-17">
+	<booleansolid id="Boolean1" operation="lastminuscomplement">
+		<matrix4x4 m14="-20.1" m24="0.19" />
+		<cube halfx="1.6" halfy="2.925" halfz="1.6" id="Cube 1">
+			<matrix4x4 m14="-0.425" m24="-0.53" />
+		</cube>
+		<cube halfx="1.36" halfy="3.05" halfz="1.36" id="Cube 2">
+			<matrix4x4 m14="0.665" m24="0.405" />
+		</cube>
+	</booleansolid>
+</booleangeometry>

@@ -13,7 +13,7 @@ public class ExtrudeRenderer implements Renderer {
    Square square = new Square();
    float angle;
 
-   @Override
+   //@Override
    public void onSurfaceCreated(GL10 gl, EGLConfig config) {
       // Set the background color to black ( rgba ).
       gl.glClearColor(0.0f, 0.0f, 0.0f, 0.5f); 
@@ -30,7 +30,7 @@ public class ExtrudeRenderer implements Renderer {
                GL10.GL_NICEST);
    }
 
-   @Override
+   //@Override
    public void onSurfaceChanged(GL10 gl, int width, int height) {
       // Sets the current view port to the new size.
       gl.glViewport(0, 0, width, height);
@@ -46,7 +46,7 @@ public class ExtrudeRenderer implements Renderer {
       gl.glLoadIdentity();
    }
 
-   @Override
+   //@Override
    public void onDrawFrame(GL10 gl) {
       // Clears the screen and depth buffer.
       gl.glClear(GL10.GL_COLOR_BUFFER_BIT | 
