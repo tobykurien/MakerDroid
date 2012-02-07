@@ -1,4 +1,6 @@
+<resources>
 
-    <resources>
-        <color name="freehand_bg">#ffffff</color>
-    </resources>
+    <color name="main_bg">#A0000000</color>
+    <color name="freehand_bg">#ffffffff</color>
+
+</resources>

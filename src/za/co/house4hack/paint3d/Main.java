@@ -254,10 +254,14 @@ public class Main extends Activity {
       vp.undo();
    }
 
-   public void onEtch(View v) {
-      vp.etch();
+   public void onLayer(View v) {
+      vp.layer();
    }
 
+   public void onNewPoly(View v) {
+      vp.newPoly();
+   }   
+   
    public void onSave(View v) {
       if (filename == null) {
          // ask for filename
