@@ -60,13 +60,15 @@ public ExtrudePoly() {
  * Extrudes a polygon, with holes and extra extrusion
  * @param enclosure - base shape for the extrusion, specified as a counterclockwise array of vertices
  * @param holes - a list of vertex arrays, each specifiying a hole in the base - counterclockwise 
- * @param exts - list of vertex arrays, each specifiying an extra extrusion on the base - counterclockwise
+ * @param exts - list of vertex arrays, each specifiying an extra extrusion on the base - counterclockwise.  If nested, must be specified with smaller polygon AFTER larger polygon.
  * @param height - the height of the base extrusion
- * @param extheight - the height of the extra extrusions
+ * @param fromheight - the absolute starting height of the extra extrusions - must be the same length as the exts
+ * @param toHeight - the absolute height of the extra extrusions - must be the same length as the exts
  * @return
  * @throws DelaunayError
  */
-   public TriMesh polyToTriMesh(Vertex[] enclosure, List<Vertex[]> holes, List <Vertex[]> exts , float height, float[] extheight) throws DelaunayError {
+   public TriMesh polyToTriMesh(Vertex[] enclosure, List<Vertex[]> holes, List <Vertex[]> exts , float height, float[] fromHeight,float[] toHeight) throws DelaunayError {
+
       TriMesh ptt = new TriMesh();
       List<Vertex[]> polyList = new ArrayList<Vertex[]>();
       polyList.add(enclosure);
@@ -95,9 +97,9 @@ public ExtrudePoly() {
     	     case POLYTYPE_EXTS:
     	    	 ptt.add(triList.get(i));
     	    	 for(DTriangle d:triList.get(i)){    	    		 
-    	    		 ptt.add(flipAndTranslate(d,height+extheight[i-(1+holes.size())]));
+    	    		 ptt.add(flipAndTranslate(d,toHeight[i-(1+holes.size())]));
     	    	 }
-                 addSides(polyList.get(i),ptt, height, height+extheight[i-(1+holes.size())]);    	    	 
+                 addSides(polyList.get(i),ptt, fromHeight[i-(1+holes.size())], toHeight[i-(1+holes.size())]);    	    	 
     	    	 break;
     	  }
       }
@@ -113,8 +115,8 @@ public ExtrudePoly() {
     * @return
     * @throws DelaunayError
     */
-   public TriMesh polyToTriMesh(ExtrPolyData polyData, float height, float[] extheight) throws DelaunayError {
-	   return polyToTriMesh(polyData.enclosure, polyData.holes, polyData.exts, height, extheight);	   
+   public TriMesh polyToTriMesh(ExtrPolyData polyData, float height, float[] fromHeight,float[] toHeight) throws DelaunayError {
+	   return polyToTriMesh(polyData.enclosure, polyData.holes, polyData.exts, height, fromHeight, toHeight);	   
    }
 
    
@@ -181,9 +183,14 @@ private DTriangle flipAndTranslate(DTriangle d, float height) throws DelaunayErr
 
          ExtrudePoly pto3d = new ExtrudePoly();
 
-         float[] depth = new float[rawExt.size()];
-         for(int i=0;i< depth.length; i++) depth[i] = (i<rawRaised.size())? 1f : -1f; 
-         TriMesh ptt = pto3d.polyToTriMesh(ep, 5f, depth);
+         float[] fromHeight = new float[rawExt.size()];
+         for(int i=0;i< fromHeight.length; i++) fromHeight[i] = 5f; 
+
+         float[] toHeight = new float[rawExt.size()];
+         for(int i=0;i< toHeight.length; i++) toHeight[i] = (i<rawRaised.size())? 6f : -4f; 
+
+         
+         TriMesh ptt = pto3d.polyToTriMesh(ep, 5f, fromHeight, toHeight);
 
          out.write(ptt.toSTL());
          out.close();
@@ -256,19 +263,29 @@ private DTriangle flipAndTranslate(DTriangle d, float height) throws DelaunayErr
          extList.add(ext1.toArray(new Vertex[0]));
 
          //ext
+         ArrayList<Vertex> ext3 = new ArrayList<Vertex>();
+         ext3.add(new Vertex(6.5f, 1.5f, 0.0f));
+         ext3.add(new Vertex(8.0f, 1.5f, 0.0f));
+         ext3.add(new Vertex(8.0f, 3.0f, 0.0f));
+         ext3.add(new Vertex(6.5f, 3.0f, 0.0f));
+         ext3.add(new Vertex(6.5f, 1.5f, 0.0f));
+         extList.add(ext3.toArray(new Vertex[0]));  
+
+         
+         //ext
          ArrayList<Vertex> ext2 = new ArrayList<Vertex>();
          ext2.add(new Vertex(7.0f, 2.0f, 0.0f));
          ext2.add(new Vertex(7.5f, 2.0f, 0.0f));
          ext2.add(new Vertex(7.5f, 2.5f, 0.0f));
-         ext2.add(new Vertex(7.25f, 2.75f, 0.0f));
          ext2.add(new Vertex(7.0f, 2.5f, 0.0f));
          ext2.add(new Vertex(7.0f, 2.0f, 0.0f));
          extList.add(ext2.toArray(new Vertex[0]));         
+
          
          ExtrPolyData ep = new ExtrPolyData(pointlist.toArray(new Vertex[0]), holeList, extList);
          ep.normalize(50);
          
-         TriMesh ptt = pto3d.polyToTriMesh(ep, 10f, new float[]{-2.5f,2.5f});
+         TriMesh ptt = pto3d.polyToTriMesh(ep, 10f,new float[]{10f,10f, 7.5f}, new float[]{12.5f,7.5f, 12.5f});
 
          out.write(ptt.toSTL());
          out.close();
