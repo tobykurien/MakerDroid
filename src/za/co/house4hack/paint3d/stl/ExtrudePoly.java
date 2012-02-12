@@ -8,12 +8,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jdelaunay.delaunay.error.DelaunayError;
+import org.jdelaunay.delaunay.geometries.DPoint;
+import org.jdelaunay.delaunay.geometries.DTriangle;
 
 import za.co.house4hack.paint3d.Main;
 import android.util.Log;
 
 public class ExtrudePoly {
-   public ExtrudePoly() {
+   private static final int POLYTYPE_ENCLOSURE = 0;
+private static final int POLYTYPE_HOLE = 1;
+private static final int POLYTYPE_EXTS = 2;
+
+public ExtrudePoly() {
       // TODO Auto-generated constructor stub
    }
 
@@ -50,23 +56,81 @@ public class ExtrudePoly {
       return ptt;
    }
 
-   public TriMesh polyToTriMesh(Point[] pointlist, float height, float z) throws DelaunayError {
-      Vertex[] vlist = new Vertex[pointlist.length];
-      for (int i = 0; i < pointlist.length; i++) {
-         vlist[i] = new Vertex(pointlist[i].x, pointlist[i].y, z);
-      }
-      return polyToTriMesh(vlist, height);
-   }
-
-   public TriMesh polyToTriMesh(List<Point> pointlist, float height, float z) throws DelaunayError {
-      Vertex[] vlist = new Vertex[pointlist.size()];
-      for (int i = 0; i < pointlist.size(); i++) {
-         vlist[i] = new Vertex(pointlist.get(i).x, pointlist.get(i).y, z);
-      }
-      return polyToTriMesh(vlist, height);
-   }
-
    /**
+    * Takes a CounterClockWise list of vertices and extrudes to a given height, caters for holes and extensions
+    * 
+    * @param pointlist
+    *           - counter clockwise list of vertices
+    * @param height
+    *           - height of extrusion
+    * @return - TriMesh object with list of triangles of type DTriangle
+    * @throws DelaunayError
+    */
+   public TriMesh polyToTriMesh(Vertex[] enclosure, List<Vertex[]> holes, List <Vertex[]> exts , float height, float extheight) throws DelaunayError {
+      TriMesh ptt = new TriMesh();
+      List<Vertex[]> polyList = new ArrayList<Vertex[]>();
+      polyList.add(enclosure);
+      polyList.addAll(holes);
+      polyList.addAll(exts);
+      
+      int[] polyTypeList = new int[polyList.size()];
+      polyTypeList[0] = POLYTYPE_ENCLOSURE;
+      for(int i=1; i<holes.size()+1;i++) polyTypeList[i] = POLYTYPE_HOLE;
+      for(int i=1+holes.size(); i<exts.size()+holes.size()+1;i++) polyTypeList[i] = POLYTYPE_EXTS;
+      
+      // Add the bottom + top
+      List<List<DTriangle>> triList = ptt.build(polyList, new Vertex(0, 0, -1));
+      for(int i=0; i< triList.size();i++){
+		switch (polyTypeList[i]){
+    	     case POLYTYPE_ENCLOSURE:
+    	    	 ptt.add(triList.get(i));
+    	    	 for(DTriangle d:triList.get(i)){    	    		 
+    	    		 ptt.add(flipAndTranslate(d,height));
+    	    	 }    	    	 
+                 addSides(polyList.get(i),ptt, 0,height);    	    	 
+    	    	 break;
+    	     case POLYTYPE_HOLE:
+    	    	 addSides(polyList.get(i),ptt, height, 0);
+    	    	 break;
+    	     case POLYTYPE_EXTS:
+    	    	 ptt.add(triList.get(i));
+    	    	 for(DTriangle d:triList.get(i)){    	    		 
+    	    		 ptt.add(flipAndTranslate(d,height+extheight));
+    	    	 }
+                 addSides(polyList.get(i),ptt, height, height+extheight);    	    	 
+    	    	 break;
+    	  }
+      }
+      return ptt;
+   }
+
+   
+
+   private void addSides(Vertex[] pointlist, TriMesh ptt, float height1, float height2) throws DelaunayError {
+       // add the sides
+       for (int i1 = 0; i1 < pointlist.length - 1; i1++) {
+          Vertex[] side = new Vertex[5];
+          side[0] = new Vertex(pointlist[i1].x, pointlist[i1].y,pointlist[i1].z+height1);
+          side[1] = new Vertex(pointlist[i1 + 1].x, pointlist[i1 + 1].y,pointlist[i1 + 1].z+height1);
+          side[2] = new Vertex(pointlist[i1 + 1].x, pointlist[i1 + 1].y,pointlist[i1 + 1].z+height2);
+          side[3] = new Vertex(pointlist[i1].x, pointlist[i1].y,pointlist[i1].z+height2);
+          side[4] = new Vertex(pointlist[i1].x, pointlist[i1].y,pointlist[i1].z+height1);
+          ptt.add(side);
+       }
+
+	
+}
+
+private DTriangle flipAndTranslate(DTriangle d, float height) throws DelaunayError {
+	   
+ 	 DPoint p0 = new DPoint(d.getPoint(0).getX(),d.getPoint(0).getY(),d.getPoint(0).getZ()+height);
+ 	 DPoint p1 = new DPoint(d.getPoint(1).getX(),d.getPoint(1).getY(),d.getPoint(1).getZ()+height);
+ 	 DPoint p2 = new DPoint(d.getPoint(2).getX(),d.getPoint(2).getY(),d.getPoint(2).getZ()+height);
+ 	 
+	return new DTriangle(p0,p2,p1);
+}
+
+/**
     * Extrude the polygon and save to an STL file
     * 
     * @param polygon
@@ -146,14 +210,15 @@ public class ExtrudePoly {
       return ret;
    }
 
-   public static void main_old(String[] args) throws DelaunayError {
+   public static void main(String[] args) throws DelaunayError {
       try {
          FileWriter outFile = new FileWriter("/home/schalk/tmp/test.stl");
          PrintWriter out = new PrintWriter(outFile);
-         ArrayList<Vertex> pointlist = new ArrayList<Vertex>();
 
          ExtrudePoly pto3d = new ExtrudePoly();
 
+         // outside
+         ArrayList<Vertex> pointlist = new ArrayList<Vertex>();
          pointlist.add(new Vertex(0.0f, 0.0f, 0.0f));
          pointlist.add(new Vertex(10.0f, 0.0f, 0.0f));
          pointlist.add(new Vertex(10.0f, 10.0f, 0.0f));
@@ -163,8 +228,40 @@ public class ExtrudePoly {
          pointlist.add(new Vertex(1.25f, 10.0f, 0.0f));
          pointlist.add(new Vertex(0.0f, 5.0f, 0.0f));
          pointlist.add(new Vertex(0.0f, 0.0f, 0.0f));
+         
+         //hole
+         ArrayList<Vertex[]> holeList = new ArrayList<Vertex[]>();
 
-         TriMesh ptt = pto3d.polyToTriMesh(pointlist.toArray(new Vertex[0]), 1f);
+         ArrayList<Vertex> hole1 = new ArrayList<Vertex>();
+         hole1.add(new Vertex(1.0f, 1.0f, 0.0f));
+         hole1.add(new Vertex(2.0f, 1.0f, 0.0f));
+         hole1.add(new Vertex(2.0f, 2.0f, 0.0f));
+         hole1.add(new Vertex(1.0f, 2.0f, 0.0f));
+         hole1.add(new Vertex(1.0f, 1.0f, 0.0f));
+         holeList.add(hole1.toArray(new Vertex[0]));
+
+         ArrayList<Vertex> hole2 = new ArrayList<Vertex>();
+         hole2.add(new Vertex(4.0f, 4.0f, 0.0f));
+         hole2.add(new Vertex(5.0f, 4.0f, 0.0f));
+         hole2.add(new Vertex(5.0f, 5.0f, 0.0f));
+         hole2.add(new Vertex(4.0f, 5.0f, 0.0f));
+         hole2.add(new Vertex(4.0f, 4.0f, 0.0f));
+         holeList.add(hole2.toArray(new Vertex[0]));
+        
+
+         //ext
+         ArrayList<Vertex[]> extList = new ArrayList<Vertex[]>();
+         ArrayList<Vertex> ext1 = new ArrayList<Vertex>();
+         ext1.add(new Vertex(3.0f, 3.0f, 0.0f));
+         ext1.add(new Vertex(3.5f, 3.0f, 0.0f));
+         ext1.add(new Vertex(3.5f, 3.5f, 0.0f));
+         ext1.add(new Vertex(3.25f, 3.5f, 0.0f));
+         ext1.add(new Vertex(3.0f, 3.5f, 0.0f));
+         ext1.add(new Vertex(3.0f, 3.0f, 0.0f));
+         extList.add(ext1.toArray(new Vertex[0]));
+
+         
+         TriMesh ptt = pto3d.polyToTriMesh(pointlist.toArray(new Vertex[0]), holeList, extList, 1f, 0.25f);
 
          out.write(ptt.toSTL());
          out.close();
