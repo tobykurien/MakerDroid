@@ -56,17 +56,17 @@ public ExtrudePoly() {
       return ptt;
    }
 
-   /**
-    * Takes a CounterClockWise list of vertices and extrudes to a given height, caters for holes and extensions
-    * 
-    * @param pointlist
-    *           - counter clockwise list of vertices
-    * @param height
-    *           - height of extrusion
-    * @return - TriMesh object with list of triangles of type DTriangle
-    * @throws DelaunayError
-    */
-   public TriMesh polyToTriMesh(Vertex[] enclosure, List<Vertex[]> holes, List <Vertex[]> exts , float height, float extheight) throws DelaunayError {
+/**
+ * Extrudes a polygon, with holes and extra extrusion
+ * @param enclosure - base shape for the extrusion, specified as a counterclockwise array of vertices
+ * @param holes - a list of vertex arrays, each specifiying a hole in the base - counterclockwise 
+ * @param exts - list of vertex arrays, each specifiying an extra extrusion on the base - counterclockwise
+ * @param height - the height of the base extrusion
+ * @param extheight - the height of the extra extrusions
+ * @return
+ * @throws DelaunayError
+ */
+   public TriMesh polyToTriMesh(Vertex[] enclosure, List<Vertex[]> holes, List <Vertex[]> exts , float height, float[] extheight) throws DelaunayError {
       TriMesh ptt = new TriMesh();
       List<Vertex[]> polyList = new ArrayList<Vertex[]>();
       polyList.add(enclosure);
@@ -95,9 +95,9 @@ public ExtrudePoly() {
     	     case POLYTYPE_EXTS:
     	    	 ptt.add(triList.get(i));
     	    	 for(DTriangle d:triList.get(i)){    	    		 
-    	    		 ptt.add(flipAndTranslate(d,height+extheight));
+    	    		 ptt.add(flipAndTranslate(d,height+extheight[i-(1+holes.size())]));
     	    	 }
-                 addSides(polyList.get(i),ptt, height, height+extheight);    	    	 
+                 addSides(polyList.get(i),ptt, height, height+extheight[i-(1+holes.size())]);    	    	 
     	    	 break;
     	  }
       }
@@ -105,7 +105,28 @@ public ExtrudePoly() {
    }
 
    
+   /**
+    * Extrudes a polygon, with holes and extra extrusion
+    * @param polyData - describes the enclosure, holes and exts
+    * @param height - the height of the base extrusion
+    * @param extheight - the height of the extra extrusions
+    * @return
+    * @throws DelaunayError
+    */
+   public TriMesh polyToTriMesh(ExtrPolyData polyData, float height, float[] extheight) throws DelaunayError {
+	   return polyToTriMesh(polyData.enclosure, polyData.holes, polyData.exts, height, extheight);	   
+   }
 
+   
+   
+/**
+ * Adds vertical sides to the polygon specified in pointlist and add to the Trimesh  ptt
+ * @param pointlist - polygon as counter-clockwise list of points (closing)
+ * @param ptt - TriMesh - maintains list of triangles and methods to convert points to triangles
+ * @param height1 - see height2
+ * @param height2 - if height1 is below height2 the triangle normal will point out otherwise in
+ * @throws DelaunayError
+ */
    private void addSides(Vertex[] pointlist, TriMesh ptt, float height1, float height2) throws DelaunayError {
        // add the sides
        for (int i1 = 0; i1 < pointlist.length - 1; i1++) {
@@ -120,6 +141,13 @@ public ExtrudePoly() {
 
 	
 }
+   /**
+    * Flips a triangle normal and translate to the z-axis with height
+    * @param d
+    * @param height
+    * @return the translated triangle
+    * @throws DelaunayError
+    */
 
 private DTriangle flipAndTranslate(DTriangle d, float height) throws DelaunayError {
 	   
@@ -135,8 +163,14 @@ private DTriangle flipAndTranslate(DTriangle d, float height) throws DelaunayErr
     * 
     * @param polygon
     */
-   public static boolean saveToSTL(List<Point> rawPoly, String filePath) {
-      List<Point> polygon = normalize(rawPoly, 50); // 50 = 5cm
+   public static boolean saveToSTL(List<Point> rawPoly, List<List<Point>> rawHole, List<List<Point>> rawRaised,List<List<Point>> rawSunken, String filePath) {
+	   List<List<Point>> rawExt = new ArrayList<List<Point>>();
+	   rawExt.addAll(rawRaised);
+	   rawExt.addAll(rawSunken);
+	   ExtrPolyData ep  = new ExtrPolyData(rawPoly, rawHole, rawExt);
+	   
+       ep.normalize(50);
+      
       try {
          File f = new File(filePath);
          f.mkdirs();
@@ -144,18 +178,12 @@ private DTriangle flipAndTranslate(DTriangle d, float height) throws DelaunayErr
 
          FileWriter outFile = new FileWriter(filePath);
          PrintWriter out = new PrintWriter(outFile);
-         ArrayList<Vertex> pointlist = new ArrayList<Vertex>();
 
          ExtrudePoly pto3d = new ExtrudePoly();
 
-         for (Point p : polygon) {
-            pointlist.add(new Vertex(p.x, p.y, 0.0f));
-         }
-
-         // add first point again to close polygon
-         pointlist.add(new Vertex(polygon.get(0).x, polygon.get(0).y, 0.0f));
-
-         TriMesh ptt = pto3d.polyToTriMesh(pointlist.toArray(new Vertex[0]), 5f);
+         float[] depth = new float[rawExt.size()];
+         for(int i=0;i< depth.length; i++) depth[i] = (i<rawRaised.size())? 1f : -1f; 
+         TriMesh ptt = pto3d.polyToTriMesh(ep, 5f, depth);
 
          out.write(ptt.toSTL());
          out.close();
@@ -170,45 +198,12 @@ private DTriangle flipAndTranslate(DTriangle d, float height) throws DelaunayErr
       return false;
    }
 
-   /**
-    * Translate and scale the object for printing.
-    * 
-    * @param rawPoly
-    * @param max
-    *           - the maximum size (i.e. max width or height, whichever is
-    *           greater)
-    * @return
-    */
-   private static List<Point> normalize(List<Point> rawPoly, float max) {
-      List<Point> ret = new ArrayList<Point>();
-
-      // work out the object's extremities
-      float maxX = 0;
-      float maxY = 0;
-      float minX = Float.MAX_VALUE;
-      float minY = Float.MAX_VALUE;
-      for (Point p : rawPoly) {
-         if (minX > p.x) minX = p.x;
-         if (minY > p.y) minY = p.y;
-         if (maxX < p.x) maxX = p.x;
-         if (maxY < p.y) maxY = p.y;
-      }
-
-      // resize the object to fit into the given max value
-      float scaleMax = (maxX > maxY ? maxX : maxY);
-      float scale = max / scaleMax;
-      
-      // center the object around 0,0
-      minX *= 2; 
-      minY *= 2;
-      
-      for (Point p : rawPoly) {
-         Point np = new Point((p.x - minX) * scale, (p.y - minY) * scale * -1); // also flip top to bottom
-         ret.add(np);
-      }
-
-      return ret;
+   
+   public static boolean saveToSTL(List<Point> rawPoly, String filePath) {
+	   return saveToSTL(rawPoly,new ArrayList<List<Point>>(),new ArrayList<List<Point>>(),new ArrayList<List<Point>>(),filePath );
    }
+   
+   
 
    public static void main(String[] args) throws DelaunayError {
       try {
@@ -255,13 +250,25 @@ private DTriangle flipAndTranslate(DTriangle d, float height) throws DelaunayErr
          ext1.add(new Vertex(3.0f, 3.0f, 0.0f));
          ext1.add(new Vertex(3.5f, 3.0f, 0.0f));
          ext1.add(new Vertex(3.5f, 3.5f, 0.0f));
-         ext1.add(new Vertex(3.25f, 3.5f, 0.0f));
+         ext1.add(new Vertex(3.25f, 3.75f, 0.0f));
          ext1.add(new Vertex(3.0f, 3.5f, 0.0f));
          ext1.add(new Vertex(3.0f, 3.0f, 0.0f));
          extList.add(ext1.toArray(new Vertex[0]));
 
+         //ext
+         ArrayList<Vertex> ext2 = new ArrayList<Vertex>();
+         ext2.add(new Vertex(7.0f, 2.0f, 0.0f));
+         ext2.add(new Vertex(7.5f, 2.0f, 0.0f));
+         ext2.add(new Vertex(7.5f, 2.5f, 0.0f));
+         ext2.add(new Vertex(7.25f, 2.75f, 0.0f));
+         ext2.add(new Vertex(7.0f, 2.5f, 0.0f));
+         ext2.add(new Vertex(7.0f, 2.0f, 0.0f));
+         extList.add(ext2.toArray(new Vertex[0]));         
          
-         TriMesh ptt = pto3d.polyToTriMesh(pointlist.toArray(new Vertex[0]), holeList, extList, 1f, 0.25f);
+         ExtrPolyData ep = new ExtrPolyData(pointlist.toArray(new Vertex[0]), holeList, extList);
+         ep.normalize(50);
+         
+         TriMesh ptt = pto3d.polyToTriMesh(ep, 10f, new float[]{-2.5f,2.5f});
 
          out.write(ptt.toSTL());
          out.close();
@@ -270,4 +277,5 @@ private DTriangle flipAndTranslate(DTriangle d, float height) throws DelaunayErr
          e.printStackTrace();
       }
    }
+   
 }
