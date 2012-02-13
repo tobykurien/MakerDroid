@@ -1,21 +1,27 @@
 Todo:
 =====
 
-- 3D Paint:
+- Vector Paint:
  - bug: Mr Shark not normalizing correctly
  - auto-rotate background image to fit screen properly
- - allow drawing of more polygons on first layer to make holes in it
- - allow drawing of polygons on various layers which will extrude out
- - implement camera image source
+ - if user clicks "new poly" when already on a blank new poly, switch back to first poly in the layer 
+ - implement camera image source with crop and rotate functionality
  - save and load drawing background together with drawing (as separate bmp file)
+ - add intent for .p3d files
 
 - 3D Preview
  - name the STL file the same as the drawing file if defined
  - prompt user to install STL Viewer if not already installed
- - implement preview of STL instead of using external app?
+ - implement extruding multiple polygons and layers
 
 - GCode
   - name the BFB file the same as the drawing file if available
   - display output of report.txt in the progress loader
   - detect external USB and ask user to save to it
   - provide instructions on printing
+  
+- UI:
+  - need app icon
+  - Need gradient for toolbar buttons
+  - apply colours to SPen view too
+  -   
