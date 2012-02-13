@@ -3,9 +3,12 @@ package za.co.house4hack.paint3d;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
+
+import org.jdelaunay.delaunay.error.DelaunayError;
 
 import za.co.house4hack.paint3d.gcode.SkeinforgeWrapper;
 import za.co.house4hack.paint3d.stl.ExtrudePoly;
@@ -16,7 +19,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
-import android.graphics.EmbossMaskFilter;
 import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Environment;
@@ -36,13 +38,13 @@ class VectorPaint extends View {
    int LINE_TOUCH = 10;
 
    // thresholds
-   int LINE_BREAK = 50; // pixel distance to line to activate line-break 
+   int LINE_BREAK = 50; // pixel distance to line to activate line-break
    int POINT_DRAG = 50; // pixel distance to point to activate it for dragging
    int DRAG_ACTIVATE = 5; // pixels to drag before dragging is activated
-   
+
    // data storage
    Polygon polygon;
-   List<Layer> layers; // each layer has many polygons with many points 
+   List<Layer> layers; // each layer has many polygons with many points
    Point drag;
    Paint pCirc;
    Paint pCircDrag;
@@ -52,7 +54,7 @@ class VectorPaint extends View {
    Point touchStart;
    int layer = 0;
    int poly = 0;
-   
+
    Stack<Undo> undoHistory;
 
    // state flags
@@ -62,21 +64,22 @@ class VectorPaint extends View {
 
    /**
     * Class to store undo operation
+    * 
     * @author tobykurien
-    *
+    * 
     */
    public class Undo {
       public boolean isMove = false;
       public Point lastPoint;
       public Point beforeMove;
-      
+
       public Undo(boolean isMove, Point point, Point touchStart) {
          this.isMove = isMove;
          this.lastPoint = point;
          this.beforeMove = touchStart;
       }
    }
-   
+
    public VectorPaint(Context context) {
       super(context);
       init();
@@ -107,7 +110,8 @@ class VectorPaint extends View {
 
       pLine = new Paint();
       pLine.setARGB(255, 0, 255, 0);
-      //pLine.setMaskFilter(new EmbossMaskFilter(new float[] { 1, 1, 1 }, 0.4f, 6, 3.5f));
+      // pLine.setMaskFilter(new EmbossMaskFilter(new float[] { 1, 1, 1 }, 0.4f,
+      // 6, 3.5f));
 
       pLineCurrent = new Paint();
       pLineCurrent.setARGB(255, 0, 255, 255);
@@ -127,16 +131,22 @@ class VectorPaint extends View {
          pLineCurrent.setStrokeWidth(LINE_TOUCH);
          pLineSelected.setStrokeWidth(LINE_TOUCH);
       }
-      
+
       undoHistory = new Stack<Undo>();
-      
+
       loadPrefs();
    }
 
    public void loadPrefs() {
       SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getContext());
-      try { LINE_BREAK = Integer.parseInt(pref.getString("line_dist", ""+LINE_BREAK)); } catch (Exception e) {}
-      try { POINT_DRAG = Integer.parseInt(pref.getString("drag_radius", ""+POINT_DRAG)); } catch (Exception e) {}
+      try {
+         LINE_BREAK = Integer.parseInt(pref.getString("line_dist", "" + LINE_BREAK));
+      } catch (Exception e) {
+      }
+      try {
+         POINT_DRAG = Integer.parseInt(pref.getString("drag_radius", "" + POINT_DRAG));
+      } catch (Exception e) {
+      }
    }
 
    protected void onDraw(Canvas canvas) {
@@ -192,11 +202,11 @@ class VectorPaint extends View {
          // find nearest line to split
          int idx = -1;
          double dist = Double.MAX_VALUE;
-         for (int i=0; i < polygon.size() - 1; i++) {
+         for (int i = 0; i < polygon.size() - 1; i++) {
             Point p1 = polygon.get(i);
-            Point p2 = polygon.get(i+1);
+            Point p2 = polygon.get(i + 1);
             Point p3 = new Point(event.getX(), event.getY());
-            
+
             // add threshold from line endpoints
             double d = distanceToSegment(p1, p2, p3, 20);
             if (d < LINE_BREAK && d < dist) {
@@ -205,14 +215,14 @@ class VectorPaint extends View {
                drag = p3;
             }
          }
-         
+
          if (idx >= 0) {
             // split line by adding a point and then drag it
-            polygon.add(idx+1, drag);
+            polygon.add(idx + 1, drag);
             isDragging = true;
             undoHistory.push(new Undo(false, drag, null));
          }
-         
+
          if (!isDragging) {
             // find the nearest point to drag
             Point candidate = getClosestPoint(event.getX(), event.getY(), POINT_DRAG);
@@ -274,7 +284,7 @@ class VectorPaint extends View {
 
       double dist = Double.MAX_VALUE;
       for (Point p : polygon) {
-         double d = distance(new Point(x,y), p);
+         double d = distance(new Point(x, y), p);
          if (d <= radius && dist > d) {
             dist = d;
             ret = p;
@@ -323,12 +333,12 @@ class VectorPaint extends View {
       } else {
          closestPoint = new Point(p1.x + u * xDelta, p1.y + u * yDelta);
       }
-      
+
       if (distance(closestPoint, p1) < threshold || distance(closestPoint, p2) < threshold) {
          // disregard this as it's too close to the line endpoints
          return Double.MAX_VALUE;
       }
-      
+
       return distance(p3, closestPoint);
    }
 
@@ -343,36 +353,46 @@ class VectorPaint extends View {
    // save the shape and preview in 3D using STL viewer
    public void preview() {
       String sdDir = Environment.getExternalStorageDirectory().getAbsolutePath();
-      if (ExtrudePoly.saveToSTL(polygon, sdDir + "/paint3d.stl")) {
+
+      try {
+         ExtrudePoly.saveToSTL(layers.get(0), layers.get(1), null, sdDir + "/paint3d.stl");
          File f = new File(sdDir + "/paint3d.stl");
          Intent i = new Intent();
          i.setAction(Intent.ACTION_VIEW);
          i.setDataAndType(Uri.fromFile(f), "");
          getContext().startActivity(i);
+      } catch (IOException e) {
+         Toast.makeText(getContext(), "Error saving preview: " + e.getMessage(), Toast.LENGTH_LONG).show();
+      } catch (DelaunayError e) {
+         Toast.makeText(getContext(), "Error in drawing. Make sure lines do not cross.", Toast.LENGTH_LONG).show();
       }
    }
 
    public void print() {
       String sdDir = Environment.getExternalStorageDirectory().getAbsolutePath() + Main.PAINT_DIR;
-      if (ExtrudePoly.saveToSTL(polygon, sdDir + "/paint3d.stl")) {
-         SkeinforgeWrapper sw = new SkeinforgeWrapper(this.getContext());
-         sw.generateGcode(sdDir +"/paint3d.stl");
-         //TODO: send to printer somehow
+      try {
+         ExtrudePoly.saveToSTL(layers.get(0), layers.get(1), null, sdDir + "/paint3d.stl");
+            SkeinforgeWrapper sw = new SkeinforgeWrapper(this.getContext());
+            sw.generateGcode(sdDir + "/paint3d.stl");
+      } catch (DelaunayError e) {
+         Toast.makeText(getContext(), "Error in drawing. Make sure lines do not cross.", Toast.LENGTH_LONG).show();
+      } catch (IOException e) {
+         Toast.makeText(getContext(), "Error saving file: " + e.getMessage(), Toast.LENGTH_LONG).show();
       }
    }
-   
+
    // undo last point
-   public void undo() {      
+   public void undo() {
       if (undoHistory.isEmpty()) return;
-      
+
       Undo undo = undoHistory.pop();
       if (undo.isMove) {
          undo.lastPoint.x = undo.beforeMove.x;
-         undo.lastPoint.y = undo.beforeMove.y;         
+         undo.lastPoint.y = undo.beforeMove.y;
       } else {
          polygon.remove(undo.lastPoint);
       }
-      
+
       invalidate();
    }
 
@@ -388,7 +408,7 @@ class VectorPaint extends View {
       undoHistory.clear();
       invalidate();
    }
-   
+
    // switch between 2 layers
    public void layer() {
       if (layer == 0 && !layers.get(0).get(0).isEmpty()) {
@@ -408,11 +428,13 @@ class VectorPaint extends View {
 
    /**
     * Save the polygon data into file. Format:
-    * Each line in the file is a polygon, with first line being the boundary polygon. Line
+    * Each line in the file is a polygon, with first line being the boundary
+    * polygon. Line
     * format:
     * x1:y1,x2:y2,...,
     * Note: line can terminate with a delimiter
-    * When switching to a new layer, the layer count appears on it's own on a new line,
+    * When switching to a new layer, the layer count appears on it's own on a
+    * new line,
     * followed by it's polygons as above
     */
    public void saveDrawing(String path) {
@@ -435,7 +457,7 @@ class VectorPaint extends View {
                bs.write(String.valueOf(lcount).getBytes());
                bs.write('\n');
             }
-            
+
             for (Polygon pol : l) {
                for (Point p : pol) {
                   String s = String.valueOf(p.x) + ":" + String.valueOf(p.y) + ",";
@@ -463,7 +485,7 @@ class VectorPaint extends View {
          layers.get(0).clear();
          FileInputStream is = new FileInputStream(f);
          int c = 0;
-         int pcount=0;
+         int pcount = 0;
          while (c != -1) {
             c = is.read();
             StringBuffer s = new StringBuffer();
@@ -474,12 +496,13 @@ class VectorPaint extends View {
 
             if (s.length() > 0) {
                String[] points = s.toString().split(",");
-               
+
                // check for a new layer
                if (points.length == 1) {
                   // we will ignore the layer number
                   layers.add(new Layer());
-                  layers.get(layers.size() - 1).clear(); // remove the empty polygon
+                  layers.get(layers.size() - 1).clear(); // remove the empty
+                                                         // polygon
                   pcount = 0;
                } else {
                   polygon = new Polygon();
@@ -491,7 +514,7 @@ class VectorPaint extends View {
                         polygon.add(new Point(x, y));
                      }
                   }
-                  layers.get(layers.size() - 1).add(polygon);                  
+                  layers.get(layers.size() - 1).add(polygon);
                   pcount++;
                }
             }
