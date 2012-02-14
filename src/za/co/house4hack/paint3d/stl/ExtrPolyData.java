@@ -61,11 +61,13 @@ public class ExtrPolyData {
       float scaleMax = (maxX > maxY ? maxX : maxY);
       float scale = max / scaleMax;
 
-      enclosure = scalePointList(enclosure, scale, (maxX - minX) / 2.0f, (maxY - minY) / 2.0f);
+      float centreX = minX + (maxX - minX) / 2.0f;
+      float centreY = minY + (maxY - minY) / 2.0f;
+      enclosure = scalePointList(enclosure, scale, centreX, centreY);
       for (int i = 0; i < holes.size(); i++)
-         holes.set(i, scalePointList(holes.get(i), scale,  (maxX - minX) / 2.0f, (maxY - minY) / 2.0f));
+         holes.set(i, scalePointList(holes.get(i), scale, centreX, centreY));
       for (int i = 0; i < exts.size(); i++)
-         exts.set(i, scalePointList(exts.get(i), scale,  (maxX - minX) / 2.0f, (maxY - minY) / 2.0f));
+         exts.set(i, scalePointList(exts.get(i), scale, centreX, centreY));
 
    }
 
