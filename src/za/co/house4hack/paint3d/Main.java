@@ -103,7 +103,7 @@ public class Main extends Activity {
 
          case R.id.menu_help:
             new AlertDialog.Builder(this).setTitle(R.string.app_name).setMessage(R.string.help_text)
-                     .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                     .setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                            dialog.dismiss();
@@ -135,7 +135,7 @@ public class Main extends Activity {
          }
       });
 
-      alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+      alert.setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
          public void onClick(DialogInterface dialog, int whichButton) {
             // Canceled.
          }
@@ -164,7 +164,7 @@ public class Main extends Activity {
                         i.setData(Uri.parse("market://search?q=pname:moduleWorks.STLView"));
                         startActivity(i);
                      }
-                  }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                  }).setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
                      @Override
                      public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
@@ -400,14 +400,14 @@ public class Main extends Activity {
          final EditText input = new EditText(this);
          alert.setView(input);
 
-         alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+         alert.setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                filename = input.getText().toString() + PAINT_EXT;
                saveFile();
             }
          });
 
-         alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+         alert.setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                // Canceled.
             }
