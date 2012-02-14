@@ -17,6 +17,8 @@ public class SkeinforgeWrapper {
 
    private static final String TAG = "Skeinforge";
 
+private static final String SKEINFORGE_START = "Starting Skeinforge";
+
    // The path to the directory containing our external storage.
    private File externalStorage;
 
@@ -67,8 +69,8 @@ public class SkeinforgeWrapper {
    }
    
    public void generateGcode(String file) {
-       unpackData("private", mContext.getFilesDir());
-       unpackData("public", externalStorage);
+       //unpackData("private", mContext.getFilesDir());
+       //unpackData("public", externalStorage);
 
       ArrayList<String> libs = new ArrayList<String>();
       libs.add("python2.7");
@@ -93,22 +95,27 @@ public class SkeinforgeWrapper {
     			"    argument ]\n" +
     	        "import androidembed\n" +
     	        "class LogFile(object):\n" +
-    	        "    def __init__(self):\n" +
+    	        "    def __init__(self,filename=''):\n" +
     	        "        self.buffer = ''\n" +
+    	        "        self.filename = filename\n" +
+    	        "        if(filename!=''): \n" +
+    	        "            self.file = open(filename,'w')\n" +    	        
     	        "    def write(self, s):\n" +
     	        "        s = self.buffer + s\n" +
     	        "        lines = s.split(\"\\n\")\n" +
     	        "        for l in lines[:-1]:\n" +
     	        "            androidembed.log(l)\n" +
+    	        "            if(self.filename !=''):\n"+    	        
+    	        "                self.file.write(l+'\\n')\n" +
+    	        "                self.file.flush()\n" +    	        
     	        "        self.buffer = lines[-1]\n" +
-    	        "sys.stdout = sys.stderr = LogFile()\n" +
+    	        "sys.stdout = sys.stderr = LogFile('/mnt/sdcard/Paint3d/logpython.log')\n" +
     			"import site; print site.getsitepackages()\n"+
-    			"print 'Android path', sys.path\n" +
-    	        "print 'Android kivy bootstrap done. __name__ is', __name__\n" +
     			"os.chdir('"+externalStorage.getParent()+"') \n" +
     	        "sys.path.append('"+externalStorage.getAbsolutePath()+"')\n" + 
     	        "sys.path.append('"+externalStorage.getAbsolutePath()+"/skeinforge/skeinforge_tools')\n" +
-    	        "import craft\n" + 
+    	        "import craft\n" +
+    	        "print '"+ SKEINFORGE_START +"'\n" +    	        
     	        "craft.writeOutput('"+externalStorage.getParent() + "/paint3d.stl')";
       PythonRunner.executePythonCode(libs, env, code);
       
