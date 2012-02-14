@@ -124,6 +124,37 @@ public class Main extends Activity {
 			return true;
 
 		case R.id.menu_preview:
+		   // check if we have n STL viewer app
+	      String sdDir = Environment.getExternalStorageDirectory().getAbsolutePath();
+         File f = new File(sdDir + "/paint3d.stl");
+         Intent i = new Intent();
+         i.setAction(Intent.ACTION_VIEW);
+         i.setDataAndType(Uri.fromFile(f), "");
+         List l = getPackageManager().queryIntentActivities(i, 0);
+         if (l.isEmpty()) {
+            // ask user to install STL viewer
+            new AlertDialog.Builder(this)
+               .setTitle(R.string.title_stl_viewer)
+               .setMessage(R.string.msg_stl_viewer)
+               .setPositiveButton("Ok", new DialogInterface.OnClickListener() {                  
+                  @Override
+                  public void onClick(DialogInterface dialog, int which) {
+                     dialog.dismiss();
+                     Intent i = new Intent(Intent.ACTION_VIEW);
+                     i.setData(Uri.parse("market://search?q=pname:moduleWorks.STLView"));
+                     startActivity(i);
+                  }
+               })
+               .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                  @Override
+                  public void onClick(DialogInterface dialog, int which) {
+                     dialog.dismiss();
+                  }
+               })
+               .create().show();
+            return true;
+         }
+
 			// show a progress dialog
 			final ProgressDialog pd = new ProgressDialog(this);
 			pd.setMessage(getResources().getString(R.string.progress_preview));
@@ -201,8 +232,8 @@ public class Main extends Activity {
 			return true;
 
 		case R.id.menu_settings:
-			Intent i = new Intent(this, Preferences.class);
-			startActivity(i);
+			Intent i2 = new Intent(this, Preferences.class);
+			startActivity(i2);
 			return true;
 
 		case R.id.menu_help:
