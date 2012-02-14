@@ -5,6 +5,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import za.co.house4hack.paint3d.Main;
 import android.content.Context;
@@ -65,30 +67,22 @@ public class SkeinforgeWrapper {
    }
    
    public void generateGcode(String file) {
-      //TODO: parameter file is ignored
-//
        unpackData("private", mContext.getFilesDir());
        unpackData("public", externalStorage);
-       /* try {
-    	  // copySkeinforge(mContext, externalStorage.getAbsolutePath());
-       } catch (IOException e) {
-    	   Log.e(Main.LOG_TAG, "Error copying skeinforge", e);
-       }*/
 
-      System.loadLibrary("python2.7");
-      System.loadLibrary("application");
+      ArrayList<String> libs = new ArrayList<String>();
+      libs.add("python2.7");
+      libs.add("application");
+      
+      HashMap<String,String> env = new HashMap<String,String>();
+      env.put("ANDROID_PRIVATE", mFilesDirectory);
+      env.put("ANDROID_ARGUMENT", mArgument);
+      env.put("PYTHONOPTIMIZE", "2");
+      env.put("PYTHONHOME", mFilesDirectory);
+      env.put("PYTHONPATH", mArgument + ":" + mFilesDirectory + "/lib");
+      env.put("SETTINGS_DIRECTORY", externalStorage.getAbsolutePath()+"/settings");
 
-      //System.load(mContext.getFilesDir() + "/lib/python2.7/lib-dynload/_io.so");
-      //System.load(mContext.getFilesDir() + "/lib/python2.7/lib-dynload/unicodedata.so");
-
-      nativeSetEnv("ANDROID_PRIVATE", mFilesDirectory);
-      nativeSetEnv("ANDROID_ARGUMENT", mArgument);
-      nativeSetEnv("PYTHONOPTIMIZE", "2");
-      nativeSetEnv("PYTHONHOME", mFilesDirectory);
-      nativeSetEnv("PYTHONPATH", mArgument + ":" + mFilesDirectory + "/lib");
-      nativeSetEnv("SETTINGS_DIRECTORY", externalStorage.getAbsolutePath()+"/settings");
-      //nativeInit();
-      runPython("import sys, posix, os \n" +
+      String code = "import sys, posix, os \n" +
     	        "private = posix.environ['ANDROID_PRIVATE']\n" +
     	        "argument = posix.environ['ANDROID_ARGUMENT']\n" +
     	        "sys.path[:] = [ \n" +
@@ -115,7 +109,9 @@ public class SkeinforgeWrapper {
     	        "sys.path.append('"+externalStorage.getAbsolutePath()+"')\n" + 
     	        "sys.path.append('"+externalStorage.getAbsolutePath()+"/skeinforge/skeinforge_tools')\n" +
     	        "import craft\n" + 
-    	        "craft.writeOutput('"+externalStorage.getParent() + "/paint3d.stl')");
+    	        "craft.writeOutput('"+externalStorage.getParent() + "/paint3d.stl')";
+      PythonRunner.executePythonCode(libs, env, code);
+      
       
    }
   
@@ -155,10 +151,5 @@ public class SkeinforgeWrapper {
 	  }
   }
   
-// Native part
-
-   public static native void nativeSetEnv(String name, String value);
-   public static native void nativeInit();
-   public static native void runPython(String script);
 
 }
