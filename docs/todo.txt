@@ -7,8 +7,6 @@ Todo:
 
 - 3D Preview
  - name the STL file the same as the drawing file if defined
- - prompt user to install STL Viewer if not already installed
- - implement extruding multiple polygons and layers
 
 - GCode
   - name the BFB file the same as the drawing file if available

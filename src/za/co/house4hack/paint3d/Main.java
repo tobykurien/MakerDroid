@@ -257,29 +257,45 @@ public class Main extends Activity {
          return;
       }
 
-      // show a progress dialog
-      final ProgressDialog pd = new ProgressDialog(this);
-      pd.setMessage(getResources().getString(R.string.progress_print));
-      AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>() {
-         @Override
-         protected void onPreExecute() {
-            super.onPreExecute();
-            pd.show();
-         }
+      new AlertDialog.Builder(this)
+         .setTitle(R.string.title_print)
+         .setMessage(R.string.msg_print)
+         .setPositiveButton(R.string.btn_continue, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+               dialog.dismiss();
+               // show a progress dialog
+               final ProgressDialog pd = new ProgressDialog(Main.this);
+               pd.setMessage(getResources().getString(R.string.progress_print));
+               AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>() {
+                  @Override
+                  protected void onPreExecute() {
+                     super.onPreExecute();
+                     pd.show();
+                  }
 
-         @Override
-         protected Void doInBackground(Void... params) {
-            vp.print();
-            return null;
-         }
+                  @Override
+                  protected Void doInBackground(Void... params) {
+                     vp.print();
+                     return null;
+                  }
 
-         @Override
-         protected void onPostExecute(Void result) {
-            super.onPostExecute(result);
-            pd.dismiss();
-         }
-      };
-      task.execute(new Void[0]);
+                  @Override
+                  protected void onPostExecute(Void result) {
+                     super.onPostExecute(result);
+                     pd.dismiss();
+                  }
+               };
+               task.execute(new Void[0]);               
+            }
+         })
+         .setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+               dialog.dismiss();
+            }
+         })
+         .create().show();
    }
 
    @Override
