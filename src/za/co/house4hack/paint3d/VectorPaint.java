@@ -389,7 +389,7 @@ class VectorPaint extends View {
       try {
          ExtrudePoly.saveToSTL(layers.get(0), (layers.size() > 1 ? layers.get(1) : null), null, sdDir + "/paint3d.stl", SCALE_MAX);
          SkeinforgeWrapper sw = new SkeinforgeWrapper(this.getContext());
-         sw.generateGcode(sdDir + "/paint3d.stl");
+         sw.generateGcode(sdDir + "/paint3d.stl",sdDir + "/logpython.log");
       } catch (DelaunayError e) {
          Toast.makeText(getContext(), "Error in drawing. Make sure lines do not cross.", Toast.LENGTH_LONG).show();
       } catch (Exception e) {
