@@ -385,7 +385,13 @@ class VectorPaint extends View {
          return;
       }
       
+      // check if SD card is plugged in via USB (works for Samsung)
+      File f = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/usbStorage/sda");
       String sdDir = Environment.getExternalStorageDirectory().getAbsolutePath() + Main.PAINT_DIR;
+      if (f.exists()) {
+         sdDir = f.getAbsolutePath();
+      }
+      
       try {
          ExtrudePoly.saveToSTL(layers.get(0), (layers.size() > 1 ? layers.get(1) : null), null, sdDir + "/paint3d.stl", SCALE_MAX);
          SkeinforgeWrapper sw = new SkeinforgeWrapper(this.getContext());

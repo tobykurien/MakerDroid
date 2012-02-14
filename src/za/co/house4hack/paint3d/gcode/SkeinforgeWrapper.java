@@ -69,8 +69,8 @@ private static final String SKEINFORGE_START = "Starting Skeinforge";
    }
    
    public void generateGcode(String file, String logfile) {
-       //unpackData("private", mContext.getFilesDir());
-       //unpackData("public", externalStorage);
+      unpackData("private", mContext.getFilesDir());
+      unpackData("public", externalStorage);
 
       ArrayList<String> libs = new ArrayList<String>();
       libs.add("python2.7");
