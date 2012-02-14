@@ -210,13 +210,19 @@ public class ExtrudePoly {
 
       ExtrudePoly pto3d = new ExtrudePoly();
 
-      float[] fromHeight = new float[rawExt.size()];
-      for (int i = 0; i < fromHeight.length; i++)
-         fromHeight[i] = 5f;
+      float[] fromHeight = new float[0];
+      if (rawExt != null && rawExt.size() > 0) {
+         fromHeight = new float[rawExt.size()];
+         for (int i = 0; i < fromHeight.length; i++)
+            fromHeight[i] = 5f;         
+      }
 
-      float[] toHeight = new float[rawExt.size()];
-      for (int i = 0; i < toHeight.length; i++)
-         toHeight[i] = (i < rawRaised.size()) ? 6f : -4f;
+      float[] toHeight = new float[0];
+      if (rawRaised != null && rawRaised.size() > 0) {
+         toHeight = new float[rawRaised.size()];
+         for (int i = 0; i < toHeight.length; i++)
+            toHeight[i] = (i < rawRaised.size()) ? 6f : -4f;         
+      }
 
       TriMesh ptt = pto3d.polyToTriMesh(ep, 5f, fromHeight, toHeight);
 

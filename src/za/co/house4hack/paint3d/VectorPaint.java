@@ -44,7 +44,7 @@ class VectorPaint extends View {
 
    // Other magic numbers
    int SCALE_MAX = 100; // scale the object to be around 5cm
-   
+
    // data storage
    Polygon polygon;
    List<Layer> layers; // each layer has many polygons with many points
@@ -358,7 +358,7 @@ class VectorPaint extends View {
       String sdDir = Environment.getExternalStorageDirectory().getAbsolutePath();
 
       try {
-         ExtrudePoly.saveToSTL(layers.get(0), layers.get(1), null, sdDir + "/paint3d.stl", SCALE_MAX);
+         ExtrudePoly.saveToSTL(layers.get(0), (layers.size() > 1 ? layers.get(1) : null), null, sdDir + "/paint3d.stl", SCALE_MAX);
          File f = new File(sdDir + "/paint3d.stl");
          Intent i = new Intent();
          i.setAction(Intent.ACTION_VIEW);
@@ -374,9 +374,9 @@ class VectorPaint extends View {
    public void print() {
       String sdDir = Environment.getExternalStorageDirectory().getAbsolutePath() + Main.PAINT_DIR;
       try {
-         ExtrudePoly.saveToSTL(layers.get(0), layers.get(1), null, sdDir + "/paint3d.stl", SCALE_MAX);
-            SkeinforgeWrapper sw = new SkeinforgeWrapper(this.getContext());
-            sw.generateGcode(sdDir + "/paint3d.stl");
+         ExtrudePoly.saveToSTL(layers.get(0), (layers.size() > 1 ? layers.get(1) : null), null, sdDir + "/paint3d.stl", SCALE_MAX);
+         SkeinforgeWrapper sw = new SkeinforgeWrapper(this.getContext());
+         sw.generateGcode(sdDir + "/paint3d.stl");
       } catch (DelaunayError e) {
          Toast.makeText(getContext(), "Error in drawing. Make sure lines do not cross.", Toast.LENGTH_LONG).show();
       } catch (IOException e) {
@@ -399,13 +399,22 @@ class VectorPaint extends View {
       invalidate();
    }
 
-   // add a new polygon in this layer
+   /**
+    * Switch to another polygon in the layer or add a new polygon
+    */
    public void newPoly() {
       Layer curLayer = layers.get(layer);
       poly++;
       if (poly >= layers.get(layer).size()) {
-         curLayer.add(new Polygon());
-         poly = curLayer.size() - 1;
+         // at this point we either go back to first polygon in the layer or add a new one
+         if (poly > 0 && layers.get(layer).get(poly - 1).size() == 0) {
+            // current polygon is already blank so don't add another one, switch back to first poly
+            poly = 0;
+         } else {
+            // add a new polygon to this layer
+            curLayer.add(new Polygon());
+            poly = curLayer.size() - 1;            
+         }
       }
       polygon = curLayer.get(poly);
       undoHistory.clear();

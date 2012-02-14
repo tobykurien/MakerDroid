@@ -3,7 +3,6 @@ package za.co.house4hack.paint3d;
 import java.io.File;
 import java.io.FilenameFilter;
 
-import za.co.house4hack.paint3d.VectorPaint.Undo;
 import za.co.house4hack.paint3d.spen.SPenActivity;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -167,6 +166,18 @@ public class Main extends Activity {
             Intent i = new Intent(this, Preferences.class);
             startActivity(i);
             return true;
+            
+         case R.id.menu_help:
+            new AlertDialog.Builder(this)
+               .setTitle(R.string.app_name)
+               .setMessage(R.string.help_text)
+               .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                  @Override
+                  public void onClick(DialogInterface dialog, int which) {
+                     dialog.dismiss();
+                  }
+               })
+               .create().show();
       }
       return false;
    }

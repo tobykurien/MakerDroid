@@ -4,10 +4,10 @@ Todo:
 - Vector Paint:
  - bug: Mr Shark not normalizing correctly
  - auto-rotate background image to fit screen properly
- - if user clicks "new poly" when already on a blank new poly, switch back to first poly in the layer 
  - implement camera image source with crop and rotate functionality
  - save and load drawing background together with drawing (as separate bmp file)
  - add intent for .p3d files
+ - flip the preview to correspond to drawing
 
 - 3D Preview
  - name the STL file the same as the drawing file if defined
