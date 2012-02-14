@@ -429,8 +429,8 @@ public class Main extends Activity {
 
 			intent.putExtra("outputX", 400);
 			intent.putExtra("outputY", 300);
-			intent.putExtra("aspectX", 4);
-			intent.putExtra("aspectY", 3);
+			//intent.putExtra("aspectX", 4);
+			//intent.putExtra("aspectY", 3);
 			intent.putExtra("scale", true);
 			intent.putExtra("return-data", true);
 

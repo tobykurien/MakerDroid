@@ -3,7 +3,6 @@ Todo:
 
 - Vector Paint:
  - auto-rotate background image to fit screen properly
- - implement camera image source with crop and rotate functionality
  - save and load drawing background together with drawing (as separate bmp file)
 
 - 3D Preview

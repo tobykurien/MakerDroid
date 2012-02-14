@@ -366,7 +366,7 @@ class VectorPaint extends View {
          getContext().startActivity(i);
       } catch (IOException e) {
          Toast.makeText(getContext(), "Error saving preview: " + e.getMessage(), Toast.LENGTH_LONG).show();
-      } catch (DelaunayError e) {
+      } catch (Exception e) {
          Toast.makeText(getContext(), "Error in drawing. Make sure lines do not cross.", Toast.LENGTH_LONG).show();
       }
    }
@@ -379,7 +379,7 @@ class VectorPaint extends View {
          sw.generateGcode(sdDir + "/paint3d.stl");
       } catch (DelaunayError e) {
          Toast.makeText(getContext(), "Error in drawing. Make sure lines do not cross.", Toast.LENGTH_LONG).show();
-      } catch (IOException e) {
+      } catch (Exception e) {
          Toast.makeText(getContext(), "Error saving file: " + e.getMessage(), Toast.LENGTH_LONG).show();
       }
    }
