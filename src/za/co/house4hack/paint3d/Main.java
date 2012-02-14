@@ -1,7 +1,10 @@
 package za.co.house4hack.paint3d;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
+import java.io.IOException;
+import java.util.ArrayList;
 
 import za.co.house4hack.paint3d.spen.SPenActivity;
 import android.app.Activity;
@@ -17,6 +20,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -30,11 +34,11 @@ public class Main extends Activity {
    public static final String PAINT_DIR = "/Paint3d/";
    public static final String SKEINFORGE_DIR = "/Paint3d/Skeinforge/";
    public static final String PAINT_EXT = ".p3d";
-   
+
    public static final int REQUEST_GALLERY = 3;
    public static final int REQUEST_CAMERA = 1;
    public static final int REQUEST_SPEN = 2;
-   
+
    VectorPaint vp;
    String filename = null;
 
@@ -57,7 +61,7 @@ public class Main extends Activity {
       inflater.inflate(R.menu.vectorpaint, menu);
       return super.onCreateOptionsMenu(menu);
    }
-   
+
    @Override
    protected void onResume() {
       super.onResume();
@@ -69,19 +73,19 @@ public class Main extends Activity {
       switch (item.getItemId()) {
          case R.id.menu_load:
             final String[] files = new File(Environment.getExternalStorageDirectory() + PAINT_DIR).list(new FilenameFilter() {
-               //@Override
+               // @Override
                public boolean accept(File arg0, String arg1) {
                   if (arg1.endsWith(PAINT_EXT)) return true;
                   return false;
                }
             });
-                        
+
             // ask for filename
             AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
             alert.setTitle("Load file");
             alert.setSingleChoiceItems(files, 0, new DialogInterface.OnClickListener() {
-               //@Override
+               // @Override
                public void onClick(DialogInterface arg0, int arg1) {
                   filename = files[arg1];
                   vp.loadDrawing(Environment.getExternalStorageDirectory() + PAINT_DIR + filename);
@@ -95,17 +99,17 @@ public class Main extends Activity {
                }
             });
             alert.show();
-            
+
             return true;
-            
+
          case R.id.menu_discard:
             vp.clear();
             filename = null;
             return true;
-            
+
          case R.id.menu_preview:
             // show a progress dialog
-            final ProgressDialog pd = new ProgressDialog(this);   
+            final ProgressDialog pd = new ProgressDialog(this);
             pd.setMessage(getResources().getString(R.string.progress_preview));
             AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>() {
                @Override
@@ -113,13 +117,13 @@ public class Main extends Activity {
                   super.onPreExecute();
                   pd.show();
                }
-               
+
                @Override
                protected Void doInBackground(Void... params) {
                   vp.preview();
                   return null;
                }
-               
+
                @Override
                protected void onPostExecute(Void result) {
                   super.onPostExecute(result);
@@ -128,69 +132,75 @@ public class Main extends Activity {
             };
             task.execute(new Void[0]);
             return true;
-            
+
          case R.id.menu_background:
             // pick a background image
             new AlertDialog.Builder(this).setTitle(R.string.title_background_image)
-               .setSingleChoiceItems(R.array.image_sources, 0, new DialogInterface.OnClickListener() {
-                  @Override
-                  public void onClick(DialogInterface arg0, int arg1) {
-                     arg0.dismiss();
-                     switch (arg1) {
-                        case 0:
-                           // take pic
-                           break;
-                        case 1:
-                           // freehand drawing
-                           if (vp.isSPen) {
-                              Intent intent = new Intent(Main.this, SPenActivity.class);
-                              startActivityForResult(intent, REQUEST_SPEN);
-                           } else {
-                              Toast.makeText(Main.this, R.string.err_no_spen, Toast.LENGTH_LONG).show();
+                     .setSingleChoiceItems(R.array.image_sources, 0, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface arg0, int arg1) {
+                           arg0.dismiss();
+                           switch (arg1) {
+                              case 0:
+                                 // take pic
+                                 captureImageIntent();
+                                 break;
+                              case 1:
+                                 // freehand drawing
+                                 if (vp.isSPen) {
+                                    Intent intent = new Intent(Main.this, SPenActivity.class);
+                                    startActivityForResult(intent, REQUEST_SPEN);
+                                 } else {
+                                    Toast.makeText(Main.this, R.string.err_no_spen, Toast.LENGTH_LONG).show();
+                                 }
+                                 break;
+                              case 2:
+                                 // gallery
+                                 Intent intent2 = new Intent(Intent.ACTION_PICK,
+                                          android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                                 startActivityForResult(intent2, REQUEST_GALLERY);
+                                 break;
+                              case 3:
+                                 // remove background
+                                 ImageView iv = (ImageView) findViewById(R.id.vp_bg_image);
+                                 iv.setImageBitmap(null);
+                                 break;
                            }
-                           break;
-                        case 2:
-                           // gallery
-                           Intent intent2 = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                           startActivityForResult(intent2, REQUEST_GALLERY);
-                           break;
-                        case 3:
-                           // remove background
-                           ImageView iv = (ImageView) findViewById(R.id.vp_bg_image);
-                           iv.setImageBitmap(null);
-                           break;
-                     }
-                  }
-               }).create().show();            
+                        }
+                     }).create().show();
             return true;
-            
+
          case R.id.menu_print:
             generateAndPrint();
             return true;
-            
+
          case R.id.menu_settings:
             Intent i = new Intent(this, Preferences.class);
             startActivity(i);
             return true;
-            
+
          case R.id.menu_help:
-            new AlertDialog.Builder(this)
-               .setTitle(R.string.app_name)
-               .setMessage(R.string.help_text)
-               .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                  @Override
-                  public void onClick(DialogInterface dialog, int which) {
-                     dialog.dismiss();
-                  }
-               })
-               .create().show();
+            new AlertDialog.Builder(this).setTitle(R.string.app_name).setMessage(R.string.help_text)
+                     .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                           dialog.dismiss();
+                        }
+                     }).create().show();
       }
       return false;
    }
 
+   protected void captureImageIntent() {
+      // see http://stackoverflow.com/questions/1910608/android-action-image-capture-intent
+      Intent i = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+      i.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+      startActivityForResult(i, REQUEST_CAMERA);
+   }
+
    private void generateAndPrint() {
-   // show a progress dialog
-      final ProgressDialog pd = new ProgressDialog(this);   
+      // show a progress dialog
+      final ProgressDialog pd = new ProgressDialog(this);
       pd.setMessage(getResources().getString(R.string.progress_print));
       AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>() {
          @Override
@@ -198,13 +208,13 @@ public class Main extends Activity {
             super.onPreExecute();
             pd.show();
          }
-         
+
          @Override
          protected Void doInBackground(Void... params) {
             vp.print();
             return null;
          }
-         
+
          @Override
          protected void onPostExecute(Void result) {
             super.onPostExecute(result);
@@ -213,16 +223,14 @@ public class Main extends Activity {
       };
       task.execute(new Void[0]);
    }
-   
+
    @Override
    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-      super.onActivityResult(requestCode, resultCode, data);
-
       ImageView iv = (ImageView) findViewById(R.id.vp_bg_image);
       if (resultCode == RESULT_OK) {
          iv.setVisibility(View.VISIBLE);
       }
-      
+
       if (requestCode == REQUEST_GALLERY && resultCode == RESULT_OK) {
          // set the background image from user-selected image
          Uri targetUri = data.getData();
@@ -236,8 +244,10 @@ public class Main extends Activity {
          iv.setBackgroundColor(R.color.freehand_bg);
       } else if (requestCode == REQUEST_CAMERA && resultCode == RESULT_OK) {
          // pic from camera
+         Log.d(LOG_TAG, data.toString());
       }
-      
+
+      super.onActivityResult(requestCode, resultCode, data);
    }
 
    @Override
@@ -245,12 +255,12 @@ public class Main extends Activity {
       // Avoid accidental exits with a dialog
       new AlertDialog.Builder(this).setTitle("Exit").setMessage("Are you sure you want to exit?")
                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                  //@Override
+                  // @Override
                   public void onClick(DialogInterface dialog, int which) {
                      finish();
                   }
                }).setNegativeButton("No", new DialogInterface.OnClickListener() {
-                  //@Override
+                  // @Override
                   public void onClick(DialogInterface dialog, int which) {
 
                   }
@@ -277,8 +287,8 @@ public class Main extends Activity {
 
    public void onNewPoly(View v) {
       vp.newPoly();
-   }   
-   
+   }
+
    public void onSave(View v) {
       if (filename == null) {
          // ask for filename
