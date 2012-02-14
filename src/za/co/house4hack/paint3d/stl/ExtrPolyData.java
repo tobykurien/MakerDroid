@@ -82,7 +82,7 @@ public class ExtrPolyData {
       for (int i = 0; i < pointList.length; i++) {
          Vertex p = pointList[i];
          // also flip top to bottom
-         result[i] = new Vertex((p.x - centreX) * scale, (p.y - centreY) * scale, 0.0f); 
+         result[i] = new Vertex((p.x - centreX) * -1 * scale, (p.y - centreY) * scale, 0.0f); 
       }
       return result;
    }
