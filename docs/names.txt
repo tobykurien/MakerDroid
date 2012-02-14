@@ -2,7 +2,10 @@ Names:
 ======
 - Paint3d
 - MakerDroid
+- DroidMaker
 - Paint4Make
 - Paint2Make
 - Draw2Make
 - Paint4Fab
+- ThingDroid
+- ThingyDroid
