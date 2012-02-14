@@ -68,7 +68,7 @@ private static final String SKEINFORGE_START = "Starting Skeinforge";
        f.delete();
    }
    
-   public void generateGcode(String file) {
+   public void generateGcode(String file, String logfile) {
        //unpackData("private", mContext.getFilesDir());
        //unpackData("public", externalStorage);
 
@@ -109,7 +109,7 @@ private static final String SKEINFORGE_START = "Starting Skeinforge";
     	        "                self.file.write(l+'\\n')\n" +
     	        "                self.file.flush()\n" +    	        
     	        "        self.buffer = lines[-1]\n" +
-    	        "sys.stdout = sys.stderr = LogFile('/mnt/sdcard/Paint3d/logpython.log')\n" +
+    	        "sys.stdout = sys.stderr = LogFile('"+logfile + "')\n" +
     			"import site; print site.getsitepackages()\n"+
     			"os.chdir('"+externalStorage.getParent()+"') \n" +
     	        "sys.path.append('"+externalStorage.getAbsolutePath()+"')\n" + 
