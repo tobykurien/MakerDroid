@@ -6,6 +6,7 @@
         <item>From Gallery</item>
         <item>Remove background</item>
     </string-array>
+    
     <string-array name="thresholds">
         <item>1</item>
         <item>2</item>
@@ -26,4 +27,14 @@
         <item>100</item>
     </string-array>
 
+    <string-array name="printers">
+        <item>BFB RapMan</item>
+        <item>CNC router</item>
+    </string-array>
+
+    <string-array name="printer_vals">
+        <item>bfb</item>
+        <item>cnc</item>
+    </string-array>
+    
 </resources>
