@@ -43,6 +43,12 @@ public class Main extends Activity {
       super.onCreate(savedInstanceState);
       setContentView(R.layout.main);
       vp = (VectorPaint) findViewById(R.id.vector_paint);
+      if (getIntent().getData() != null) {
+         String filename = getIntent().getData().getEncodedPath();
+         if (!vp.loadDrawing(filename)) {
+            Toast.makeText(this, "Unable to load " + filename, Toast.LENGTH_LONG).show();
+         }
+      }
    }
 
    @Override
