@@ -399,13 +399,22 @@ class VectorPaint extends View {
       invalidate();
    }
 
-   // add a new polygon in this layer
+   /**
+    * Switch to another polygon in the layer or add a new polygon
+    */
    public void newPoly() {
       Layer curLayer = layers.get(layer);
       poly++;
       if (poly >= layers.get(layer).size()) {
-         curLayer.add(new Polygon());
-         poly = curLayer.size() - 1;
+         // at this point we either go back to first polygon in the layer or add a new one
+         if (poly > 0 && layers.get(layer).get(poly - 1).size() == 0) {
+            // current polygon is already blank so don't add another one, switch back to first poly
+            poly = 0;
+         } else {
+            // add a new polygon to this layer
+            curLayer.add(new Polygon());
+            poly = curLayer.size() - 1;            
+         }
       }
       polygon = curLayer.get(poly);
       undoHistory.clear();
