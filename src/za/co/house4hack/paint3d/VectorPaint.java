@@ -353,6 +353,14 @@ class VectorPaint extends View {
       invalidate();
    }
 
+   public boolean drawingEmpty() {
+      try {
+         return layers.get(0).get(0).size() == 0;
+      } catch (Exception e) {
+         return true;
+      }
+   }
+   
    // save the shape and preview in 3D using STL viewer
    public void preview() {
       String sdDir = Environment.getExternalStorageDirectory().getAbsolutePath();
@@ -366,12 +374,17 @@ class VectorPaint extends View {
          getContext().startActivity(i);
       } catch (IOException e) {
          Toast.makeText(getContext(), "Error saving preview: " + e.getMessage(), Toast.LENGTH_LONG).show();
-      } catch (DelaunayError e) {
+      } catch (Exception e) {
          Toast.makeText(getContext(), "Error in drawing. Make sure lines do not cross.", Toast.LENGTH_LONG).show();
       }
    }
 
    public void print() {
+      if (drawingEmpty()) {
+         Toast.makeText(getContext(), R.string.err_drawing_empty, Toast.LENGTH_LONG).show();
+         return;
+      }
+      
       String sdDir = Environment.getExternalStorageDirectory().getAbsolutePath() + Main.PAINT_DIR;
       try {
          ExtrudePoly.saveToSTL(layers.get(0), (layers.size() > 1 ? layers.get(1) : null), null, sdDir + "/paint3d.stl", SCALE_MAX);
@@ -379,7 +392,7 @@ class VectorPaint extends View {
          sw.generateGcode(sdDir + "/paint3d.stl",sdDir + "/logpython.log");
       } catch (DelaunayError e) {
          Toast.makeText(getContext(), "Error in drawing. Make sure lines do not cross.", Toast.LENGTH_LONG).show();
-      } catch (IOException e) {
+      } catch (Exception e) {
          Toast.makeText(getContext(), "Error saving file: " + e.getMessage(), Toast.LENGTH_LONG).show();
       }
    }

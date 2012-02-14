@@ -10,13 +10,14 @@
     <string name="menu_done">Done</string>
     <string name="menu_settings">Settings</string>
     <string name="menu_help">Help</string>
-    
+    <string name="btn_ok">Ok</string>
+    <string name="btn_cancel">Cancel</string>
+    <string name="btn_continue">Continue</string>
     <string name="btn_save">Save</string>
     <string name="btn_undo">Undo</string>
     <string name="btn_etch">Etch</string>
     <string name="btn_background">Background</string>
-    
-    <string name="help_text">Use the SPen to tap out the outer shape of the object to fabricate.\n\n
+    <string name="help_text">se the SPen to tap out the outer shape of the object to fabricate.\n\n
 Tap the pen icon above to draw holes inside the object. Lines must not cross each other. Keep tapping 
 the button to switch between polygons in the current layer. To place dots close together, tap out 
 a long line, then break the line and move the dot into position and repeat as necessary.\n\n
@@ -25,13 +26,26 @@ green layer.\n\n
 Load a background image to trace out a shape from a photo or freehand drawing. The "background" 
 toolbar button allows you to toggle the background on and off to check your drawing.\n\n
 Preview the object using the preview menu item to see what the fabricated object will look like when 
-3D printed. You can select your fabrication device and tweak the drawing settings in the settings menu.
-</string>
+3D printed. You can select your fabrication device and tweak the drawing settings in the settings menu.</string>
     <string name="vp_help_spen">Tap out the shape with the S-Pen</string>
     <string name="vp_help_touch">Tap the screen to draw the shape</string>
     <string name="progress_preview">Generating 3D preview...</string>
     <string name="progress_print">Generating files for printer...</string>
-
     <string name="title_background_image">Background Image</string>
     <string name="err_no_spen">Device does not have SPen</string>
+    <string name="title_stl_viewer">STL Viewer</string>
+    <string name="msg_stl_viewer">An STL viewer app is needed to display the 
+generated 3D model, and there are no such apps installed. The "STLView" app is 
+recommended and known to work. Click Ok to install it from the Android Market, 
+and once installed, you can preview your design.</string>
+    <string name="err_drawing_empty">Please draw something first</string>
+    <string name="title_print">Warning</string>
+    <string name="msg_print">Generating a print (GCode) file will take
+several minutes or more (depending on your model complexity and device speed). Make sure you 
+have selected the right model of printer in the Settings menu. You can use the USB connector kit now 
+to plug an external SD card into your device, and the generated file will be saved into the root 
+of the SD card. It is advisable to preview the GCode file (saved as paint3d_export.bfb) on a PC first to be 
+sure that the print is fine. The app developers are not responsible for any damage that may occur to 
+your printer (or other device) as a result of using this app.</string>
+
 </resources>
