@@ -61,27 +61,28 @@ public class ExtrPolyData {
       float scaleMax = (maxX > maxY ? maxX : maxY);
       float scale = max / scaleMax;
 
-      // center the object around 0,0
-      minX *= 2;
-      minY *= 2;
-
-      enclosure = scalePointList(enclosure, scale, minX, minY);
+      enclosure = scalePointList(enclosure, scale, maxX - minX, maxY - minY);
       for (int i = 0; i < holes.size(); i++)
-         holes.set(i, scalePointList(holes.get(i), scale, minX, minY));
+         holes.set(i, scalePointList(holes.get(i), scale, maxX - minX, maxY - minY));
       for (int i = 0; i < exts.size(); i++)
-         exts.set(i, scalePointList(exts.get(i), scale, minX, minY));
+         exts.set(i, scalePointList(exts.get(i), scale, maxX - minX, maxY - minY));
 
    }
 
-   Vertex[] scalePointList(Vertex[] pointList, float scale, float minX, float minY) {
+   /**
+    * Scale the object and move it to the center point
+    * @param pointList
+    * @param scale
+    * @param centreX
+    * @param centreY
+    * @return
+    */
+   Vertex[] scalePointList(Vertex[] pointList, float scale, float centreX, float centreY) {
       Vertex[] result = new Vertex[pointList.length];
       for (int i = 0; i < pointList.length; i++) {
          Vertex p = pointList[i];
-         result[i] = new Vertex((p.x - minX) * scale, (p.y - minY) * scale, 0.0f); // also
-                                                                                   // flip
-                                                                                   // top
-                                                                                   // to
-                                                                                   // bottom
+         // also flip top to bottom
+         result[i] = new Vertex((p.x - centreX) * scale, (p.y - centreY) * scale, 0.0f); 
       }
       return result;
    }

@@ -24,4 +24,4 @@ Todo:
   - need app icon
   - Need gradient for toolbar buttons
   - apply colours to SPen view too
-  -   
+  -  

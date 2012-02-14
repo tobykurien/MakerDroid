@@ -42,6 +42,9 @@ class VectorPaint extends View {
    int POINT_DRAG = 50; // pixel distance to point to activate it for dragging
    int DRAG_ACTIVATE = 5; // pixels to drag before dragging is activated
 
+   // Other magic numbers
+   int SCALE_MAX = 100; // scale the object to be around 5cm
+   
    // data storage
    Polygon polygon;
    List<Layer> layers; // each layer has many polygons with many points
@@ -355,7 +358,7 @@ class VectorPaint extends View {
       String sdDir = Environment.getExternalStorageDirectory().getAbsolutePath();
 
       try {
-         ExtrudePoly.saveToSTL(layers.get(0), layers.get(1), null, sdDir + "/paint3d.stl");
+         ExtrudePoly.saveToSTL(layers.get(0), layers.get(1), null, sdDir + "/paint3d.stl", SCALE_MAX);
          File f = new File(sdDir + "/paint3d.stl");
          Intent i = new Intent();
          i.setAction(Intent.ACTION_VIEW);
@@ -371,7 +374,7 @@ class VectorPaint extends View {
    public void print() {
       String sdDir = Environment.getExternalStorageDirectory().getAbsolutePath() + Main.PAINT_DIR;
       try {
-         ExtrudePoly.saveToSTL(layers.get(0), layers.get(1), null, sdDir + "/paint3d.stl");
+         ExtrudePoly.saveToSTL(layers.get(0), layers.get(1), null, sdDir + "/paint3d.stl", SCALE_MAX);
             SkeinforgeWrapper sw = new SkeinforgeWrapper(this.getContext());
             sw.generateGcode(sdDir + "/paint3d.stl");
       } catch (DelaunayError e) {

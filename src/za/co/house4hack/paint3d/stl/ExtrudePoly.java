@@ -193,13 +193,13 @@ public class ExtrudePoly {
     * @throws DelaunayError 
     * @throws IOException 
     */
-   public static boolean saveToSTL(Layer enclosure, Layer rawRaised, Layer rawSunken, String filePath) throws DelaunayError, IOException {
+   public static boolean saveToSTL(Layer enclosure, Layer rawRaised, Layer rawSunken, String filePath, int scaleFactor) throws DelaunayError, IOException {
       Layer rawExt = new Layer();
       if (rawRaised != null) rawExt.addAll(rawRaised);
       if (rawSunken != null) rawExt.addAll(rawSunken);
       ExtrPolyData ep = new ExtrPolyData(enclosure, rawExt);
 
-      ep.normalize(50);
+      ep.normalize(scaleFactor);
 
       File f = new File(filePath);
       f.mkdirs();
