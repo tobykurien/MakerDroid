@@ -7,6 +7,7 @@ Todo:
  - implement camera image source with crop and rotate functionality
  - save and load drawing background together with drawing (as separate bmp file)
  - add intent for .p3d files
+ - flip the preview to correspond to drawing
 
 - 3D Preview
  - name the STL file the same as the drawing file if defined
