@@ -391,11 +391,12 @@ class VectorPaint extends View {
       if (f.exists()) {
          sdDir = f.getAbsolutePath();
       }
+      if (!sdDir.endsWith("/")) sdDir += "/";
       
       try {
          ExtrudePoly.saveToSTL(layers.get(0), (layers.size() > 1 ? layers.get(1) : null), null, sdDir + "/paint3d.stl", SCALE_MAX);
          SkeinforgeWrapper sw = new SkeinforgeWrapper(this.getContext());
-         sw.generateGcode(sdDir + "/paint3d.stl",sdDir + "/logpython.log");
+         sw.generateGcode(sdDir + "paint3d.stl", sdDir + "logpython.log");
       } catch (DelaunayError e) {
          Toast.makeText(getContext(), "Error in drawing. Make sure lines do not cross.", Toast.LENGTH_LONG).show();
       } catch (Exception e) {

@@ -116,7 +116,7 @@ private static final String SKEINFORGE_START = "Starting Skeinforge";
     	        "sys.path.append('"+externalStorage.getAbsolutePath()+"/skeinforge/skeinforge_tools')\n" +
     	        "import craft\n" +
     	        "print '"+ SKEINFORGE_START +"'\n" +    	        
-    	        "craft.writeOutput('"+file+")";
+    	        "craft.writeOutput('"+file+"')";
       PythonRunner.executePythonCode(libs, env, code);
       
       
