@@ -19,6 +19,10 @@ public class SkeinforgeWrapper {
 
 private static final String SKEINFORGE_START = "Starting Skeinforge";
 
+private static final int GENERATE_SKEINFORGE = 1;
+
+private static final int GENERATE_PYCAM = 2;
+
    // The path to the directory containing our external storage.
    private File externalStorage;
 
@@ -68,7 +72,75 @@ private static final String SKEINFORGE_START = "Starting Skeinforge";
        f.delete();
    }
    
-   public void generateGcode(String file, String logfile) {
+   public void generateGcode(String file, String logfile, int codetype){
+	   switch (codetype ){
+	   case GENERATE_SKEINFORGE:
+		   generateGcodeSkeinforge(file, logfile);
+		   break;
+	   case GENERATE_PYCAM:
+		   generatePyCam(file,logfile);
+	   	   break;
+	   }
+   }
+   
+   private void generatePyCam(String file, String logfile) {
+	      unpackData("private", mContext.getFilesDir());
+	      File pycamfile =new File(Environment.getExternalStorageDirectory(),"/Paint3d/pycam/");
+	      unpackData("pycam", pycamfile);
+
+	      ArrayList<String> libs = new ArrayList<String>();
+	      libs.add("python2.7");
+	      libs.add("application");
+	      
+	      HashMap<String,String> env = new HashMap<String,String>();
+	      env.put("ANDROID_PRIVATE", mFilesDirectory);
+	      env.put("ANDROID_ARGUMENT", mArgument);
+	      env.put("PYTHONOPTIMIZE", "2");
+	      env.put("PYTHONHOME", mFilesDirectory);
+	      env.put("PYTHONPATH", mArgument + ":" + mFilesDirectory + "/lib");
+	      env.put("SETTINGS_DIRECTORY", externalStorage.getAbsolutePath()+"/settings");
+
+	      String code = "import sys, posix, os \n" +
+	    	        "private = posix.environ['ANDROID_PRIVATE']\n" +
+	    	        "argument = posix.environ['ANDROID_ARGUMENT']\n" +
+	    	        "sys.path[:] = [ \n" +
+	    			"    private + '/lib/python27.zip', \n" +
+	    			"    private + '/lib/python2.7/', \n" +
+	    			"    private + '/lib/python2.7/lib-dynload/', \n" +
+	    			"    private + '/lib/python2.7/site-packages/', \n" +
+	    			"    argument ]\n" +
+	    	        "import androidembed\n" +
+	    	        "class LogFile(object):\n" +
+	    	        "    def __init__(self,filename=''):\n" +
+	    	        "        self.buffer = ''\n" +
+	    	        "        self.filename = filename\n" +
+	    	        "        if(filename!=''): \n" +
+	    	        "            self.file = open(filename,'w')\n" +    	        
+	    	        "    def write(self, s):\n" +
+	    	        "        s = self.buffer + s\n" +
+	    	        "        lines = s.split(\"\\n\")\n" +
+	    	        "        for l in lines[:-1]:\n" +
+	    	        "            androidembed.log(l)\n" +
+	    	        "            if(self.filename !=''):\n"+    	        
+	    	        "                self.file.write(l+'\\n')\n" +
+	    	        "                self.file.flush()\n" +    	        
+	    	        "        self.buffer = lines[-1]\n" +	    	        
+	    			"import site; print site.getsitepackages()\n"+
+	    			"os.chdir('"+pycamfile.getAbsolutePath()+"') \n" +
+	    	        "sys.path.append('"+pycamfile.getAbsolutePath() +"')\n" + 
+	    	        "import pycampy\n" + 
+	    	        "parser = pycampy.makeParser()\n" + 
+	    	        "(opts, args) = parser.parse_args(args = ['--config=test.conf','--export-gcode=output.gcode','test.stl'])\n" + 
+	    	        "exit_code = pycampy.execute(parser, opts, args, pycampy.pycam)";
+	      PythonRunner.executePythonCode(libs, env, code);
+
+	
+}
+public void generateGcode(String file, String logfile){
+	generatePyCam(file, logfile); // default to skeinforge
+   }
+   
+   public void generateGcodeSkeinforge(String file, String logfile) {
       unpackData("private", mContext.getFilesDir());
       unpackData("public", externalStorage);
 
