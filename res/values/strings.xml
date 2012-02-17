@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Paint3d</string>
+    <string name="app_name">MakerDroid</string>
     <string name="menu_preview">Preview</string>
     <string name="menu_discard">Discard</string>
     <string name="menu_load">Load</string>
@@ -44,7 +44,7 @@ and once installed, you can preview your design.</string>
 several minutes or more (depending on your model complexity and device speed). Make sure you 
 have selected the right model of printer in the Settings menu. You can use the USB connector kit now 
 to plug an external SD card into your device, and the generated file will be saved into the root 
-of the SD card. It is advisable to preview the GCode file (saved as paint3d_export.bfb) on a PC first to be 
+of the SD card. It is advisable to preview the GCode file (saved as filename_export.bfb) on a PC first to be 
 sure that the print is fine. The app developers are not responsible for any damage that may occur to 
 your printer (or other device) as a result of using this app.</string>
 
