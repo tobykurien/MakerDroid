@@ -72,8 +72,9 @@ private static final int GENERATE_PYCAM = 2;
        f.delete();
    }
    
-   public void generateGcode(String file, String logfile, int codetype){
-	   switch (codetype ){
+   public void generateGcode(String file, String logfile, String printerModel){
+      int codeType = 1;
+	   switch (codeType){
 	   case GENERATE_SKEINFORGE:
 		   generateGcodeSkeinforge(file, logfile);
 		   break;

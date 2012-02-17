@@ -28,12 +28,14 @@
     </string-array>
 
     <string-array name="printers">
-        <item>BFB RapMan</item>
+        <item>BFB RapMan 3.1 dual-head</item>
+        <item>BFB RapMan 3.1 single-head</item>
         <item>CNC router</item>
     </string-array>
 
     <string-array name="printer_vals">
-        <item>bfb</item>
+        <item>bfb_rapman_31_dual</item>
+        <item>bfb_rapman_31_single</item>
         <item>cnc</item>
     </string-array>
     
