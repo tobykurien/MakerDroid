@@ -22,6 +22,7 @@ import android.widget.Button;
 import com.samsung.sdraw.AbstractSettingView;
 import com.samsung.sdraw.AbstractSettingView.SettingChangeListener;
 import com.samsung.sdraw.CanvasView;
+import com.samsung.sdraw.PenSettingInfo;
 import com.samsung.sdraw.SettingView;
 
 public class SPenActivity extends Activity {
@@ -68,12 +69,13 @@ public class SPenActivity extends Activity {
 
       mSettingView.setOnSettingChangeListener(settingChangeListener);
 
-      mFolder = new File(DEFAULT_APP_IMAGEDATA_DIRECTORY);
+      mFolder = new File(Main.getSdDir() + DEFAULT_APP_IMAGEDATA_DIRECTORY);
 
       mPenBtn.setSelected(true);
       mUndoBtn.setEnabled(false);
       mRedoBtn.setEnabled(false);
 
+      mCanvasView.getPenSettingInfo().setPenColor(PenSettingInfo.PEN_TYPE_SOLID, 0xffffff);
    }
 
    @Override

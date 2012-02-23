@@ -48,7 +48,7 @@
 			android:id="@+id/canvas_view"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:background="@drawable/smemo_bg" />
+			android:background="@android:color/background_dark" />
 		
 		<com.samsung.sdraw.SettingView 
 			android:id="@+id/setting_view"

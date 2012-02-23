@@ -73,6 +73,7 @@ public class Main extends Activity {
                }
             })
             .create().show();
+         pref.edit().putInt("version", 1).commit();
       }
    }
 
@@ -227,7 +228,7 @@ public class Main extends Activity {
       return true;
    }
 
-   private String getSdDir() {
+   public static String getSdDir() {
       String sdDir = Environment.getExternalStorageDirectory().getAbsolutePath();
       return sdDir;
    }
