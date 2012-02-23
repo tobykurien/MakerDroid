@@ -324,6 +324,16 @@ public class Main extends Activity {
                   protected void onPostExecute(Void result) {
                      super.onPostExecute(result);
                      pd.dismiss();
+                     
+                     new AlertDialog.Builder(Main.this)
+                        .setMessage(R.string.print_text)
+                        .setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
+                           @Override
+                           public void onClick(DialogInterface dialog, int which) {
+                              dialog.dismiss();
+                           }
+                        })
+                        .create().show();
                   }
                };
                task.execute(new Void[0]);               
