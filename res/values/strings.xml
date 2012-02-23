@@ -38,7 +38,7 @@ Preview the object using the preview menu item to see what the fabricated object
    <string name="print_text">
       Your 3D model has been rendered to GCode that can be fabricated. Please transfer 
       the SD card to your printer/router to begin fabrication. You can use a GCode viewer 
-      to preview the output and scale it if necessary.
+      to preview the output and scale it if necessary. Saved file: 
    </string>
    
     <string name="vp_help_spen">For tips, press Menu > More > Help</string>

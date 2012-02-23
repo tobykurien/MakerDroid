@@ -297,7 +297,7 @@ public class Main extends Activity {
                // show a progress dialog
                final ProgressDialog pd = new ProgressDialog(Main.this);
                pd.setMessage(getResources().getString(R.string.progress_print));
-               AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>() {
+               AsyncTask<Void, Void, String> task = new AsyncTask<Void, Void, String>() {
                   @Override
                   protected void onPreExecute() {
                      super.onPreExecute();
@@ -305,7 +305,7 @@ public class Main extends Activity {
                   }
 
                   @Override
-                  protected Void doInBackground(Void... params) {
+                  protected String doInBackground(Void... params) {
                      // check if SD card is plugged in via USB (works for Samsung)
                      File f = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/usbStorage/sda");
                      String sdDir = getSdDir();
@@ -316,17 +316,18 @@ public class Main extends Activity {
                      
                      SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(Main.this);
                      String printerModel = pref.getString("printer", "bfb_rapman_31_dual");
-                     vp.print(sdDir + "/" + getFilenameNoExt() +  ".bfb", printerModel);
-                     return null;
+                     String file = sdDir + "/" + getFilenameNoExt() +  ".bfb";
+                     vp.print(file, printerModel);
+                     return file;
                   }
 
                   @Override
-                  protected void onPostExecute(Void result) {
+                  protected void onPostExecute(String result) {
                      super.onPostExecute(result);
                      pd.dismiss();
                      
                      new AlertDialog.Builder(Main.this)
-                        .setMessage(R.string.print_text)
+                        .setMessage(getString(R.string.print_text) + result)
                         .setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
                            @Override
                            public void onClick(DialogInterface dialog, int which) {
