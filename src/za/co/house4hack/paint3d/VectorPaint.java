@@ -44,8 +44,6 @@ class VectorPaint extends View {
 
    // Other magic numbers
    int SCALE_MAX = 100; // scale the object to be around 5cm
-
-   String printerModel = null;
    
    // data storage
    Polygon polygon;
@@ -152,12 +150,6 @@ class VectorPaint extends View {
          POINT_DRAG = Integer.parseInt(pref.getString("drag_radius", "" + POINT_DRAG));
       } catch (Exception e) {
       }
-      
-      try {
-         printerModel = pref.getString("printer", "bfb_rapman_31_dual");
-      } catch (Exception e) {
-      }
-      
    }
 
    protected void onDraw(Canvas canvas) {
@@ -387,24 +379,16 @@ class VectorPaint extends View {
       }
    }
 
-   public void print() {
+   public void print(String fullFilePath, String printerModel) {
       if (drawingEmpty()) {
          Toast.makeText(getContext(), R.string.err_drawing_empty, Toast.LENGTH_LONG).show();
          return;
       }
       
-      // check if SD card is plugged in via USB (works for Samsung)
-      File f = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/usbStorage/sda");
-      String sdDir = Environment.getExternalStorageDirectory().getAbsolutePath() + Main.PAINT_DIR;
-      if (f.exists()) {
-         sdDir = f.getAbsolutePath();
-      }
-      if (!sdDir.endsWith("/")) sdDir += "/";
-      
       try {
-         ExtrudePoly.saveToSTL(layers.get(0), (layers.size() > 1 ? layers.get(1) : null), null, sdDir + "/paint3d.stl", SCALE_MAX);
+         ExtrudePoly.saveToSTL(layers.get(0), (layers.size() > 1 ? layers.get(1) : null), null, fullFilePath, SCALE_MAX);
          SkeinforgeWrapper sw = new SkeinforgeWrapper(this.getContext());
-         sw.generateGcode(sdDir + "paint3d.stl", sdDir + "logpython.log", printerModel);
+         sw.generateGcode(fullFilePath, fullFilePath + ".log", printerModel);
       } catch (DelaunayError e) {
          Toast.makeText(getContext(), "Error in drawing. Make sure lines do not cross.", Toast.LENGTH_LONG).show();
       } catch (Exception e) {

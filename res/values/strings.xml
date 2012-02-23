@@ -17,18 +17,32 @@
     <string name="btn_undo">Undo</string>
     <string name="btn_etch">Etch</string>
     <string name="btn_background">Background</string>
-    <string name="help_text">Tap out the outer shape of the object to fabricate.\n\n
-Tap the pen icon above to draw holes inside the object. Lines must not cross each other. Keep tapping 
+    
+   <string name="welcome_text">
+      Welcome to MakerDroid!\n\n
+      You can use MarkerDroid to draw out objects to be fabricated on a 3D printer
+      or CNC router. You will draw a 2D drawing made out of polygons that MakerDroid 
+      will then convert into a 3D object for fabrication. Please read the help text 
+      in the menu to get started.
+   </string>
+   <string name="help_text">First tap out the outer shape of the object you wish to fabricate.\n\n
+Tap the pen icon above to draw holes inside the shape. Lines must not cross each other! Keep tapping 
 the button to switch between polygons in the current layer. To place dots close together, tap out 
 a long line, then break the line and move the dot into position and repeat as necessary.\n\n
 Tap layer icon above to switch between the 2 layers. The orange layer will be printed higher than the 
 green layer.\n\n
-Load a background image to trace out a shape from a photo, image, or freehand drawing. The "background" 
+Load a background image to trace out a shape from a photo, image, or freehand drawing. The picture 
 toolbar button allows you to toggle the background on and off to check your drawing.\n\n
 Preview the object using the preview menu item to see what the fabricated object will look like when 
 3D printed. You can select your fabrication device and tweak the drawing settings in the settings menu.</string>
-    <string name="vp_help_spen">Press Menu > More > Help to get started</string>
-    <string name="vp_help_touch">Press Menu > More > Help to get started</string>
+   <string name="print_text">
+      Your 3D model has been rendered to GCode that can be fabricated. Please transfer 
+      the SD card to your printer/router to begin fabrication. You can use a GCode viewer 
+      to preview the output and scale it if necessary.
+   </string>
+   
+    <string name="vp_help_spen">For tips, press Menu > More > Help</string>
+    <string name="vp_help_touch">For tips, Press Menu > More > Help</string>
     <string name="progress_preview">Generating 3D preview...</string>
     <string name="progress_print">Generating files for printer...</string>
     <string name="title_background_image">Background Image</string>

@@ -15,6 +15,7 @@ import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -23,6 +24,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
@@ -34,9 +36,9 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 public class Main extends Activity {
-   public static final String LOG_TAG = "Paint3d";
-   public static final String PAINT_DIR = "/Paint3d/";
-   public static final String SKEINFORGE_DIR = "/Paint3d/Skeinforge/";
+   public static final String LOG_TAG = "MakerDroid";
+   public static final String PAINT_DIR = "/MakerDroid/";
+   public static final String SKEINFORGE_DIR = "/MakerDroid/Skeinforge/";
    public static final String PAINT_EXT = ".p3d";
 
    public static final int REQUEST_GALLERY = 3;
@@ -58,6 +60,19 @@ public class Main extends Activity {
          if (!vp.loadDrawing(filename)) {
             Toast.makeText(this, "Unable to load " + filename, Toast.LENGTH_LONG).show();
          }
+      }
+      
+      SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+      if (pref.getInt("version", 0) < 1) {
+         new AlertDialog.Builder(this)
+            .setMessage(R.string.welcome_text)
+            .setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
+               @Override
+               public void onClick(DialogInterface dialog, int which) {
+                  dialog.dismiss();
+               }
+            })
+            .create().show();
       }
    }
 
@@ -145,10 +160,18 @@ public class Main extends Activity {
       return true;
    }
 
+   public String getFilenameNoExt() {
+      if (filename == null) return "untitled";
+      
+      String retVal = filename.substring(0, filename.length() - PAINT_EXT.length());
+      return retVal;
+   }
+   
    private boolean generatePreview() {
+      onSave(null);
+      
       // check if we have an STL viewer app
-      String sdDir = Environment.getExternalStorageDirectory().getAbsolutePath();
-      File f = new File(sdDir + "/paint3d.stl");
+      File f = new File(getSdDir() + "/" + getFilenameNoExt() +  ".stl");
       Intent i = new Intent();
       i.setAction(Intent.ACTION_VIEW);
       i.setDataAndType(Uri.fromFile(f), "");
@@ -204,6 +227,11 @@ public class Main extends Activity {
       return true;
    }
 
+   private String getSdDir() {
+      String sdDir = Environment.getExternalStorageDirectory().getAbsolutePath();
+      return sdDir;
+   }
+
    private void changeBackground() {
       // pick a background image
       new AlertDialog.Builder(this).setTitle(R.string.title_background_image)
@@ -252,6 +280,8 @@ public class Main extends Activity {
    }
 
    private void generateAndPrint() {
+      onSave(null);
+      
       if (vp.drawingEmpty()) {
          Toast.makeText(this, R.string.err_drawing_empty, Toast.LENGTH_LONG).show();
          return;
@@ -276,7 +306,17 @@ public class Main extends Activity {
 
                   @Override
                   protected Void doInBackground(Void... params) {
-                     vp.print();
+                     // check if SD card is plugged in via USB (works for Samsung)
+                     File f = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/usbStorage/sda");
+                     String sdDir = getSdDir();
+                     if (f.exists()) {
+                        sdDir = f.getAbsolutePath();
+                     }
+                     if (!sdDir.endsWith("/")) sdDir += "/";
+                     
+                     SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(Main.this);
+                     String printerModel = pref.getString("printer", "bfb_rapman_31_dual");
+                     vp.print(sdDir + "/" + getFilenameNoExt() +  ".bfb", printerModel);
                      return null;
                   }
 
