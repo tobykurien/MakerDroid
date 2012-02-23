@@ -362,12 +362,12 @@ class VectorPaint extends View {
    }
    
    // save the shape and preview in 3D using STL viewer
-   public void preview() {
+   public void preview(String fullFilePath) {
       String sdDir = Environment.getExternalStorageDirectory().getAbsolutePath();
 
       try {
-         ExtrudePoly.saveToSTL(layers.get(0), (layers.size() > 1 ? layers.get(1) : null), null, sdDir + "/paint3d.stl", SCALE_MAX);
-         File f = new File(sdDir + "/paint3d.stl");
+         ExtrudePoly.saveToSTL(layers.get(0), (layers.size() > 1 ? layers.get(1) : null), null, fullFilePath, SCALE_MAX);
+         File f = new File(fullFilePath);
          Intent i = new Intent();
          i.setAction(Intent.ACTION_VIEW);
          i.setDataAndType(Uri.fromFile(f), "");

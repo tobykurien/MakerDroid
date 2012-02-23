@@ -171,7 +171,7 @@ public class Main extends Activity {
       onSave(null);
       
       // check if we have an STL viewer app
-      File f = new File(getSdDir() + "/" + getFilenameNoExt() +  ".stl");
+      final File f = new File(getSdDir() + "/" + getFilenameNoExt() +  ".stl");
       Intent i = new Intent();
       i.setAction(Intent.ACTION_VIEW);
       i.setDataAndType(Uri.fromFile(f), "");
@@ -213,7 +213,7 @@ public class Main extends Activity {
 
          @Override
          protected Void doInBackground(Void... params) {
-            vp.preview();
+            vp.preview(f.getAbsolutePath());
             return null;
          }
 
