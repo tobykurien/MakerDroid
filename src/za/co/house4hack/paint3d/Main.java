@@ -169,8 +169,6 @@ public class Main extends Activity {
    }
    
    private boolean generatePreview() {
-      onSave(null);
-      
       // check if we have an STL viewer app
       final File f = new File(getSdDir() + "/" + getFilenameNoExt() +  ".stl");
       Intent i = new Intent();
