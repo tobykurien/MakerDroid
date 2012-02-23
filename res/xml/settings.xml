@@ -21,13 +21,22 @@
     </PreferenceCategory>
     
     <PreferenceCategory android:title="Printer Settings" >
-        <ListPreference
+        <!--  ListPreference
             android:dialogTitle="Select printer"
             android:entries="@array/printers"
             android:entryValues="@array/printer_vals"
             android:key="printer_id"
             android:summary="Select your model of CNC or 3D printer"
-            android:title="Fabrication device" />
+            android:title="Fabrication device" / -->
+        <ListPreference 
+            android:dialogTitle="Object size"
+            android:title="Object size"
+            android:entries="@array/sizes"
+            android:entryValues="@array/sizes_vals"
+            android:key="print_size"
+            android:summary="Approximate size of printed object"
+            android:defaultValue="100"
+            />
     </PreferenceCategory>
 
 </PreferenceScreen>

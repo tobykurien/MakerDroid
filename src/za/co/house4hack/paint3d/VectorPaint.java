@@ -43,7 +43,7 @@ class VectorPaint extends View {
    int DRAG_ACTIVATE = 5; // pixels to drag before dragging is activated
 
    // Other magic numbers
-   int SCALE_MAX = 100; // scale the object to be around 5cm
+   int SCALE_MAX = 100; // scale the object to be around 6cm
    
    // data storage
    Polygon polygon;
@@ -148,6 +148,10 @@ class VectorPaint extends View {
       }
       try {
          POINT_DRAG = Integer.parseInt(pref.getString("drag_radius", "" + POINT_DRAG));
+      } catch (Exception e) {
+      }
+      try {
+         SCALE_MAX = Integer.parseInt(pref.getString("print_size", "" + SCALE_MAX));
       } catch (Exception e) {
       }
    }

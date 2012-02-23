@@ -38,5 +38,16 @@
         <item>bfb_rapman_31_single</item>
         <item>cnc</item>
     </string-array>
-    
+
+    <string-array name="sizes">
+        <item>3cm</item>
+        <item>6cm</item>
+        <item>12cm</item>
+    </string-array>
+
+    <string-array name="sizes_vals">
+        <item>50</item>
+        <item>100</item>
+        <item>200</item>
+    </string-array>
 </resources>

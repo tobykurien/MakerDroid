@@ -37,7 +37,7 @@
         </activity>
         <activity android:name=".spen.ListActivity" >
         </activity>
-        <activity android:name="za.co.house4hack.makerdroid.Preferences" >
+        <activity android:name=".Preferences" >
         </activity>
     </application>
 
