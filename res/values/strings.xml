@@ -47,6 +47,7 @@ Preview the object using the preview menu item to see what the fabricated object
     <string name="progress_print">Generating files for printer...</string>
     <string name="title_background_image">Background Image</string>
     <string name="err_no_spen">Device does not have SPen</string>
+    <string name="err_save_first">Please save your drawing first</string>
     <string name="title_stl_viewer">STL Viewer</string>
     <string name="msg_stl_viewer">An STL viewer app is needed to display the 
 generated 3D model, and there are no such apps installed. The "STLView" app is 

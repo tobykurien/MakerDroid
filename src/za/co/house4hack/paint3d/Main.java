@@ -279,7 +279,11 @@ public class Main extends Activity {
    }
 
    private void generateAndPrint() {
-      onSave(null);
+      if (filename == null) {
+         Toast.makeText(this, R.string.err_save_first, Toast.LENGTH_LONG).show();
+         return;
+      }
+      saveFile(false);
       
       if (vp.drawingEmpty()) {
          Toast.makeText(this, R.string.err_drawing_empty, Toast.LENGTH_LONG).show();
@@ -453,7 +457,7 @@ public class Main extends Activity {
          alert.setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                filename = input.getText().toString() + PAINT_EXT;
-               saveFile();
+               saveFile(true);
             }
          });
 
@@ -464,14 +468,14 @@ public class Main extends Activity {
          });
          alert.show();
       } else {
-         saveFile();
+         saveFile(true);
       }
    }
 
-   private void saveFile() {
+   private void saveFile(boolean showToast) {
       if (filename != null && filename.trim().length() > 0) {
          vp.saveDrawing(Environment.getExternalStorageDirectory() + PAINT_DIR + filename);
-         Toast.makeText(this, "Saved!", Toast.LENGTH_SHORT).show();
+         if (showToast) Toast.makeText(this, "Saved!", Toast.LENGTH_SHORT).show();
       }
    }
 
