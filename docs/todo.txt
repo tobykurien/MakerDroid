@@ -6,14 +6,11 @@ Todo:
  - save and load drawing background together with drawing (as separate bmp file)
 
 - 3D Preview
- - name the STL file the same as the drawing file if defined
+
 
 - GCode
-  - name the BFB file the same as the drawing file if available
   - do not unpack Skeinforge or Pycam if it's already unpacked
   - display output of report.txt in the progress loader
-  - detect external USB and ask user to save to it
-  - provide instructions on printing
   - implement multiple printer models
     - Check settings for chosen printer model
     - Add support for single-head BFB RapMan?
@@ -23,4 +20,3 @@ Todo:
   - need app icon
   - Need gradient for toolbar buttons
   - apply colours to SPen view too
-  -  

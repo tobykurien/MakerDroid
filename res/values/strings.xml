@@ -23,7 +23,8 @@
       You can use MarkerDroid to draw out objects to be fabricated on a 3D printer
       or CNC router. You will draw a 2D drawing made out of polygons that MakerDroid 
       will then convert into a 3D object for fabrication. Please read the help text 
-      in the menu to get started.
+      in the menu to get started.\n\n
+      Supported 3D printer: BFB RapMan v3.1 dual-head
    </string>
    <string name="help_text">First tap out the outer shape of the object you wish to fabricate.\n\n
 Tap the pen icon above to draw holes inside the shape. Lines must not cross each other! Keep tapping 
