@@ -369,7 +369,7 @@ class VectorPaint extends View {
    public void preview(String fullFilePath) throws DelaunayError, IOException {
       String sdDir = Environment.getExternalStorageDirectory().getAbsolutePath();
 
-      ExtrudePoly.saveToSTL(layers.get(0), (layers.size() > 1 ? layers.get(1) : null), null, fullFilePath, SCALE_MAX);
+      ExtrudePoly.saveToSTL(layers.get(0), null, (layers.size() > 1 ? layers.get(1) : null), fullFilePath, SCALE_MAX);
       File f = new File(fullFilePath);
       Intent i = new Intent();
       i.setAction(Intent.ACTION_VIEW);
@@ -382,7 +382,7 @@ class VectorPaint extends View {
          throw new Exception(getString(R.string.err_drawing_empty));
       }
 
-      ExtrudePoly.saveToSTL(layers.get(0), (layers.size() > 1 ? layers.get(1) : null), null, fullFilePath, SCALE_MAX);
+      ExtrudePoly.saveToSTL(layers.get(0), null, (layers.size() > 1 ? layers.get(1) : null), fullFilePath, SCALE_MAX);
       SkeinforgeWrapper sw = new SkeinforgeWrapper(this.getContext());
       sw.generateGcode(fullFilePath, fullFilePath + ".log", printerModel);
    }

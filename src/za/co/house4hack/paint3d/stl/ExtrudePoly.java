@@ -210,19 +210,15 @@ public class ExtrudePoly {
 
       ExtrudePoly pto3d = new ExtrudePoly();
 
-      float[] fromHeight = new float[0];
-      if (rawExt != null && rawExt.size() > 0) {
-         fromHeight = new float[rawExt.size()];
-         for (int i = 0; i < fromHeight.length; i++)
-            fromHeight[i] = 5f;         
-      }
+      int polys = rawExt.size();
+      int raised = (rawRaised != null ? rawRaised.size() : 0);
+      float[] fromHeight = new float[polys];
+      for (int i = 0; i < fromHeight.length; i++)
+         fromHeight[i] = (i < raised ? 5f : 5f);         
 
-      float[] toHeight = new float[0];
-      if (rawRaised != null && rawRaised.size() > 0) {
-         toHeight = new float[rawRaised.size()];
-         for (int i = 0; i < toHeight.length; i++)
-            toHeight[i] = (i < rawRaised.size()) ? 6f : -4f;         
-      }
+      float[] toHeight = new float[polys];
+      for (int i = 0; i < toHeight.length; i++)
+         toHeight[i] = (i < raised) ? 7f : 2f;
 
       TriMesh ptt = pto3d.polyToTriMesh(ep, 5f, fromHeight, toHeight);
 
@@ -238,7 +234,7 @@ public class ExtrudePoly {
    // }
    //
 
-   public static void main(String[] args) throws DelaunayError {
+   public static void main_old(String[] args) throws DelaunayError {
       try {
          FileWriter outFile = new FileWriter("/home/schalk/tmp/test.stl");
          PrintWriter out = new PrintWriter(outFile);

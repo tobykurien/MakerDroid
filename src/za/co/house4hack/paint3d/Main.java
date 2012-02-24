@@ -225,6 +225,7 @@ public class Main extends Activity {
             try {
                vp.preview(f.getAbsolutePath());
             } catch (final Exception e) {
+               Log.e(LOG_TAG, "Error generating STL", e);
                runOnUiThread(new Runnable() {
                   @Override
                   public void run() {
@@ -337,6 +338,7 @@ public class Main extends Activity {
                      try {
                         vp.print(file, printerModel);
                      } catch (final Exception e) {
+                        Log.e(LOG_TAG, "Error generating STL", e);
                         runOnUiThread(new Runnable() {
                            @Override
                            public void run() {
