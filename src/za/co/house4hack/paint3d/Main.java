@@ -352,7 +352,7 @@ public class Main extends Activity {
                      if (f.exists()) {
                         // copy the generated print to the SD card
                      }
-                     return file;
+                     return sdDir + getFilenameNoExt() + "_export.bfb";
                   }
 
                   @Override
