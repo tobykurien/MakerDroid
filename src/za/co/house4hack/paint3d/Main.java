@@ -246,8 +246,10 @@ public class Main extends Activity {
    }
 
    public static String getSdDir() {
-      String sdDir = Environment.getExternalStorageDirectory().getAbsolutePath();
-      return sdDir + PAINT_DIR;
+      String sdDir = Environment.getExternalStorageDirectory().getAbsolutePath() + PAINT_DIR;
+      File f = new File(sdDir);
+      if (!f.exists()) f.mkdirs();
+      return sdDir;
    }
 
    private void changeBackground() {
@@ -290,7 +292,7 @@ public class Main extends Activity {
       // see
       // http://stackoverflow.com/questions/1910608/android-action-image-capture-intent
       Intent i = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-      mImageCaptureUri = Uri.fromFile(new File(Environment.getExternalStorageDirectory(), "tmp_avatar_"
+      mImageCaptureUri = Uri.fromFile(new File(getSdDir(), "bg_crop_"
                + String.valueOf(System.currentTimeMillis()) + ".jpg"));
 
       i.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, mImageCaptureUri);
@@ -331,7 +333,7 @@ public class Main extends Activity {
                      String sdDir = getSdDir();
                      SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(Main.this);
                      String printerModel = pref.getString("printer", "bfb_rapman_31_dual");
-                     String file = sdDir + PAINT_DIR + getFilenameNoExt() +  ".stl";
+                     String file = sdDir + getFilenameNoExt() +  ".stl";
                      try {
                         vp.print(file, printerModel);
                      } catch (final Exception e) {
@@ -399,11 +401,10 @@ public class Main extends Activity {
          iv.setBackgroundColor(R.color.freehand_bg);
       } else if (requestCode == REQUEST_CAMERA && resultCode == RESULT_OK) {
          // pic from camera
-         Log.d(LOG_TAG, "In REQUEST_CAMERA");
+         //Log.d(LOG_TAG, "In REQUEST_CAMERA");
          doCrop();
       } else if (requestCode == CROP_FROM_CAMERA && resultCode == RESULT_OK) {
          // pic from camera
-
          Bundle extras = data.getExtras();
 
          if (extras != null) {

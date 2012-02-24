@@ -2,13 +2,15 @@ Todo:
 =====
 
 - Vector Paint:
- - auto-rotate background image to fit screen properly
+ - allow cropping of background image
  - save and load drawing background together with drawing (as separate bmp file)
 
 - 3D Preview
-
+ - second layer sunken
+ - preview saving to wrong folder
 
 - GCode
+  - check folder where bfb file is created
   - do not unpack Skeinforge or Pycam if it's already unpacked
   - display output of report.txt in the progress loader
   - implement multiple printer models
@@ -20,3 +22,4 @@ Todo:
   - need app icon
   - Need gradient for toolbar buttons
   - apply colours to SPen view too
+  - Need a tutorial screen/video
