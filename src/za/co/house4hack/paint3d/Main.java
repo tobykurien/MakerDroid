@@ -228,7 +228,7 @@ public class Main extends Activity {
 
    public static String getSdDir() {
       String sdDir = Environment.getExternalStorageDirectory().getAbsolutePath();
-      return sdDir;
+      return sdDir + PAINT_DIR;
    }
 
    private void changeBackground() {
@@ -309,18 +309,17 @@ public class Main extends Activity {
 
                   @Override
                   protected String doInBackground(Void... params) {
-                     // check if SD card is plugged in via USB (works for Samsung)
-                     File f = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/usbStorage/sda");
                      String sdDir = getSdDir();
-                     if (f.exists()) {
-                        sdDir = f.getAbsolutePath();
-                     }
-                     if (!sdDir.endsWith("/")) sdDir += "/";
-                     
                      SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(Main.this);
                      String printerModel = pref.getString("printer", "bfb_rapman_31_dual");
-                     String file = sdDir + "/" + getFilenameNoExt() +  ".bfb";
+                     String file = sdDir + PAINT_DIR + getFilenameNoExt() +  ".stl";
                      vp.print(file, printerModel);
+                     
+                     // check if SD card is plugged in via USB (works for Samsung)
+                     File f = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/usbStorage/sda");
+                     if (f.exists()) {
+                        // copy the generated print to the SD card
+                     }
                      return file;
                   }
 
@@ -487,6 +486,10 @@ public class Main extends Activity {
       } else {
          iv.setVisibility(View.VISIBLE);
       }
+   }
+   
+   public void onDeletePoly(View v) {
+      vp.deletePoly();
    }
 
    private void doCrop() {

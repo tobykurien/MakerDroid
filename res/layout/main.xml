@@ -23,6 +23,14 @@
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
             android:layout_weight="1"
+            android:contentDescription="@string/btn_delete"
+            android:onClick="onDeletePoly"
+            android:src="@android:drawable/ic_menu_delete" />        
+        
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
             android:contentDescription="@string/btn_undo"
             android:onClick="onUndo"
             android:src="@android:drawable/ic_menu_revert" />

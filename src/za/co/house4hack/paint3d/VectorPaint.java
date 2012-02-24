@@ -570,4 +570,15 @@ class VectorPaint extends View {
       return getContext().getResources().getString(resId);
    }
 
+   public void deletePoly() {
+      if (layers.get(layer).isEmpty()) {
+         return;
+      }
+      
+      layers.get(layer).remove(poly);
+      poly--;
+      if (poly < 0) poly = 0;
+      invalidate();
+   }
+
 }

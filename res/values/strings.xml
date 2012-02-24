@@ -15,6 +15,7 @@
     <string name="btn_continue">Continue</string>
     <string name="btn_save">Save</string>
     <string name="btn_undo">Undo</string>
+    <string name="btn_delete">Delete</string>
     <string name="btn_etch">Etch</string>
     <string name="btn_background">Background</string>
     
