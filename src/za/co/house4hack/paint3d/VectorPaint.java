@@ -2,6 +2,7 @@ package za.co.house4hack.paint3d;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,7 +27,6 @@ import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Toast;
 
 import com.samsung.sdraw.SDrawLibrary;
 
@@ -44,7 +44,7 @@ class VectorPaint extends View {
 
    // Other magic numbers
    int SCALE_MAX = 100; // scale the object to be around 6cm
-   
+
    // data storage
    Polygon polygon;
    List<Layer> layers; // each layer has many polygons with many points
@@ -364,40 +364,27 @@ class VectorPaint extends View {
          return true;
       }
    }
-   
+
    // save the shape and preview in 3D using STL viewer
-   public void preview(String fullFilePath) {
+   public void preview(String fullFilePath) throws DelaunayError, IOException {
       String sdDir = Environment.getExternalStorageDirectory().getAbsolutePath();
 
-      try {
-         ExtrudePoly.saveToSTL(layers.get(0), (layers.size() > 1 ? layers.get(1) : null), null, fullFilePath, SCALE_MAX);
-         File f = new File(fullFilePath);
-         Intent i = new Intent();
-         i.setAction(Intent.ACTION_VIEW);
-         i.setDataAndType(Uri.fromFile(f), "");
-         getContext().startActivity(i);
-      } catch (IOException e) {
-         Toast.makeText(getContext(), "Error saving preview: " + e.getMessage(), Toast.LENGTH_LONG).show();
-      } catch (Exception e) {
-         Toast.makeText(getContext(), "Error in drawing. Make sure lines do not cross.", Toast.LENGTH_LONG).show();
-      }
+      ExtrudePoly.saveToSTL(layers.get(0), (layers.size() > 1 ? layers.get(1) : null), null, fullFilePath, SCALE_MAX);
+      File f = new File(fullFilePath);
+      Intent i = new Intent();
+      i.setAction(Intent.ACTION_VIEW);
+      i.setDataAndType(Uri.fromFile(f), "");
+      getContext().startActivity(i);
    }
 
-   public void print(String fullFilePath, String printerModel) {
+   public void print(String fullFilePath, String printerModel) throws Exception {
       if (drawingEmpty()) {
-         Toast.makeText(getContext(), R.string.err_drawing_empty, Toast.LENGTH_LONG).show();
-         return;
+         throw new Exception(getString(R.string.err_drawing_empty));
       }
-      
-      try {
-         ExtrudePoly.saveToSTL(layers.get(0), (layers.size() > 1 ? layers.get(1) : null), null, fullFilePath, SCALE_MAX);
-         SkeinforgeWrapper sw = new SkeinforgeWrapper(this.getContext());
-         sw.generateGcode(fullFilePath, fullFilePath + ".log", printerModel);
-      } catch (DelaunayError e) {
-         Toast.makeText(getContext(), "Error in drawing. Make sure lines do not cross.", Toast.LENGTH_LONG).show();
-      } catch (Exception e) {
-         Toast.makeText(getContext(), "Error saving file: " + e.getMessage(), Toast.LENGTH_LONG).show();
-      }
+
+      ExtrudePoly.saveToSTL(layers.get(0), (layers.size() > 1 ? layers.get(1) : null), null, fullFilePath, SCALE_MAX);
+      SkeinforgeWrapper sw = new SkeinforgeWrapper(this.getContext());
+      sw.generateGcode(fullFilePath, fullFilePath + ".log", printerModel);
    }
 
    // undo last point
@@ -422,14 +409,16 @@ class VectorPaint extends View {
       Layer curLayer = layers.get(layer);
       poly++;
       if (poly >= layers.get(layer).size()) {
-         // at this point we either go back to first polygon in the layer or add a new one
+         // at this point we either go back to first polygon in the layer or add
+         // a new one
          if (poly > 0 && layers.get(layer).get(poly - 1).size() == 0) {
-            // current polygon is already blank so don't add another one, switch back to first poly
+            // current polygon is already blank so don't add another one, switch
+            // back to first poly
             poly = 0;
          } else {
             // add a new polygon to this layer
             curLayer.add(new Polygon());
-            poly = curLayer.size() - 1;            
+            poly = curLayer.size() - 1;
          }
       }
       polygon = curLayer.get(poly);
@@ -464,8 +453,10 @@ class VectorPaint extends View {
     * When switching to a new layer, the layer count appears on it's own on a
     * new line,
     * followed by it's polygons as above
+    * 
+    * @throws IOException
     */
-   public void saveDrawing(String path) {
+   public void saveDrawing(String path) throws IOException {
       File f = new File(path);
       File dir = new File(f.getAbsolutePath());
       dir.mkdirs();
@@ -476,79 +467,73 @@ class VectorPaint extends View {
          f.renameTo(fBak);
       }
 
-      try {
-         FileOutputStream bs = new FileOutputStream(f);
-         int lcount = 0;
-         for (Layer l : layers) {
-            if (lcount > 0) {
-               // write the layer number into the file
-               bs.write(String.valueOf(lcount).getBytes());
-               bs.write('\n');
-            }
-
-            for (Polygon pol : l) {
-               for (Point p : pol) {
-                  String s = String.valueOf(p.x) + ":" + String.valueOf(p.y) + ",";
-                  bs.write(s.getBytes());
-               }
-               bs.write('\n');
-            }
-            lcount++;
+      FileOutputStream bs = new FileOutputStream(f);
+      int lcount = 0;
+      for (Layer l : layers) {
+         if (lcount > 0) {
+            // write the layer number into the file
+            bs.write(String.valueOf(lcount).getBytes());
+            bs.write('\n');
          }
-         bs.close();
-      } catch (Exception e) {
-         Toast.makeText(getContext(), "ERROR: " + e.getMessage(), Toast.LENGTH_LONG).show();
+
+         for (Polygon pol : l) {
+            for (Point p : pol) {
+               String s = String.valueOf(p.x) + ":" + String.valueOf(p.y) + ",";
+               bs.write(s.getBytes());
+            }
+            bs.write('\n');
+         }
+         lcount++;
       }
+      bs.close();
    }
 
    /**
     * Load polygon data from file. See saveDrawing() javadoc for format
+    * 
+    * @throws IOException
     */
-   public boolean loadDrawing(String path) {
+   public boolean loadDrawing(String path) throws IOException {
       File f = new File(path);
       if (!f.exists()) return false;
 
-      try {
-         clear();
-         layers.get(0).clear();
-         FileInputStream is = new FileInputStream(f);
-         int c = 0;
-         int pcount = 0;
-         while (c != -1) {
+      clear();
+      layers.get(0).clear();
+      FileInputStream is = new FileInputStream(f);
+      int c = 0;
+      int pcount = 0;
+      while (c != -1) {
+         c = is.read();
+         StringBuffer s = new StringBuffer();
+         while (c != '\n' && c != -1) {
+            s.append((char) c);
             c = is.read();
-            StringBuffer s = new StringBuffer();
-            while (c != '\n' && c != -1) {
-               s.append((char) c);
-               c = is.read();
-            }
+         }
 
-            if (s.length() > 0) {
-               String[] points = s.toString().split(",");
+         if (s.length() > 0) {
+            String[] points = s.toString().split(",");
 
-               // check for a new layer
-               if (points.length == 1) {
-                  // we will ignore the layer number
-                  layers.add(new Layer());
-                  layers.get(layers.size() - 1).clear(); // remove the empty
-                                                         // polygon
-                  pcount = 0;
-               } else {
-                  polygon = new Polygon();
-                  for (String xy : points) {
-                     if (xy.length() > 0 && xy.indexOf(":") > 0) {
-                        String[] axy = xy.split(":");
-                        float x = Float.parseFloat(axy[0]);
-                        float y = Float.parseFloat(axy[1]);
-                        polygon.add(new Point(x, y));
-                     }
+            // check for a new layer
+            if (points.length == 1) {
+               // we will ignore the layer number
+               layers.add(new Layer());
+               layers.get(layers.size() - 1).clear(); // remove the empty
+                                                      // polygon
+               pcount = 0;
+            } else {
+               polygon = new Polygon();
+               for (String xy : points) {
+                  if (xy.length() > 0 && xy.indexOf(":") > 0) {
+                     String[] axy = xy.split(":");
+                     float x = Float.parseFloat(axy[0]);
+                     float y = Float.parseFloat(axy[1]);
+                     polygon.add(new Point(x, y));
                   }
-                  layers.get(layers.size() - 1).add(polygon);
-                  pcount++;
                }
+               layers.get(layers.size() - 1).add(polygon);
+               pcount++;
             }
          }
-      } catch (Exception e) {
-         Toast.makeText(getContext(), "ERROR: " + e.getMessage(), Toast.LENGTH_LONG).show();
       }
 
       layer = 0;
@@ -571,10 +556,8 @@ class VectorPaint extends View {
    }
 
    public void deletePoly() {
-      if (layers.get(layer).isEmpty()) {
-         return;
-      }
-      
+      if (layers.get(layer).isEmpty()) { return; }
+
       layers.get(layer).remove(poly);
       poly--;
       if (poly < 0) poly = 0;

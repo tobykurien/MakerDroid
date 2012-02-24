@@ -3,8 +3,11 @@ package za.co.house4hack.paint3d;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.jdelaunay.delaunay.error.DelaunayError;
 
 import za.co.house4hack.paint3d.crop.CropOption;
 import za.co.house4hack.paint3d.crop.CropOptionAdapter;
@@ -57,8 +60,11 @@ public class Main extends Activity {
       vp = (VectorPaint) findViewById(R.id.vector_paint);
       if (getIntent().getData() != null) {
          String filename = getIntent().getData().getEncodedPath();
-         if (!vp.loadDrawing(filename)) {
-            Toast.makeText(this, "Unable to load " + filename, Toast.LENGTH_LONG).show();
+         
+         try {
+            vp.loadDrawing(filename);
+         } catch (Exception e) {
+            Toast.makeText(this, "Unable to load " + filename + " - " + e.getMessage(), Toast.LENGTH_LONG).show();
          }
       }
       
@@ -146,7 +152,11 @@ public class Main extends Activity {
          // @Override
          public void onClick(DialogInterface arg0, int arg1) {
             filename = files[arg1];
-            vp.loadDrawing(Environment.getExternalStorageDirectory() + PAINT_DIR + filename);
+            try {
+               vp.loadDrawing(Environment.getExternalStorageDirectory() + PAINT_DIR + filename);
+            } catch (IOException e) {
+               Toast.makeText(Main.this, "ERROR: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            }
             arg0.dismiss();
          }
       });
@@ -212,7 +222,16 @@ public class Main extends Activity {
 
          @Override
          protected Void doInBackground(Void... params) {
-            vp.preview(f.getAbsolutePath());
+            try {
+               vp.preview(f.getAbsolutePath());
+            } catch (final Exception e) {
+               runOnUiThread(new Runnable() {
+                  @Override
+                  public void run() {
+                     Toast.makeText(Main.this, "ERROR: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                  }
+               });
+            }
             return null;
          }
 
@@ -313,8 +332,17 @@ public class Main extends Activity {
                      SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(Main.this);
                      String printerModel = pref.getString("printer", "bfb_rapman_31_dual");
                      String file = sdDir + PAINT_DIR + getFilenameNoExt() +  ".stl";
-                     vp.print(file, printerModel);
-                     
+                     try {
+                        vp.print(file, printerModel);
+                     } catch (final Exception e) {
+                        runOnUiThread(new Runnable() {
+                           @Override
+                           public void run() {
+                              Toast.makeText(Main.this, "ERROR: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                           }
+                        });
+                     }
+
                      // check if SD card is plugged in via USB (works for Samsung)
                      File f = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/usbStorage/sda");
                      if (f.exists()) {
@@ -473,7 +501,17 @@ public class Main extends Activity {
 
    private void saveFile(boolean showToast) {
       if (filename != null && filename.trim().length() > 0) {
-         vp.saveDrawing(Environment.getExternalStorageDirectory() + PAINT_DIR + filename);
+         try {
+            vp.saveDrawing(Environment.getExternalStorageDirectory() + PAINT_DIR + filename);
+         } catch (final Exception e) {
+            runOnUiThread(new Runnable() {
+               @Override
+               public void run() {
+                  Toast.makeText(Main.this, "ERROR: " + e.getMessage(), Toast.LENGTH_LONG).show();
+               }
+            });
+         }
+
          if (showToast) Toast.makeText(this, "Saved!", Toast.LENGTH_SHORT).show();
       }
    }
