@@ -8,6 +8,7 @@
             android:dialogTitle="Pixels"
             android:entries="@array/thresholds"
             android:entryValues="@array/thresholds"
+            android:defaultValue="50"
             android:key="drag_radius"
             android:summary="How far from a point you can initiate drag"
             android:title="Drag radius" />
@@ -15,6 +16,7 @@
             android:dialogTitle="Pixels"
             android:entries="@array/thresholds"
             android:entryValues="@array/thresholds"
+            android:defaultValue="30"
             android:key="line_dist"
             android:summary="How far from a line you can tap to break it"
             android:title="Line break distance" />
