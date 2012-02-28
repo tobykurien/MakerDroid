@@ -8,7 +8,8 @@ General:
 
 - Vector Paint:
  - allow cropping of background image
- - save and load drawing background together with drawing (as separate bmp file)
+ - save and load dra
+ wing background together with drawing (as separate bmp file)
 
 - 3D Preview
  - fix the normals of the generated STL
