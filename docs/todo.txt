@@ -4,17 +4,18 @@ Todo:
 General:
  - force closes on Galaxy Tab
  - Take picture force closes on crop operation
+ - *filename validation
 
 - Vector Paint:
  - allow cropping of background image
  - save and load drawing background together with drawing (as separate bmp file)
 
 - 3D Preview
+ - fix the normals of the generated STL
+   - also cater for polygons being drawn clockwise vs anti-clockwise
 
 - GCode
   - copy the BF file to a mounted SD card if found (ask user first)
-  - *do not unpack Skeinforge or Pycam if it's already unpacked
-  - *display output of report.txt in the progress loader
   - implement multiple printer models
     - Check settings for chosen printer model
     - Add support for single-head BFB RapMan?

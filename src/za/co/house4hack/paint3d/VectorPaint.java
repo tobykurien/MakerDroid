@@ -27,6 +27,7 @@ import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Toast;
 
 import com.samsung.sdraw.SDrawLibrary;
 
@@ -538,7 +539,12 @@ class VectorPaint extends View {
 
       layer = 0;
       poly = 0;
-      polygon = layers.get(layer).get(poly);
+      try {
+         polygon = layers.get(layer).get(poly);
+      } catch (IndexOutOfBoundsException e) {
+         clear();
+         throw new IOException("Blank or invalid file");
+      }
       invalidate();
       return true;
    }

@@ -382,12 +382,33 @@ public class Main extends Activity {
 
                            // check if SD card is plugged in via USB (works for
                            // Samsung)
-                           File f = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/usbStorage/sda");
+                           String result = sdDir + getFilenameNoExt() + "_export.bfb";
+                           File src = new File(result);
+                           File f = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Paint3d");
                            if (f.exists()) {
                               // copy the generated print to the SD card
-
+                              try {
+                                 FileInputStream is = new FileInputStream(src);
+                                 FileOutputStream os = new FileOutputStream(f);
+                                 try {
+                                    byte[] buf = new byte[1024];
+                                    int len = 0;
+                                    while ((len = is.read(buf)) > 0) {
+                                       os.write(buf, 0, len);
+                                    }
+                                    result = f.getAbsolutePath();
+                                 } catch (IOException e) {
+                                    // TODO Auto-generated catch block
+                                    e.printStackTrace();
+                                 } finally {
+                                    is.close();
+                                    os.close();
+                                 }
+                              } catch (Exception e) {
+                                 // ignore errors
+                              }
                            }
-                           return sdDir + getFilenameNoExt() + "_export.bfb";
+                           return result;
                         }
                         
                         @Override
@@ -527,8 +548,15 @@ public class Main extends Activity {
 
          alert.setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-               filename = input.getText().toString() + PAINT_EXT;
-               saveFile(true);
+               filename = input.getText().toString();
+               if (filename.trim().length() == 0 || filename.startsWith(".")) {
+                  filename = null;
+                  Toast.makeText(Main.this, R.string.err_invalid_filename, Toast.LENGTH_LONG).show();
+                  onSave(null);
+               } else {
+                  filename += PAINT_EXT;
+                  saveFile(true);
+               }
             }
          });
 
@@ -547,6 +575,15 @@ public class Main extends Activity {
       if (filename != null && filename.trim().length() > 0) {
          try {
             vp.saveDrawing(Environment.getExternalStorageDirectory() + PAINT_DIR + filename);
+            
+            if (showToast) {
+               runOnUiThread(new Runnable() {
+                  @Override
+                  public void run() {
+                     Toast.makeText(Main.this, R.string.msg_saved, Toast.LENGTH_SHORT).show();
+                  }
+               });
+            }
          } catch (final Exception e) {
             runOnUiThread(new Runnable() {
                @Override
@@ -555,8 +592,15 @@ public class Main extends Activity {
                }
             });
          }
-
-         if (showToast) Toast.makeText(this, "Saved!", Toast.LENGTH_SHORT).show();
+      } else {
+         if (showToast) {
+            runOnUiThread(new Runnable() {
+               @Override
+               public void run() {
+                  Toast.makeText(Main.this, R.string.err_invalid_filename, Toast.LENGTH_LONG).show();                           
+               }
+            });
+         }
       }
    }
 
