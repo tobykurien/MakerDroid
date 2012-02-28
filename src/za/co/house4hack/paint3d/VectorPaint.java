@@ -38,7 +38,7 @@ class VectorPaint extends View {
    int LINE_TOUCH = 10;
 
    // thresholds
-   int LINE_BREAK = 50; // pixel distance to line to activate line-break
+   int LINE_BREAK = 30; // pixel distance to line to activate line-break
    int POINT_DRAG = 50; // pixel distance to point to activate it for dragging
    int DRAG_ACTIVATE = 5; // pixels to drag before dragging is activated
 

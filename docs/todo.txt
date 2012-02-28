@@ -13,8 +13,8 @@ General:
 
 - GCode
   - copy the BF file to a mounted SD card if found (ask user first)
-  - do not unpack Skeinforge or Pycam if it's already unpacked
-  - display output of report.txt in the progress loader
+  - *do not unpack Skeinforge or Pycam if it's already unpacked
+  - *display output of report.txt in the progress loader
   - implement multiple printer models
     - Check settings for chosen printer model
     - Add support for single-head BFB RapMan?

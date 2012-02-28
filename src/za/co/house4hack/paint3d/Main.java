@@ -1,13 +1,16 @@
 package za.co.house4hack.paint3d;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jdelaunay.delaunay.error.DelaunayError;
+import com.vividsolutions.jts.geomgraph.Position;
 
 import za.co.house4hack.paint3d.crop.CropOption;
 import za.co.house4hack.paint3d.crop.CropOptionAdapter;
@@ -60,25 +63,23 @@ public class Main extends Activity {
       vp = (VectorPaint) findViewById(R.id.vector_paint);
       if (getIntent().getData() != null) {
          String filename = getIntent().getData().getEncodedPath();
-         
+
          try {
             vp.loadDrawing(filename);
          } catch (Exception e) {
             Toast.makeText(this, "Unable to load " + filename + " - " + e.getMessage(), Toast.LENGTH_LONG).show();
          }
       }
-      
+
       SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
       if (pref.getInt("version", 0) < 1) {
-         new AlertDialog.Builder(this)
-            .setMessage(R.string.welcome_text)
-            .setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
-               @Override
-               public void onClick(DialogInterface dialog, int which) {
-                  dialog.dismiss();
-               }
-            })
-            .create().show();
+         new AlertDialog.Builder(this).setMessage(R.string.welcome_text)
+                  .setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
+                     @Override
+                     public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                     }
+                  }).create().show();
          pref.edit().putInt("version", 1).commit();
       }
    }
@@ -173,14 +174,14 @@ public class Main extends Activity {
 
    public String getFilenameNoExt() {
       if (filename == null) return "untitled";
-      
+
       String retVal = filename.substring(0, filename.length() - PAINT_EXT.length());
       return retVal;
    }
-   
+
    private boolean generatePreview() {
       // check if we have an STL viewer app
-      final File f = new File(getSdDir() + "/" + getFilenameNoExt() +  ".stl");
+      final File f = new File(getSdDir() + "/" + getFilenameNoExt() + ".stl");
       Intent i = new Intent();
       i.setAction(Intent.ACTION_VIEW);
       i.setDataAndType(Uri.fromFile(f), "");
@@ -293,8 +294,7 @@ public class Main extends Activity {
       // see
       // http://stackoverflow.com/questions/1910608/android-action-image-capture-intent
       Intent i = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-      mImageCaptureUri = Uri.fromFile(new File(getSdDir(), "bg_crop_"
-               + String.valueOf(System.currentTimeMillis()) + ".jpg"));
+      mImageCaptureUri = Uri.fromFile(new File(getSdDir(), "bg_crop_" + String.valueOf(System.currentTimeMillis()) + ".jpg"));
 
       i.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, mImageCaptureUri);
       startActivityForResult(i, REQUEST_CAMERA);
@@ -306,81 +306,122 @@ public class Main extends Activity {
          return;
       }
       saveFile(false);
-      
+
       if (vp.drawingEmpty()) {
          Toast.makeText(this, R.string.err_drawing_empty, Toast.LENGTH_LONG).show();
          return;
       }
 
-      new AlertDialog.Builder(this)
-         .setTitle(R.string.title_print)
-         .setMessage(R.string.msg_print)
-         .setPositiveButton(R.string.btn_continue, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-               dialog.dismiss();
-               // show a progress dialog
-               final ProgressDialog pd = new ProgressDialog(Main.this);
-               pd.setMessage(getResources().getString(R.string.progress_print));
-               AsyncTask<Void, Void, String> task = new AsyncTask<Void, Void, String>() {
+      new AlertDialog.Builder(this).setTitle(R.string.title_print).setMessage(R.string.msg_print)
+               .setPositiveButton(R.string.btn_continue, new DialogInterface.OnClickListener() {
                   @Override
-                  protected void onPreExecute() {
-                     super.onPreExecute();
-                     pd.show();
-                  }
+                  public void onClick(DialogInterface dialog, int which) {
+                     dialog.dismiss();
+                     // show a progress dialog
+                     final ProgressDialog pd = new ProgressDialog(Main.this);
+                     pd.setMessage(getResources().getString(R.string.progress_print));
+                     AsyncTask<Void, String, String> task = new AsyncTask<Void, String, String>() {
+                        @Override
+                        protected void onPreExecute() {
+                           super.onPreExecute();
+                           pd.show();
+                        }
 
-                  @Override
-                  protected String doInBackground(Void... params) {
-                     String sdDir = getSdDir();
-                     SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(Main.this);
-                     String printerModel = pref.getString("printer", "bfb_rapman_31_dual");
-                     String file = sdDir + getFilenameNoExt() +  ".stl";
-                     try {
-                        vp.print(file, printerModel);
-                     } catch (final Exception e) {
-                        Log.e(LOG_TAG, "Error generating STL", e);
-                        runOnUiThread(new Runnable() {
-                           @Override
-                           public void run() {
-                              Toast.makeText(Main.this, "ERROR: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                        @Override
+                        protected String doInBackground(Void... params) {
+                           String sdDir = getSdDir();
+                           SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(Main.this);
+                           String printerModel = pref.getString("printer", "bfb_rapman_31_dual");
+                           String file = sdDir + getFilenameNoExt() + ".stl";
+
+                           final File logFile = new File(file + ".log");
+                           Thread tail = new Thread() {
+                              boolean stop = false;
+                              
+                              @Override
+                              public void run() {
+                                 while (!logFile.exists());
+                                 try {
+                                    ByteArrayOutputStream out = new ByteArrayOutputStream();
+                                    FileInputStream is = new FileInputStream(logFile);
+                                    byte[] buf = new byte[1024];
+                                    int len = 0;
+                                    while (!stop) {
+                                       if (is.available() > 0) {
+                                          len = is.read(buf);
+                                          out.write(buf, 0, len);
+                                          publishProgress(out.toString());
+                                       }
+                                    }
+                                 } catch (IOException e) {
+                                    Log.d(Main.LOG_TAG, "ERROR tailing log file: " + e.getMessage());
+                                 }
+                              }
+                              
+                              @Override
+                              public void interrupt() {
+                                 stop = true;
+                                 super.interrupt();
+                              }
+                           };
+
+                           try {
+                              tail.start();
+                              vp.print(file, printerModel);
+                           } catch (final Exception e) {
+                              Log.e(LOG_TAG, "Error generating STL", e);
+                              runOnUiThread(new Runnable() {
+                                 @Override
+                                 public void run() {
+                                    Toast.makeText(Main.this, "ERROR: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                                 }
+                              });
+                           } finally {
+                              tail.stop();
                            }
-                        });
-                     }
 
-                     // check if SD card is plugged in via USB (works for Samsung)
-                     File f = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/usbStorage/sda");
-                     if (f.exists()) {
-                        // copy the generated print to the SD card
-                     }
-                     return sdDir + getFilenameNoExt() + "_export.bfb";
-                  }
+                           // check if SD card is plugged in via USB (works for
+                           // Samsung)
+                           File f = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/usbStorage/sda");
+                           if (f.exists()) {
+                              // copy the generated print to the SD card
 
-                  @Override
-                  protected void onPostExecute(String result) {
-                     super.onPostExecute(result);
-                     pd.dismiss();
-                     
-                     new AlertDialog.Builder(Main.this)
-                        .setMessage(getString(R.string.print_text) + result)
-                        .setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
-                           @Override
-                           public void onClick(DialogInterface dialog, int which) {
-                              dialog.dismiss();
                            }
-                        })
-                        .create().show();
+                           return sdDir + getFilenameNoExt() + "_export.bfb";
+                        }
+                        
+                        @Override
+                        protected void onProgressUpdate(String... values) {
+                           super.onProgressUpdate(values);
+                           pd.setTitle("Progress log");
+                           int len = values[0].length();
+                           int start = len - 255;
+                           if (start < 0) start = 0;
+                           pd.setMessage(values[0].substring(start, len ));
+                        }
+
+                        @Override
+                        protected void onPostExecute(String result) {
+                           super.onPostExecute(result);
+                           pd.dismiss();
+
+                           new AlertDialog.Builder(Main.this).setMessage(getString(R.string.print_text) + result)
+                                    .setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
+                                       @Override
+                                       public void onClick(DialogInterface dialog, int which) {
+                                          dialog.dismiss();
+                                       }
+                                    }).create().show();
+                        }
+                     };
+                     task.execute(new Void[0]);
                   }
-               };
-               task.execute(new Void[0]);               
-            }
-         })
-         .setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-               dialog.dismiss();
-            }
-         })
-         .create().show();
+               }).setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
+                  @Override
+                  public void onClick(DialogInterface dialog, int which) {
+                     dialog.dismiss();
+                  }
+               }).create().show();
    }
 
    @Override
@@ -403,7 +444,7 @@ public class Main extends Activity {
          iv.setBackgroundColor(R.color.freehand_bg);
       } else if (requestCode == REQUEST_CAMERA && resultCode == RESULT_OK) {
          // pic from camera
-         //Log.d(LOG_TAG, "In REQUEST_CAMERA");
+         // Log.d(LOG_TAG, "In REQUEST_CAMERA");
          doCrop();
       } else if (requestCode == CROP_FROM_CAMERA && resultCode == RESULT_OK) {
          // pic from camera
@@ -528,7 +569,7 @@ public class Main extends Activity {
          iv.setVisibility(View.VISIBLE);
       }
    }
-   
+
    public void onDeletePoly(View v) {
       vp.deletePoly();
    }
