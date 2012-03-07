@@ -234,9 +234,9 @@ public class ExtrudePoly {
    // }
    //
 
-   public static void main_old(String[] args) throws DelaunayError {
+   public static void main(String[] args) throws DelaunayError {
       try {
-         FileWriter outFile = new FileWriter("/home/schalk/tmp/test.stl");
+         FileWriter outFile = new FileWriter("/home/schalk/tmp/test1.stl");
          PrintWriter out = new PrintWriter(outFile);
 
          ExtrudePoly pto3d = new ExtrudePoly();
@@ -255,7 +255,7 @@ public class ExtrudePoly {
 
          // hole
          ArrayList<Vertex[]> holeList = new ArrayList<Vertex[]>();
-
+/*
          ArrayList<Vertex> hole1 = new ArrayList<Vertex>();
          hole1.add(new Vertex(1.0f, 1.0f, 0.0f));
          hole1.add(new Vertex(2.0f, 1.0f, 0.0f));
@@ -271,10 +271,10 @@ public class ExtrudePoly {
          hole2.add(new Vertex(4.0f, 5.0f, 0.0f));
          hole2.add(new Vertex(4.0f, 4.0f, 0.0f));
          holeList.add(hole2.toArray(new Vertex[0]));
-
+*/
          // ext
          ArrayList<Vertex[]> extList = new ArrayList<Vertex[]>();
-         ArrayList<Vertex> ext1 = new ArrayList<Vertex>();
+  /*       ArrayList<Vertex> ext1 = new ArrayList<Vertex>();
          ext1.add(new Vertex(3.0f, 3.0f, 0.0f));
          ext1.add(new Vertex(3.5f, 3.0f, 0.0f));
          ext1.add(new Vertex(3.5f, 3.5f, 0.0f));
@@ -300,7 +300,7 @@ public class ExtrudePoly {
          ext2.add(new Vertex(7.0f, 2.5f, 0.0f));
          ext2.add(new Vertex(7.0f, 2.0f, 0.0f));
          extList.add(ext2.toArray(new Vertex[0]));
-
+*/
          ExtrPolyData ep = new ExtrPolyData(pointlist.toArray(new Vertex[0]), holeList, extList);
          ep.normalize(50);
 

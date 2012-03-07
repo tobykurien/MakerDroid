@@ -1,3 +1,19 @@
-SH: 2012-01-31
-SH: Build the NDK manually, not done in Eclipse - maybe there is a plugin
-SH: Use ndk-build - currently build with NDK r7
+MakerDroid (previously Paint3d) is an app you can use to draw out a 2D shape that will then get extruded into a 3D shape, which you can then print out as a physical object using a 3D printer, or cut out of wood or other materials using a CNC router. MakerDroid was built as an educational tool to get kids excited about current technologies, like Android, 3D Printing, and CNC machines. However, it could also be a useful fabrication tool.
+
+The drawing is made by tapping out lines to form a polygon. You tap out the main polygon and then tap out “holes” into the polygon using more polygons. You can also add a second layer which will be sunken below the surface of the object, allowing you to draw designs on the surface. To make drawing objects easier, you can load a photo or image into the background (or even draw the background freehand), and then trace out the object you want to print. You can then preview the 3D object, which will generate an STL file that can be viewed with an STL viewer (and can also be used to generate prints for your own model of printer). Once you are happy with the object, you can then 3D print it, which will generate the GCode file format for the 3D printer or CNC machine. The GCode file will be stored in the “MakerDroid” folder of your internal SD, or copied to an external SD card if you connect one using the Samsung USB connector kit. The SD card can then be inserted into the 3D printer for printing – no PC is required in this processs, although it is wise to preview the GCode file on a PC before printing, to make sure the size is correct, etc.
+
+MakerDroid was made by the guys at House4Hack in Centurion, South Africa (http://www.house4hack.co.za). MakerDroid is an open source project (GPL).
+
+The app has not been released yet, but you can download the source code from https://github.com/tobykurien/Paint3d
+
+Supported devices:
+- App currently only works on the Samsung Galaxy Note (with SPen)
+- App currently only supports the RapMap v3.1 dual-head printer. It assumes ABS plastic in head 1 and scaffolding plastic on head 2. Other devices will be supported soon.
+
+Known Issues:
+- This is a proof-of-concept beta release. Expect bugs.
+- 3D preview won’t work if you cross lines. Make sure no lines cross.
+- The generated STL file may have incorrect normals on some of the faces. This will be fixed, but does not seem to affect the printing.
+
+Acknowledgements:
+MakerDroid uses Skeinforge (http://www.skeinforge.com) for generating Gcode for the RapMan and pycam (http://sourceforge.net/projects/pycam/)  for our CNC machine.  The specific flavour of Skeinforge is that released on Bits-from-Bytes (http://wiki.bitsfrombytes.com/) for the Rapman.  Both Skeinforge and pycam uses Python and we used Python for Android (https://github.com/kivy/python-for-android) as a starting point to embed the interpreter.
