@@ -194,7 +194,8 @@ public class Main extends Activity {
                      public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                         Intent i = new Intent(Intent.ACTION_VIEW);
-                        i.setData(Uri.parse("market://search?q=pname:moduleWorks.STLView"));
+                        i.setData(Uri.parse("http://www.freestlview.com/"));
+                        //i.setData(Uri.parse("market://search?q=pname:moduleWorks.STLView"));
                         startActivity(i);
                      }
                   }).setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {

@@ -54,8 +54,8 @@ Preview the object using the preview menu item to see what the fabricated object
     <string name="msg_saved">Saved!</string>
     <string name="title_stl_viewer">STL Viewer</string>
     <string name="msg_stl_viewer">An STL viewer app is needed to display the 
-generated 3D model, and there are no such apps installed. The "STLView" app is 
-recommended and known to work. Click Ok to install it from the Android Market, 
+generated 3D model, and there are no such apps installed. Please install an STL viewer 
+app. The free "STLView" app is recommended and known to work. Click Ok to view the website for this app, 
 and once installed, you can preview your design.</string>
     <string name="err_drawing_empty">Please draw something first</string>
     <string name="title_print">Warning</string>

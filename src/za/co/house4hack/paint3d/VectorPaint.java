@@ -568,6 +568,10 @@ class VectorPaint extends View {
       layers.get(layer).remove(poly);
       poly--;
       if (poly < 0) poly = 0;
+      if (layers.get(layer).isEmpty()) {
+         layers.get(layer).add(new Polygon());
+      }
+      polygon = layers.get(layer).get(poly);
       invalidate();
    }
 
